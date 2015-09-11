@@ -1,0 +1,42 @@
+<div class="container">
+
+      <div class="starter-template">
+        <p class="lead">
+		
+		
+		<% if (errors) {%>
+  <% errors.forEach(function (error) { %>
+    <%= __(error) %>
+  <% }) %>
+<% } %>
+
+<% /*
+<form role="form" action="/auth/local" method="post">
+  <input type="text" name="identifier" placeholder="Username or Email">
+  <input type="password" name="password" placeholder="Password">
+  <button type="submit">Sign in</button>
+</form>
+  */ %>
+
+<style>
+a.icon-raven {
+  background: url(/images/local/raven.gif) no-repeat 0 0;
+  padding: 0 6px 0 2.5em;
+}
+</style>
+
+<% if (Object.keys(providers).length) {%>
+  <h4>You can use one of these...</h4>
+
+  <% Object.keys(providers).forEach(function (key) { %>
+   <button class="btn btn-info"><a <%= (providers[key].name == 'raven')? 'class=icon-raven'  : "" %> href="/auth/<%= providers[key].slug %>" role="button"><%= providers[key].name %></a></button>
+  <% }) %>
+  <% Object.keys(providers).forEach(function (key) { %>
+   <a <%= (providers[key].name == 'raven')? 'class=icon-raven'  : "" %> href="/auth/<%= providers[key].slug %>" role="button"><%= providers[key].name %></a>
+  <% }) %>
+<% } %>
+
+
+</p>
+</div>
+</div>

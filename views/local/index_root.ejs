@@ -1,0 +1,10 @@
+
+<h1>holding page for / </h1>
+<div>
+Schedules:<br/>
+
+<% scheds.forEach(function(sched){  %>
+<%= sched.scd_date.toDateString() %> : <%=  sched.scd_user_username %>  <br/>
+<% }); %>
+
+</div>

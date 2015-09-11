@@ -1,0 +1,167 @@
+
+Your schedules (<%= user.username %>):	
+
+
+	
+<div  ng-app="SchedulesModule"  class="container" ng-init="iam='<%= user.username %>'">
+
+<!-- request swap from your own -->
+<script type="text/ng-template" id="modal-swap-form.html">
+	<div class="modal-header">
+	<h2>{{ vars.scd_rota_code }} -- {{ vars.scd_date.toDateString() }}  </h2>
+    <h3>Request to swap for:</h3>
+
+	<br/>
+	<form class="form-inline" name="form.swapForm" ng-submit="submitForm()" novalidate>
+	<div class="form-group">
+	<select ng-model="swap_session" class="form-control"  ng-options='myopt as  ( myopt.scd_date | date )+" ("+myopt.scd_user_username+")" for myopt in myopts track by myopt.id' required>
+	</select>
+	</div>
+        <button type="submit" class="btn btn-primary" ng-disabled="form.swapForm.$invalid">Request</button>
+	
+    <h3>Or</h3>
+        <button type="submit" class="btn btn-primary" ng-click="giveupSession()">Give up</button>
+	</form>
+	</div>
+</script>
+<!--request swap clicking on another users-->
+<script type="text/ng-template" id="modal-swap-with-form.html">
+	<div class="modal-header">
+	<h2>{{ swapwith.scd_rota_code }} -- {{ swapwith.scd_date.toDateString() }}  </h2>
+    <h3>Request to swap for:</h3>
+
+	<br/>
+	<form class="form-inline" name="form.swapWithForm" ng-submit="submitWithForm()" novalidate>
+	<div class="form-group">
+	<select ng-model="mysession" class="form-control"  ng-options='myopt as  ( myopt.scd_date | date )+" ("+myopt.scd_user_username+")" for myopt in mysessions track by myopt.id' required>
+	</select>
+	</div>
+        <button type="submit" class="btn btn-primary" ng-disabled="form.swapWithForm.$invalid">Request</button>
+	
+    <!--<h3>Or</h3>
+        <button type="submit" class="btn btn-primary">Give up</button>-->
+	</form>
+	</div>
+</script>
+<!-- give up-->
+<script type="text/ng-template" id="modal-grab-form.html">
+	<div class="modal-header">
+	<h2>{{ var.scd_rota_code }} -- {{ var.scd_date.toDateString() }}  </h2>
+    <h3>Request to swap for:</h3>
+
+	<br/>
+	<form class="form-inline" name="form.grabForm" ng-submit="submitForm()" novalidate>
+	
+	
+    <h3>Action:</h3>
+        <button type="submit" class="btn btn-primary">Take this session</button>
+	</form>
+	</div>
+</script>
+<!-- invalid form -->
+<script type="text/ng-template" id="modal-action-swap-form.html">
+	<div class="modal-header">
+	<h2>Session swap request ({{swapwith.scd_rota_code}})</h2>
+	{{ swapwith.scd_request_by.scd_user_username }} would like to swap {{swapwith.scd_date.toDateString()}} for your {{ swapwith.scd_request_by.scd_date | date }}
+	<form class="form-inline" name="form.actionForm" ng-submit="submitForm()" novalidate>
+	Do you want to:
+	<button type="submit" class="btn btn-primay" ng-click="accept(swapwith)">Accept</button>
+	or
+	<button type="submit" class="btn btn-primary" ng-click="decline(swapwith)">Decline</button>
+	Their request?
+	
+	</form>
+	</div>
+</script>
+<!-- invalid form -->
+<script type="text/ng-template" id="modal-swap-notavail.html">
+	<div class="modal-header">
+	<h2>Sorry - A swap is not available at the moment </h2>
+	</div>
+</script>
+
+
+<!-- decline request form -->
+<script type="text/ng-template" id="modal-decline.html">
+	<div class="modal-header">
+	<h2>If you wish to send a message please add below</h2>
+	<form class="form-inline" name="form.declineForm" ng-submit="submitForm()" novalidate>
+	<textarea></textarea>
+	<button type="submit" class="btn btn-danger">Confirm</botton>
+	</form>
+	
+	</div>
+</script>
+
+<!-- accept request form -->
+<script type="text/ng-template" id="modal-accept.html">
+	<div class="modal-header">
+	<h2>{{ $scope.vars.scd_rota_code }} -- {{ vars.scd_date.toDateString() }}  </h2>
+	<h2>If you wish to send a message please add below</h2>
+	<form class="form-inline" name="form.acceptForm" ng-submit="submitForm()" novalidate>
+	<textarea></textarea>
+	<button type="submit" class="btn btn-success">Confirm</botton>
+	</form>
+	
+	</div>
+</script>
+
+
+<div class="table-responsive" ng-controller="MyScheduleController as myscheduleCtrl">
+
+<div class="table-responsive" ng-controller="ModalSwapFormController">
+		<div class="row">
+			<div class="col-md-6">
+			<dl>
+				<dt>Requests pending your response</dt>
+				<dd ng-repeat="myreq in myrequests">
+				From {{ myreq.scd_request_by.scd_user_username }} swap  {{ myreq.scd_request_by.scd_rota_code }} {{ myreq.scd_request_by.scd_date.toDateString() }}  for {{ myreq.scd_date.toDateString() }} 
+				<button class="btn-xs btn-success" ng-click="acceptSession(myreq)">Accept</button>
+				<button class="btn-xs btn-danger" ng-click="declineSession(myreq)">Decline</button>
+				</dd>
+			</dl>
+			</div>
+			<div class="col-md-6">
+			<dl>
+				<dt>Your requests pending a response </dt>
+				<dd ng-repeat="myreqb in requeststo">
+				To {{ myreqb.scd_request_to.scd_user_username }} swap {{ myreqb.scd_request_to.scd_rota_code }} {{ myreqb.scd_request_to.scd_date.toDateString() }} for {{ myreqb.scd_date.toDateString() }}
+				</dd>
+			</dl>
+			</div>
+		</div>
+			
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Your rota</th>
+				  <th ng-repeat="rotacode in myscheduleCtrl.rotalist">{{ rotacode }}</th>
+                </tr>
+              </thead>
+              <tbody>
+			  <!-- otherstuff (rootScope rather than myscheduleCtrl.otherstuff -->
+			  <tr ng-repeat="myobj in otherstuff">
+			  <td>{{ myobj.scd_date.toDateString() }}
+				</td>
+				<td><!--showSwapForm will be redundant if showSwapWithForm is used-->
+				<span class="btn" ng-class="{requested:'btn-warning',requestto:'btn-warning',accepted:'btn-success',giveup:'btn-danger'}[myobj.scd_status]" " ng-click="showSwapWithForm(myobj,allrotas[myobj.scd_rota_code])">{{ myobj.scd_rota_code }}</span><br/></span>
+				
+				</td>
+				<td ng-repeat="rotacode in myscheduleCtrl.rotalist">
+				<!-- allrotas rather than mysched.allrotas uses root scoped data -->
+				<span ng-repeat="schedule in allrotas[rotacode][myobj.scd_date.toDateString()]"><span class="btn" ng-class="{requested:'btn-warning',requestto:'btn-warning',accepted:'btn-success',giveup:'btn-danger'}[schedule.scd_status]" ng-click="showSwapWithForm(schedule,myscheduleCtrl.otherstuff)"> {{ schedule.scd_user_username }}</span><br/></span>
+			
+				</td>
+				 </tr>
+			  </tbody>
+			</table>
+
+	
+</div>
+
+
+</div><!--swap form controller -->
+
+</div><!-- app -->
+

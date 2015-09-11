@@ -1,0 +1,277 @@
+
+
+	  
+<div  ng-app="MembershipModule"  class="container">
+<div class="row">	    
+<p class="lead">
+
+<div   >
+</div> 
+
+
+
+<div ng-controller="ModalDemoCtrl" id="myModal1">
+    <script type="text/ng-template" id="myModalContent.html">
+        <div class="modal-header">
+            <h3 class="modal-title">Add member</h3>
+        </div>
+		
+<form id="update-user-form" ng-submit="memberCtrl.addMember(membershipCtrl.members)"  ng-controller="MemberController as memberCtrl" >
+        <div class="modal-body">
+	  
+          <div class="form-group">
+            <label for="username" class="control-label">Username:</label>
+            <input ng-model="memberCtrl.member.username" type="text" class="form-control" id="username">
+          </div>
+          <div class="form-group">
+            <label for="email" class="control-label">Email:</label>
+            <input ng-model="memberCtrl.member.email" type="text" class="form-control" id="email">
+          </div>
+          <div class="form-group">
+            <label for="display_name" class="control-label">Display name:</label>
+            <input ng-model="memberCtrl.member.display_name" type="text" class="form-control" id="display_name">
+          </div>
+      
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Save changes</button>
+      </div>
+
+			</form>
+		
+            <ul>
+                <li ng-repeat="item in items">
+                    <a ng-click="selected.item = item">{{ item }}</a>
+                </li>
+            </ul>
+            Selected: <b>{{ selected.item }}</b>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" ng-click="ok()">OK</button>
+            <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+        </div>
+    </script>
+
+    <button class="btn btn-default" ng-click="open()" data-email="hello everyone">Open me!</button>
+    <button class="btn btn-default" ng-click="open('lg')">Large modal</button>
+    <button class="btn btn-default" ng-click="open('sm')">Small modal</button>
+    <button class="btn btn-default" ng-click="toggleAnimation()">Toggle Animation ({{ animationsEnabled }})</button>
+    <div ng-show="selected">Selection from a modal: {{ selected }}</div>
+</div>
+
+
+<!-- from https://gist.github.com/rnkoaa/8333940 -->
+    <div class="container">
+        <div class="col-sm-8 col-sm-offset-2">
+ 
+            <!-- PAGE HEADER -->
+            <div class="page-header">
+                <h1>AngularJS Form Validation</h1>
+            </div>
+ 
+            <div ng-controller="modalAccountFormController">
+                <div class="page-body">
+                    <button class="btn btn-primary" ng-click="showForm()">Create Account</button>
+                </div>
+            </div>
+        </div>
+    </div>
+	
+	
+            <div ng-controller="modalAccountFormController">
+                <div class="page-body">
+                    <button class="btn btn-primary" ng-click="showForm({name:'my name'})">Create Account 2</button>
+                </div>
+            </div>
+			
+			
+    <script type="text/ng-template" id="modal-form.html">
+	<div class="modal-header">
+    <h3 ng-hide="vars.id">Create A New Account</h3>
+    <h3 ng-show="vars.id">Edit Account: {{ vars.username }} </h3>
+</div>
+<form name="form.userForm" ng-submit="submitForm(membershipCtrl.members)" novalidate>
+    <div class="modal-body">
+	<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+        <!-- USERNAME -->
+        <div class="form-group">
+            <label>Username</label>
+            <input type="text" name="username" class="form-control" ng-model="vars.username" ng-minlength="3" ng-maxlength="8"  ng-disabled="vars.id" required>
+            <p ng-show="form.userForm.username.$error.minlength" class="help-block">Username is too short.</p>
+            <p ng-show="form.userForm.username.$error.maxlength" class="help-block">Username is too long.</p>
+        </div>
+		
+        <!-- NAME -->
+        <div class="form-group">
+            <label>Name</label>
+            <input type="text" name="display_name" class="form-control" ng-model="vars.display_name" required>
+            <p ng-show="form.userForm.name.$invalid && !form.userForm.name.$pristine" class="help-block">A name is required.</p>
+        </div>
+ 
+ 
+        <!-- EMAIL -->
+        <div class="form-group">
+            <label>Email</label>
+            <input type="email" name="email" class="form-control" ng-model="vars.email" required>
+            <p ng-show="form.userForm.email.$invalid && !form.userForm.email.$pristine" class="help-block">Enter a valid email.</p>
+        </div>
+		<input type="hidden" name="id" ng-model="vars.id"/>
+    </div>
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-primary" ng-disabled="form.userForm.$invalid">OK</button>
+        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+    </div>
+</form>
+	</script>
+	
+	
+	
+	
+<!-- end from https://gist.github.com/rnkoaa/8333940 -->
+
+Current members:<br/>
+<div class="table-responsive" ng-controller="MembershipController as membershipCtrl">
+
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Add a user</h4>
+		
+<form id="update-user-form" ng-submit="memberCtrl.addMember(membershipCtrl.members);"  ng-controller="MemberController as memberCtrl" >
+		<div class="modal-body">
+	  
+          <div class="form-group">
+            <label for="username" class="control-label">Username:</label>
+            <input ng-model="memberCtrl.member.username" type="text" class="form-control" id="username">
+          </div>
+          <div class="form-group">
+            <label for="email" class="control-label">Email:</label>
+            <input ng-model="memberCtrl.member.email" type="text" class="form-control" id="email">
+          </div>
+          <div class="form-group">
+            <label for="display_name" class="control-label">Display name:</label>
+            <input ng-model="memberCtrl.member.display_name" type="text" class="form-control" id="display_name">
+          </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Save changes</button>
+      </div>
+</form>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- rotaModal -->
+<div class="modal fade" id="rotaModal" tabindex="-1" role="dialog" aria-labelledby="rotaModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Add a rota</h4>
+      </div><form id="update-rota-form">
+      <div class="modal-body">
+	  
+          <div class="form-group">
+            <label for="rot_code" class="control-label">Code:</label>
+            <input type="text" class="form-control" id="rot_code">
+          </div>
+          <div class="form-group">
+            <label for="rot_description" class="control-label">Description:</label>
+            <input type="text" class="form-control" id="rot_description">
+          </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Save changes</button>
+      </div>
+	  <input type="hidden" name="id"/>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+
+            <div ng-controller="modalAccountFormController">
+<table class="table table-striped">
+<thead>
+    <tr>
+        <th>Username</th>
+	    <th>Display name</th>
+        <th>Email address</th>
+        <th></th>
+    </tr>
+</thead>
+
+      <tbody >
+	  
+		<tr ng-repeat="member in membershipCtrl.members">
+		<td>{{ member.username }} </td>
+		<td>{{ member.display_name }}</td>
+		<td>{{ member.email }}</td>
+		<td><button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModal" data-id="{{ member.id }}" data-display_name="{{ member.display_name }}" data-email="{{ member.email }}"  data-username="{{ member.username }}" >Edit old</button>
+		<button class="btn btn-primary btn-sm" ng-click="showForm(member)">Edit</button></td>
+		</tr>
+		<tr>
+		<td></td>
+		<td></td>
+		<td></td>
+		<td></td>
+		</tr>
+	  </tbody>
+	  <tfooter>
+	    <tr>
+		<td></td>
+		<td></td>
+		<td></td>
+		<td>
+		<button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#myModal" data-username="">Add user</button>
+		<button class="btn btn-primary btn-sm" ng-click="showForm()">Create Account 2</button></td>
+		</tr>
+	  </tfooter>
+</table>
+			</div>
+
+</div>
+
+<br/>
+Current Rotas:<br/>
+<div class="table-responsive">
+<table class="table table-striped">
+<thead>
+    <tr>
+        <th>Code</th>
+        <th>Description</th>
+        <th></th>
+    </tr>
+</thead>
+
+<% //todo filter out the non account users (users who login via raven will automatically be given an account!) %>
+<tbody>			  
+<% rotas.forEach(function(rota){  %>
+    <tr>
+		<td><%= rota.rot_code %></td>
+		<td><%= rota.rot_description %></td>
+		<td><button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#rotaModal" data-rot_description="<%= rota.rot_description %>"  data-rot_code="<%= rota.rot_code %>" >Edit</button></td>
+	</tr>
+<% } );  %>
+</tbody>
+<tfooter>
+	<tr><td></td><td></td><td><button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#rotaModal" data-rot_code="" >Add rota</button></td></tr>
+</tfooter>
+</table>
+
+
+
+
+</p>
+</div>
+</div>

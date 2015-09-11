@@ -1,0 +1,13 @@
+var Schedule = {
+
+ attributes: {
+	scd_rot_code     : { type: 'string' },
+        scd_usr_username : { type: 'string' },
+ 	scd_date         : { type: 'date' }
+ }
+
+};
+
+module.exports = Schedule;
+
+

@@ -1,0 +1,10 @@
+
+<h1>User index page for: </h1>
+<div class="custom">
+Some custom page goes here!
+<% scheds.forEach(function(sched){ %>
+	hello - <%= sched.scd_date %><br/>
+
+<% }); %>
+
+</div>
