@@ -42,7 +42,7 @@ module.exports.session = {
   ***************************************************************************/
 
   adapter: 'redis',
-
+   url: process.env.REDIS_URL || 'redis://127.0.0.1:6379'
   /***************************************************************************
   *                                                                          *
   * The following values are optional, if no options are set a redis         *
