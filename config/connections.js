@@ -42,10 +42,13 @@ module.exports.connections = {
   ***************************************************************************/
   testMysqlServer: {
     adapter: 'sails-mysql',
-    host: '127.0.0.1',
-    user: 'sms67',
-    password: '',
-    database: 'test'
+    host: process.env.DB_HOST || '127.0.0.1',
+    user: process.env.DB_USER || 'sms67',
+    password: process.env.DB_PASS || '',
+    database: process.env.DB_USER || 'test'
+    //module: 'sails-mysql',
+    // Thi soption has gone missing!
+    //url: 'mysql2://sms67:@localhost:3306/test'
   },
 
   someMysqlServer: {
