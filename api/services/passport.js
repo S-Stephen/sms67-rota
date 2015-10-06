@@ -329,9 +329,10 @@ passport.loadStrategies = function () {
        sails.log("loading raven strategy");
        self.use(new Strategy({
 	  audience: process.env.APP_BASEURL || 'http://testsms67b.eng.cam.ac.uk:1337',
-  	  desc: 'Passport Raven Demo',
+  	  desc: 'Rota',
   	  msg: 'Login to demonstrate logging in to a node.js app using passport-raven',
-  	  debug: true 
+  	  debug: true,
+	  passReqToCallback: true 
 	}, self.protocols.raven 
 /*        , function (crsid, response, cb) {
   		console.dir(response);
