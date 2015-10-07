@@ -2,6 +2,8 @@
 
 (function(){  
 
+  //change otherstuff from an array to a hash - >rename myschedule
+
 
   var app = angular.module('SchedulesModule',['ui.bootstrap']);
   
@@ -18,6 +20,7 @@
 	//alert("hello - in MembershipController but why not in Member Controller?");
 	mysched.scheds = [];
     mysched.otherstuff = [];
+	mysched.myschedule = {}; // {mykey:Date, arr:[]}the date will be the key
     mysched.allrotas = {};
 	mysched.rotalist =[];
 	mysched.myrequests={};//array of requests I have made (rot-date)
@@ -30,30 +33,67 @@
 		io.socket.on('schedule', function onServerSentEvent(msg){
 			console.log("we received an event");
 			switch(msg.verb){
+				case 'removed':
+					var ele = msg.ele;
+					ele.scd_date = new Date(ele.scd_date);
+					//remove this ele from our allrotas array:
+					
+					var index=-1
+					var myind=0
+					$rootScope.allrotas[ele.scd_rota_code][ele.scd_date.toDateString()].forEach(function(scd){
+						if (scd.id == ele.id){
+							index = myind;
+						}
+						myind++;
+					});
+					if (index>-1){
+						$rootScope.allrotas[ele.scd_rota_code][ele.scd_date.toDateString()].splice(index,1);
+					}
+					$rootScope.$apply(); // this forecs our page to refresh after these changes
+					break;
 				case 'created':
 					//add the schedule to our allrotas array
 					var ele = msg.ele;
-					eledate=new Date(ele.scd_date);
-					ele.scd_date=eledate;
-					v = mysched.allrotas[ele.scd_rota_code];
+					console.log("DEBUG date: "+ele.scd_date);
+					ele.scd_date=new Date(ele.scd_date);
+					ele.scd_date.setHours(12);
+					
+					
+					
+					//if (ele.scd_user_username == mysched.me){
+					//	mysched.myschedule[ele.scd_date.toISOString()]=(mysched.myschedule[ele.scd_date.toISOString()] )? mysched.myschedule[ele.scd_date.toISOString()] : {mykey:ele.scd_date,arr:[]};
+					//	$rootScope.myschedule[ele.scd_date.toISOString()]['arr'].push(ele);
+					//	$rootScope.$applyAsync(); // this forecs our page to refresh a
+					//}
+					
+					
+					
+					console.log("DEBUG date: "+ele.scd_date);
+					v = $rootScope.allrotas[ele.scd_rota_code];
 					if (v === undefined){
-						mysched.allrotas[ele.scd_rota_code]={};
+						$rootScope.allrotas[ele.scd_rota_code]={};
 					}
-					w = mysched.allrotas[ele.scd_rota_code][eledate.toDateString()];
+					w = $rootScope.allrotas[ele.scd_rota_code][ele.scd_date.toDateString()];
 					if (w === undefined){
-						mysched.allrotas[ele.scd_rota_code][eledate.toDateString()]=[];
+						$rootScope.allrotas[ele.scd_rota_code][ele.scd_date.toDateString()]=[];
 					}
-					mysched.allrotas[ele.scd_rota_code][eledate.toDateString()].push(ele)
+					$rootScope.allrotas[ele.scd_rota_code][ele.scd_date.toDateString()].push(ele)
 					//if I am the person assigned to the session add to my list
 					
+					$rootScope.$apply(); // this forecs our page to refresh after these changes
 					break;
 				case 'update':
+					//RULE 1: WE never change the date of a session only user and status!
+				
+				
 					//find the schedule in our allrotas array
 					//re-displaying the allrotas array only semes to work for the actioning browser?!
 					var ele = msg.ele;
 					console.log(msg);
-					//eledate=new Date(ele.scd_date);
-					ele.scd_date=new Date(ele.scd_date);
+					eledate=new Date(ele.scd_date);
+					ele.scd_date=eledate;
+					ele.scd_date.setHours(12);
+					console.log("ele id: "+ele.id+"  ele date: "+ele.scd_date);
 					if (ele.scd_date.scd_request_by) { ele.scd_date.scd_request_by.scd_date=new Date(ele.scd_date.scd_request_by.scd_date); }
 					if (ele.scd_date.scd_request_to){ele.scd_date.scd_request_to.scd_date=new Date(ele.scd_date.scd_request_to.scd_date);}
 					var index=0;
@@ -67,13 +107,8 @@
 					
 					//Update our rota if it is our session (NB it might have changed to our session in which case we muct add it! (and removed the old one)
 					if (ele.scd_user_username == mysched.me){
-						myi=0;
-						$rootScope.otherstuff.forEach(function(scd){
-						if (scd.id == ele.id){
-							$rootScope.otherstuff[myi]=ele;
-						}
-						myi++;
-						});
+						
+						//end to remove
 						//if update status is to requested then we need to ad dthis to our myrequests hash
 						if (ele.scd_status=='requested'){
 							$rootScope.requeststo[ele.id]=ele;
@@ -87,9 +122,6 @@
 					//	$rootScope.requeststo[ele.id]=ele;
 					//}
 					
-				
-					
-					
 					$rootScope.$apply(); // this forecs our page to refresh after these changes
 					console.log("end of update for "+ele.id);
 					break;
@@ -97,10 +129,11 @@
 					//find the schedule in our allrotas array
 					//re-displaying the allrotas array only semes to work for the actioning browser?!
 					var ele = msg.ele;
-					var olduser = (msg.giveupby == mysched.me)? 1 : 0 ;
+					var olduser = (msg.givenupby == mysched.me)? 1 : 0 ;
 					console.log(msg);
 					//eledate=new Date(ele.scd_date);
 					ele.scd_date=new Date(ele.scd_date);
+					ele.scd_date.setHours(12);
 					if (ele.scd_date.scd_request_by) { ele.scd_date.scd_request_by.scd_date=new Date(ele.scd_date.scd_request_by.scd_date); }
 					if (ele.scd_date.scd_request_to){ele.scd_date.scd_request_to.scd_date=new Date(ele.scd_date.scd_request_to.scd_date);}
 					var index=0;
@@ -113,37 +146,6 @@
 					})
 					
 					
-					if (ele.scd_user_username == mysched.me){
-					//we have just grabbed a session so we need to add to our schedule		
-					myi=0;
-					nextscd=undefined;
-					$rootScope.otherstuff.forEach(function(scd){
-						if (scd.scd_date.getTime() > ele.scd_date.getTime()){
-							if (placed==0){
-								nextscd=$rootScope.otherstuff[myi+1]
-								$rootScope.otherstuff[myi]=ele;
-							}else{
-								scd=nextscd;
-								nextscd=$rootScope.otherstuff[myi+1];
-							}
-							$rootScope.otherstuff[myi+1]=scd;
-						}
-						myi++;
-					});
-					}
-					
-					if (olduser > 0){
-						//remove from our rota
-						
-							var myind=0;
-							$rootScope.otherstuff.forEach(function(scd){
-								if (scd.id == ele.id){
-									index = myind;
-								}
-								myind++;
-							});
-							$rootScope.otherstuff.splice(index,1);
-					}
 					
 					
 					$rootScope.$apply(); // this forecs our page to refresh after these changes
@@ -156,9 +158,11 @@
 					var ele1 = msg.theirs;
 					ele1date=new Date(ele1.scd_date);
 					ele1.scd_date=ele1date;
+					ele1.scd_date.setHours(12);
 					var ele2 = msg.mine;
 					ele2date=new Date(ele2.scd_date);
 					ele2.scd_date=ele2date;
+					ele2.scd_date.setHours(12);
 					var index=0;
 					//updates the main schedule (everyone)
 					$rootScope.allrotas[ele1.scd_rota_code][ele1date.toDateString()].forEach(function(myele){
@@ -183,27 +187,7 @@
 					//we need to add /remove from our schedule if we are involved
 					var involved=0;
 					if(ele1.scd_user_username == mysched.me){
-						//we need to push thi ssession into our session array
-						myi=0;
-						placed=0;
-						nextscd=undefined;
-						$rootScope.otherstuff.forEach(function(scd){
-						if (scd.scd_date.getTime() > ele1.scd_date.getTime()){
-							if (placed==0){
-								nextscd=$rootScope.otherstuff[myi+1]
-								$rootScope.otherstuff[myi]=ele1;
-								placed=1;
-							}else{
-								scd=nextscd;
-								nextscd=$rootScope.otherstuff[myi+1];
-							}
-							$rootScope.otherstuff[myi+1]=scd;
-						}
-						myi++;
-						});
-						$rootScope.otherstuff.forEach(function(scd){
-							console.log("ele1 "+scd.id+"   :"+scd.scd_user_username+" "+scd.scd_date+"  "+scd.scd_rota_code+" "+scd.scd_status);
-						});
+					
 						involved=1;
 						
 						//removed the requestto
@@ -218,27 +202,7 @@
 						
 					}
 					if(ele2.scd_user_username == mysched.me){
-						//we need to push thi ssession into our session array
-						myi=0;
-						placed=0;
-						nextscd=undefined;
-						$rootScope.otherstuff.forEach(function(scd){
-						if (scd.scd_date.getTime() > ele2.scd_date.getTime()){
-							if (placed==0){
-								nextscd=$rootScope.otherstuff[myi+1]
-								$rootScope.otherstuff[myi]=ele2;
-								placed=1;
-							}else{
-								scd=nextscd;
-								nextscd=$rootScope.otherstuff[myi+1];
-							}
-							$rootScope.otherstuff[myi+1]=scd;
-						}
-						myi++;
-						});
-						$rootScope.otherstuff.forEach(function(scd){
-							console.log("ele2: "+scd.id+"   :"+scd.scd_user_username+" "+scd.scd_date+"  "+scd.scd_rota_code+" "+scd.scd_status);
-						});
+
 						involved=2;
 						//removed the requestto
 						if ($rootScope.myrequests[ele1.id]){
@@ -251,39 +215,6 @@
 						}
 					}
 					
-					if (involved){
-						//then we have some pending messages to update
-						if (involved==2){
-							//we need to remove from the otherstuff array
-							var index=-1;
-							var myind=0;
-							$rootScope.otherstuff.forEach(function(scd){
-								if (scd.id == ele1.id){
-									index = myind;
-								}
-								myind++;
-							});
-							if (index > -1){
-								$rootScope.otherstuff.splice(index,1);
-							}
-							console.log("ele1 involved: index found to rmeove: "+index+" "+ele1.id);
-						}else{
-							//we must have been the second one
-							var index=-1;
-							var myind=0;
-							$rootScope.otherstuff.forEach(function(scd){
-								if (scd.id == ele2.id){
-									index = myind;
-								}
-								myind++;
-							});
-							if (index > -1){
-								$rootScope.otherstuff.splice(index,1);
-							}
-							console.log("index found to rmeove: "+index+" "+ele2.id);
-						}
-						//as we are involved we need to remove from our requests / pending messages
-					}
 					
 					
 					$rootScope.$apply(); // this forecs our page to refresh after these changes
@@ -306,11 +237,10 @@
 		var first=new Date(data[0].scd_date); first.setHours(12);
 		var last=new Date(); last.setHours(12);
 		last = (first.getTime() < last.getTime())? first : last;
-		var end=new Date(last.getTime()+1000*60*60*24*60); //60 days of dates
+		var end=new Date(last.getTime()+1000*60*60*24*90); //90 days of dates
 	//last.setHours(12);
 			//alert("returned from schedule");
 		data.forEach(function(ele){
-			//mysched.otherstuff.push(ele);
 			var eledate=new Date(ele.scd_date); eledate.setHours(12); //dates from waterline are not inflated
 			ele.scd_date=eledate;
 			//console.log("current date: "+eledate+"   last variable  "+last);
@@ -330,11 +260,23 @@
 				//alert("looping before end ");
 				//console.log("looping the schedules pushing: "+last.getTime()+"  "+eledate.getTime());
 			    //console.log("pushing in whil : "+last);
+				
+				mysched.myschedule[last.toISOString()]={mykey:last,arr:[]};
+				//to remove start
 				mysched.otherstuff.push({scd_date:last});
+				//to remove end
+				
 				last=new Date(last.getTime()+1000*60*60*24)
 			}
 			//console.log("pushing : "+ele.scd_date);
+			//if (typeof mysched.myschedule[ele.scd_date.toDateString()] == undefined){
+				mysched.myschedule[ele.scd_date.toISOString()]=(mysched.myschedule[ele.scd_date.toISOString()] )? mysched.myschedule[ele.scd_date.toISOString()] : {mykey:ele.scd_date,arr:[]};
+			//}
+			mysched.myschedule[ele.scd_date.toISOString()]['arr'].push(ele);
+			//to delete start
 			mysched.otherstuff.push(ele);
+			//to delete end
+			
 			if (eledate.getTime() < last.getTime()){
 				;
 			}else{			
@@ -346,7 +288,10 @@
 		//console.log("last eledate: "+last);
 		while (last.getTime() < end.getTime()){
 				//alert("looping ");
+				mysched.myschedule[last.toISOString()]={mykey:last,arr:[]};
+				//to delete start
 				mysched.otherstuff.push({scd_date:last});
+				//to delete end
 				last=new Date(last.getTime()+1000*60*60*24)
 		}
 		mysched.scheds=data;
@@ -363,7 +308,7 @@
 		data.forEach(function(ele){
 			var eledate=new Date(ele.scd_date); eledate.setHours(12);
 			ele.scd_date = eledate; // inflate to date 
-			console.log("finding the rota entries id: "+ele.id+" date: "+eledate.toDateString()+"   rota: "+ele.scd_rota_code+" user: "+ele.scd_user_username+" "+ele.scd_status);
+			console.log("finding the rota entries id: "+ele.id+" date: "+eledate.toISOString()+"   rota: "+ele.scd_rota_code+" user: "+ele.scd_user_username+" "+ele.scd_status);
 			v = mysched.allrotas[ele.scd_rota_code];
 			if (v === undefined){
 				mysched.allrotas[ele.scd_rota_code]={};
@@ -413,10 +358,24 @@
 	}*/
 	//we expose this controller object onto the scope - does thi shelp us? we can use mysched.allrotas rather than myschedCtrl.allrotas??
 	
+	//setup an array of dates that we wil be using to display our table
+	//rather than fillin gin th egaps on myschedule
+	var todaydate = new Date();
+	var enddate = new Date(todaydate.getTime()+1000*60*60*24*90);
+	var dates=[];
+	while (todaydate.getTime() < enddate.getTime()){
+		console.log(todaydate.getTime()+"     <          "+enddate.getTime());
+		dates.push(todaydate);
+		todaydate=new Date(todaydate.getTime()+1000*60*60*24);
+		console.log(todaydate.getTime()+"     <          "+enddate.getTime());
+	}
+	
 	
 	$scope.mysched = mysched;
+	$rootScope.dates=dates;
 	$rootScope.allrotas= mysched.allrotas; // attempt to set in the rootSCope to pass down to sibling repeats
 	$rootScope.otherstuff= mysched.otherstuff; // attempt to set in the rootSCope to pass down to sibling repeats
+	$rootScope.myschedule= mysched.myschedule; // attempt to set in the rootSCope to pass down to sibling repeats
 	$rootScope.myrequests=mysched.myrequests;	
 	$rootScope.requeststo=mysched.requeststo;	
 	
@@ -579,6 +538,39 @@
 			
 				//we can request a normal swap with this user
 			
+					//we first need to flatten the select array (notice that the selection options will not be updated following model interations
+					//if lets say someone requests on one of our sessions
+					//console.log("setup the session select");
+					$scope.inselect=$rootScope.allrotas[invars.scd_rota_code];
+					$scope.select=function(){
+						flatten=[];
+						//console.log("let's flatten");
+						for (var rot in $rootScope.allrotas){
+							for( var idate in $rootScope.allrotas[rot]){
+								$rootScope.allrotas[rot][idate].forEach(function(session){
+									if (session.scd_user_username == $scope.me){
+										flatten.push(session);
+									}
+								})
+							}
+						}
+						//for (var key in $scope.myschedule) {
+						//	//console.log("key for myschedule: "+key);
+						//	$scope.myschedule[key]['arr'].forEach(function(session){
+						//	//console.log("Adding array");
+						//	//myarr['arr'].forEach(function(session){
+						//		//console.log("Adding session: "+session.scd_rota_code);
+						//		if (session.scd_rota_code == $scope.swapwith.scd_rota_code){
+						//			//console.log("adding to the sesisons array:"+session.id);
+						//			flatten.push(session);
+						//		}
+						//	})
+						//})
+						//}
+						return flatten;
+					}
+			
+			
 					modalInstance = $modal.open({
 						templateUrl: 'modal-swap-with-form.html',
 						controller: ModalSwapWithInstanceCtrl,
@@ -618,12 +610,12 @@
 					});	
 				}
 			}
-			modalInstance.result.then(function (selectedItem) {
-					$scope.selected = selectedItem;
-				}, function () {
-					$log.info('Modal dismissed at: ' + new Date());
-				}
-			);
+			//modalInstance.result.then(function (selectedItem) {
+			//		$scope.selected = selectedItem;
+			//	}, function () {
+			//		$log.info('Modal dismissed at: ' + new Date());
+			//	}
+			//);
 		};
 		
 		
@@ -791,16 +783,20 @@
 					}
 					myi++;
 				});
-				myi=0;
-				$rootScope.otherstuff.forEach(function(scd){
-					if (scd.id == data[0].id){
-						//scd = data[0];
-					
-						//TODO we can not seem to update with the object?!
-						$rootScope.otherstuff[myi].scd_status=data[0].scd_status;
-					}
-					myi++;
-				});
+				
+//This should be handled by the Socket				
+//				myi=0;
+//				$rootScope.otherstuff.forEach(function(scd){
+//					if (scd.id == data[0].id){
+//						//scd = data[0];
+//						
+//						//TODO we can not seem to update with the object?!
+//						//start of remove
+//						$rootScope.otherstuff[myi].scd_status=data[0].scd_status;
+//						//end of remove
+//					}
+//					myi++;
+//				});
 				$modalInstance.dismiss('giveup');
 			});
 		}

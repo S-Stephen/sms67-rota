@@ -33,7 +33,7 @@ Your schedules (<%= user.username %>):
 	<br/>
 	<form class="form-inline" name="form.swapWithForm" ng-submit="submitWithForm()" novalidate>
 	<div class="form-group">
-	<select ng-model="mysession" class="form-control"  ng-options='myopt as  ( myopt.scd_date | date )+" ("+myopt.scd_user_username+")" for myopt in mysessions track by myopt.id' required>
+	<select ng-model="mysession" class="form-control"  ng-options='myopt as  ( myopt.scd_date | date )+" ("+myopt.scd_user_username+")" for myopt in select() track by myopt.id' required>
 	</select>
 	</div>
         <button type="submit" class="btn btn-primary" ng-disabled="form.swapWithForm.$invalid">Request</button>
@@ -141,21 +141,33 @@ Your schedules (<%= user.username %>):
               </thead>
               <tbody>
 			  <!-- otherstuff (rootScope rather than myscheduleCtrl.otherstuff -->
-			  <tr ng-repeat="myobj in otherstuff">
-			  <td>{{ myobj.scd_date.toDateString() }}
+			  <tr ng-repeat="mydate in dates">
+			  <td>{{mydate.toDateString()}}
 				</td>
 				<td><!--showSwapForm will be redundant if showSwapWithForm is used-->
-				<span class="btn" ng-class="{requested:'btn-warning',requestto:'btn-warning',accepted:'btn-success',giveup:'btn-danger'}[myobj.scd_status]" " ng-click="showSwapWithForm(myobj,allrotas[myobj.scd_rota_code])">{{ myobj.scd_rota_code }}</span><br/></span>
-				
+				<span ng-repeat="myrotacode in myscheduleCtrl.rotalist" >
+					<span ng-repeat="thissched in allrotas[myrotacode][mydate.toDateString()]" >
+						<span ng-show="thissched.scd_user_username == me" class="btn" ng-class="{requested:'btn-warning',requestto:'btn-warning',accepted:'btn-success',giveup:'btn-danger'}[thissched.scd_status]" ng-click="showSwapWithForm(thissched,allrotas[myrotacode])">
+							{{ thissched.scd_rota_code }}
+						</span>
+						<br ng-show="thissched.scd_user_username == me" />
+					</span>
+				</span>
 				</td>
 				<td ng-repeat="rotacode in myscheduleCtrl.rotalist">
 				<!-- allrotas rather than mysched.allrotas uses root scoped data -->
-				<span ng-repeat="schedule in allrotas[rotacode][myobj.scd_date.toDateString()]"><span class="btn" ng-class="{requested:'btn-warning',requestto:'btn-warning',accepted:'btn-success',giveup:'btn-danger'}[schedule.scd_status]" ng-click="showSwapWithForm(schedule,myscheduleCtrl.otherstuff)"> {{ schedule.scd_user_username }}</span><br/></span>
+				<span ng-repeat="schedule in allrotas[rotacode][mydate.toDateString()]">
+					<span class="btn" ng-class="{requested:'btn-warning',requestto:'btn-warning',accepted:'btn-success',giveup:'btn-danger'}[schedule.scd_status]" ng-click="showSwapWithForm(schedule,myscheduleCtrl.myschedule)"> 
+						{{ schedule.scd_user_username }}
+					</span>
+					<br/>
+				</span>
 			
 				</td>
 				 </tr>
 			  </tbody>
 			</table>
+			
 
 	
 </div>

@@ -32,6 +32,11 @@ module.exports.routes = {
   *                                                                          *
   ***************************************************************************/
 
+  '/summary': {
+	action: 'summary',
+	controller: 'IndexController'
+  },
+  
   '/': {
      action: 'index',
     controller: 'TestController'
@@ -49,6 +54,11 @@ module.exports.routes = {
 
  '/manage': {
     action: 'index',
+    controller: 'ManageController'
+  },
+
+ '/schedules': {
+    action: 'schedules',
     controller: 'ManageController'
   },
 
@@ -97,6 +107,7 @@ module.exports.routes = {
 ,'post /manager/rota/add': 'RotaController.create'
 ,'put /manager/rota/edit': 'RotaController.update'
 ,'get /member/schedule': 'ScheduleController.list'
+,'post /manager/schedule/add': 'ScheduleController.create'
 ,'get /rota/schedule/all': 'ScheduleController.listall'
 ,'get /rota/schedule/swap/:rota/:user': 'ScheduleController.swapfor'
 //request a swap - two objects are passed mine theirs
@@ -105,7 +116,13 @@ module.exports.routes = {
 ,'put /member/schedule/grab': 'ScheduleController.grab'
 ,'post /member/schedule/decline': 'ScheduleController.declineswap'
 ,'post /member/schedule/accept': 'ScheduleController.acceptswap'
+,'delete /manager/schedule/del/:scd_id': 'ScheduleController.del'
+,'post /manager/schedule/decline': 'ScheduleController.declineswap'
+,'post /manager/schedule/accept': 'ScheduleController.acceptswap'
+,'put /manager/schedule/update': 'ScheduleController.update'
 
+
+,'get /public/summary': 'ScheduleController.summarylist'
 
 
 };

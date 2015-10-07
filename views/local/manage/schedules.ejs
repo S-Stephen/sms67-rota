@@ -1,0 +1,230 @@
+
+
+	
+
+
+	  
+<div  ng-app="ScheduleManagementModule"  class="container">
+
+<h3>
+Setup rotas / modify the sessions (drag drop)
+</h3>
+
+<div class="table-responsive" ng-controller="MyScheduleController as myScheduleCtrl">
+
+<!-- Add a user to a rota -->
+<script type="text/ng-template" id="modal-add-session.html">
+	<div class="modal-header">
+	<h2>Add session for {{rota.rot_code}} {{mydate.toDateString()}}  </h2>
+	<br/>
+	<form class="form-inline" name="form.sessionForm" ng-submit="submitForm()" novalidate>
+	<div class="form-group">
+	<select ng-model="session_member" class="form-control"  ng-options='member as  member.display_name+" ("+member.username+")" for member in members track by member.username' required>
+	</select>
+	</div>
+        <button type="submit" class="btn btn-primary" ng-disabled="form.sessionForm.$invalid">Add</button>
+	</form>
+    <h3>Or</h3>
+	
+    <button type="submit" class="btn btn-primary" ng-click="cancel()">Cancel</button>
+	
+	</div>
+</script>
+
+<!-- Create a repeat -->
+<script type="text/ng-template" id="modal-add-repeat.html">
+	<div class="modal-header">
+	<h2>Repeat sessions for {{rota.rot_code}} ({{ rota.rot_description }}) </h2>
+	<br/>
+	<form class="form-inline" name="form.repeatForm" ng-submit="submitForm(rota,$rootScope.repeat_start,$rootScope.repeat_end,$rootScope.repeat_begin,$rootScope.repeat_finish)" novalidate>
+	<div class="form-group">
+	<h4>Please select the period used to repeat:</h4>
+		<p>
+		<select ng-model="$rootScope.repeat_start"  ng-options="mydate as mydate.toDateString() for mydate in dates" required>
+		</select> 
+		to 
+		<select ng-model="$rootScope.repeat_end" ng-options="mydate as mydate.toDateString() for mydate in datesAfter($rootScope.repeat_start)" required>
+		</select> (inclusive)<br/>
+		</p>
+		<p>
+		</p>
+		<br/>
+		<h4>Please select the period to repeat for</h4>
+		<br/>
+		<select ng-model="$rootScope.repeat_begin" ng-options="mydate as mydate.toDateString() for mydate in datesAfter($rootScope.repeat_end)" required>
+		</select>
+		to
+		<select ng-model="$rootScope.repeat_finish" ng-options="mydate as mydate.toDateString() for mydate in datesAfter($rootScope.repeat_begin)" required>
+		</select> (inclusive)<br/>
+		
+		<br/>
+		<br/>
+        <button type="submit" class="btn btn-success" ng-disabled="form.repeatForm.$invalid">Add</button>
+		<button type="submit" class="btn btn-danger" ng-click="cancel()">Cancel</button>
+	</div>
+	</form>
+	
+	
+	</div>
+</script>
+
+<!-- Delete a selection -->
+<script type="text/ng-template" id="modal-del-repeat.html">
+	<div class="modal-header">
+	<h2>Delete sessions from {{rota.rot_code}} ({{ rota.rot_description }}) </h2>
+	<br/>
+	<form class="form-inline" name="form.delForm" ng-submit="submitForm(rota,$rootScope.del_start,$rootScope.del_end)" novalidate>
+	<div class="form-group">
+	<h4>Please select the beginning of the period:</h4>
+		<p>
+		<select ng-model="$rootScope.del_start"  ng-options="mydate as mydate.toDateString() for mydate in dates" required>
+		</select> 
+		to 
+		<select ng-model="$rootScope.del_end" ng-options="mydate as mydate.toDateString() for mydate in datesAfter($rootScope.del_start)" required>
+		</select> (inclusive)<br/>
+		</p>
+        <button type="submit" class="btn btn-success" ng-disabled="form.delForm.$invalid">Delete</button>
+		<button type="submit" class="btn btn-danger" ng-click="cancel()">Cancel</button>
+		<alert ng-repeat="error in errors">{{error}}</alert>
+	</div>
+	</form>
+	</div>
+</script>
+
+<!-- Create a shifting rota -->
+<!-- this will cope with a single shift pattern shifting, duets can be provided by repeating this process -->
+<script type="text/ng-template" id="modal-add-shift.html">
+	<div class="modal-header">
+	<h2>Create a shifting pattern for {{rota.rot_code}} ({{ rota.rot_description }}) </h2>
+	<br/>
+	<form class="form-inline" name="form.shiftForm" ng-submit="submitForm(rota,lorder,rotadays,$rootScope.start,$rootScope.finish)" novalidate>
+	<div class="form-group">
+	<h4>Select the order of members:</h4>
+		
+		<span ng-repeat="member in members" ><span class="btn btn-success" ng-click="addToLorder(member)">{{ member.display_name }}</span></span>
+		<br/>
+		The members that will be included in the rota (click to remove):
+		<dl>
+			<dd ng-repeat="member in lorder track by member.id"><span class="btn btn-danger" ng-click="delFromLorder($index)">{{member.display_name}}</span></dd>
+		</dl>
+		
+	<h4>Select the days to be used in the Rota</h4>
+	
+		<span ng-repeat="day in dayselect" ><span class="btn btn-success"  ng-click="addToRotadays(day)">{{ day.name }}</span></span>
+		<br/>
+		The days that will be included in the rota (click to remove):
+		<dl>
+			<dd ng-repeat="day in rotadays"><span class="btn btn-danger" ng-click="delFromRotadays(day)">{{day.name}}</button></dd>
+		</dl>
+	
+	<h4>Please select the rota period:</h4>
+		<p>
+		<select ng-model="$rootScope.start"  ng-options="mydate as mydate.toDateString() for mydate in dates" required>
+		</select> 
+		to 
+		<select ng-model="$rootScope.finish" ng-options="mydate as mydate.toDateString() for mydate in datesAfter($rootScope.start)" required>
+		</select> (inclusive)<br/>
+		</p>
+        <button type="submit" class="btn btn-success" ng-disabled="form.shiftForm.$invalid">Create</button>
+		<button type="submit" class="btn btn-danger" ng-click="cancel()">Cancel</button>
+		<alert ng-repeat="error in errors">{{error}}</alert>
+	</div>
+	</form>
+	</div>
+</script>
+
+<!-- Manage a Session -->
+<script type="text/ng-template" id="modal-session-manage.html">
+	<div class="modal-header">
+	<h2>Manage session {{scd_session.scd_rota_code}} ({{ scd_session.scd_date | easydate }}) </h2>
+	<br/>
+	<form class="form-inline" name="form.sessionManage" ng-submit="submitForm()" novalidate>
+	</form>
+	<div class="form-group">
+	
+	<span ng-show="scd_session.scd_status == 'requested' || scd_session.scd_status == 'requestto'">
+		<h3>Note: This session has an active request to swap with another: </h3>
+		{{ scd_session.scd_request_by.scd_user_username }} {{ scd_session.scd_request_by.scd_date }} 
+		{{ scd_session.scd_request_to.scd_user_username }} {{ scd_session.scd_request_to.scd_date }} <br/>
+		<button type="submit" class="btn btn-warning" ng-click="actionSwap()">Action this swap</button>
+		<button type="submit" class="btn btn-warning" ng-click="removeSwap()">Remove this swap</button>
+		
+	</span>
+	
+	<tabset ng-hide="scd_session.scd_status == 'requested' || scd_session.scd_status == 'requestto'">
+		<tab heading="Assign to another user">
+			<h4>Select user:</h4>
+			<select ng-model="new_user" ng-options='user as  user.display_name+" ("+user.username+")" for user in users()'></select><br/>
+			<button type="submit" class="btn btn-success" ng-click="assignToMember(new_user)">Assign</button>
+		</tab>
+		<tab heading="Swap with another session">
+			<h4>Select a session to swap with</h4>
+			<select ng-model="new_sess" ng-options='sess as  sess.scd_date.toDateString()+" ("+sess.scd_user_username+")" for sess in otherSessions()'></select><br/>
+			<button type="submit" class="btn btn-success" ng-click="swapWithSession(new_sess)">Swap</button>
+		</tab>
+		<tab heading="Remove">
+		<h4>If you are sure you wish to remove:</h4>
+			<button type="submit" class="btn btn-success" ng-click="remove(scd_session)">Remove</button>
+		</tab>
+	</tabset>
+	
+	</div>
+	</div>
+</script>
+
+
+		<span ng-repeat="member in $rootScope.members">{{member.username}}</span>
+	<tabset>
+	
+		<tab ng-repeat="rota in rotalist" heading="{{rota.rot_description}}" active="rota.active">
+			<div ng-controller="DatepickerDemoCtrl">
+			<form name="{{rota.rot_code}}">
+			<accordion close-others="true">
+				<accordion-group heading="Repeat a selection">
+				
+				</accordion-group>
+			</form>	
+			</accordian>
+			<span class="btn btn-primary" ng-click="addRepeatForm(rota)">Repeat a selection</span>
+			<span class="btn btn-primary" ng-click="addShiftForm(rota)">Create shifting pattern</span>
+			<span class="btn btn-primary" ng-click="delRepeatForm(rota)">Remove a selection</span>
+				
+			</div>
+			<table>
+				<thead>
+				<tr>
+				<th></th>
+				<th>Date</th>
+				<th>Sessions</th>
+				<th></th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr ng-repeat="mydate in dates">
+				<td ng-show="setrepeat"><label class="btn btn-primary">S</label><td>
+				<td>
+				{{mydate.toDateString()}}
+				</td>
+				<td>
+				<span ng-display="allrotas[rota.rot_code][mydate.toDateString()].length">
+				<span class="btn btn-primary"  ng-class="{requested:'btn-warning',requestto:'btn-warning'}[scd_session.scd_status]" ng-repeat="scd_session in allrotas[rota.rot_code][mydate.toDateString()]" ng-click="sessionManage(scd_session)">
+					{{scd_session.scd_user_username}}
+				</span>
+				</span>
+				</td>
+				<td>
+				<span ng-click="addSessionForm(mydate,rota,$rootScope.members)">
+					<a href="#"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>Add member</a>
+				<br/>
+				</td>
+				</span>
+				</td>
+				</tr>
+				</tbody>
+			</table>
+		</tab>
+	</tabset>
+	
+</div>
+
+</div>

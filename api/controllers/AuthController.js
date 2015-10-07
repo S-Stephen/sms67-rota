@@ -178,7 +178,13 @@ var AuthController = {
         // Upon successful login, send the user to the homepage were req.user
         // will be available.
         sails.log("about to redirect to /");
-        res.redirect('/');
+		
+		//are we  registered user?
+		
+		//else direct to summary screen
+		
+		
+        res.redirect('/summary');
       });
     });
   },

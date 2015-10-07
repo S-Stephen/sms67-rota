@@ -19,6 +19,16 @@ module.exports = {
 		});
 	},
 	
+	
+	
+	proxy_students: function(req,res,next){
+		//for the currently logged in user find all their students
+		User.find({proxy:'!1',manager:'!1',inst_id:req.user.inst_id},function(err,data){
+			res.status(200);
+			res.json(data);
+		});
+	},
+	
 	list: function(req,res,next){
 		User.find({},function(err,data){
 			res.status(200);

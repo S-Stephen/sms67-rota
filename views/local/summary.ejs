@@ -1,0 +1,37 @@
+
+	
+<div  ng-app="SummaryModule"  class="container">
+
+
+<div ng-controller="SummaryController as summaryCtrl">
+    <div class="container">
+
+      <!-- Main component for a primary marketing message or call to action -->
+      <div class="jumbotron">
+		<div class="row">
+	    <!--<h2>Security schedules for the next three days:</h2>-->
+		<div ng-repeat="iday in adates" class="col-md-4" class="panel panel-primary"><h2>{{ iday | easydate }}</h2>
+			<div class="panel-body">
+			<span ng-repeat="sess in daySessions(iday.toDateString())"><span class="text-danger">{{sess.scd_rota_code}}</span>: {{ users[sess.scd_user_username].display_name}}</p>
+			</span>
+			</div>
+		</div>
+		</div><!-- row -->
+		
+		
+		<div class="row">
+			
+			
+		
+		<br/>
+		<br/>
+			<span ng-repeat="rot in rotas"><span class="text-danger">{{rot.rot_code}}</span>: {{rot.rot_description}} </span>
+		</div>
+		
+		</div><!-- jumbo -->
+
+		
+    </div> <!-- /container -->
+
+</div>
+	

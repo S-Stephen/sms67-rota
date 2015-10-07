@@ -13,7 +13,7 @@ module.exports = {
         User.find(function foundUsers(err,users){
 			Rota.find( function foundRotas(err,rotas){
                 sails.log("queried the Rotas table");
-				res.view('local/manage', {
+				res.view('local/manage/index', {
 					user : req.user,
 					rotas : rotas,
 					users : users
@@ -21,6 +21,14 @@ module.exports = {
 			});
 		}
 	)
+   },
+   
+   schedules : function(req,res,next){
+		sails.log("DEBUG in manage schedules controller");
+		//we will retrieve the sessions via an angular app / controller
+		res.view('local/manage/schedules',{
+			user:req.user
+		});
    }
 };
 

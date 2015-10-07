@@ -8,13 +8,17 @@
  *
  */
 module.exports = function(req, res, next) {
-  sails.log("running Session auth policy - but if we are not authenticated that redirect to login?");
+  sails.log("running Session auth policy");
   sails.log("session object: %j",req.session);
+  sails.log("user object is: %j",req.user);
   if(req.user){
 	// attempt to provide access to the view (via layout.ejs)
 	 res.locals.user = req.user;
 	 return next();
   }
+  
+  //If we do not have a sessi
+  
   res.redirect('/login');
 
   // User is allowed, proceed to the next policy, 

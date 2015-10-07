@@ -63,9 +63,7 @@
   
   //from https://gist.github.com/rnkoaa/8333940
   
-  app.controller("ModalAccountFormController", ['$scope', '$modal', '$log', '$http', 
- 
-    function ($scope, $modal, $log, $http) {
+  app.controller("ModalAccountFormController", ['$scope', '$modal', '$log', '$http', function ($scope, $modal, $log, $http) {
  
 			$scope.http = $http;	
         $scope.showForm = function (invars) {
@@ -126,7 +124,7 @@
 			
 			//then close the modal
 		} else {
-			console.log('userform is not in scope');
+			console.log('offeringForm.title is not in scope');
 		}
 	};
  
@@ -229,7 +227,7 @@
 			
 			//then close the modal
 		} else {
-			console.log('userform is not in scope');
+			console.log('offeringForm.title is not in scope');
 		}
 	};
  

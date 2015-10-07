@@ -1,7 +1,7 @@
 /**
- * ScheduleController
+ * SummaryController
  *
- * @description :: Server-side logic for managing schedules
+ * @description :: Server-side logic for displaying the Summary schedules (Joe public)
  * @help        :: See http://links.sailsjs.org/docs/controllers
  */
 
@@ -22,7 +22,6 @@ module.exports = {
 		});
 	},
 	
-	//list the scheules for the current user (req.user.username)
 	list: function(req,res,next){
 		Schedules.find().where({'scd_user_username':req.user.username}).populate('scd_request_by').populate('scd_request_to').sort('scd_date ASC').exec(function(err,data){
 			res.status(200);
@@ -35,43 +34,6 @@ module.exports = {
 		Schedules.find().where({}).sort('scd_rota_code').populate('scd_request_by').populate('scd_request_to').sort('scd_date ASC').exec(function(err,data){
 			res.status(200);
 			res.json(data);
-		});
-	},
-	
-	//list the schedules for the current and next two days
-	summarylist: function(req,res,next){
-		var nowd = new Date();
-		nowd.setHours(12,0,0,0);
-		var dates=[]
-		dates.push(nowd)
-		dates.push(new Date(nowd.getTime()+1000*60*60*24))
-		dates.push(new Date(nowd.getTime()+1000*60*60*24*2))
-		var first_date=(new Date(nowd.getTime()-1000*60*60*24)) //scd_date is a date not date time nowd will be after scd_date as it also has hours
-																//todo handle the hours correctly as time zone is applied each time
-		sails.log("nowd: "+nowd);
-        Schedules.find().where({scd_date:{'>=':first_date,'<=':dates[2]}}).exec(function foundScheds(err,scheds){
-                sails.log("queried the Schedules table schesd : "+scheds);
-				//we need to pad the sched for each schedule
-			Rota.find({sort:'rot_order'}).exec(function foundRotas(err,rotas){
-			
-				var rota_arr=[];
-				rotas.forEach(function(rot){
-					rota_arr.push(rot); // thi swill be used in an ng-orderBy
-				});
-				User.find().exec(function users(err,users){
-					var user_hash={};
-					sails.log("users: "+users);
-					users.forEach(function(muser){
-						//assume it's okay for public to have emails
-						user_hash[muser.username]=muser;
-					})
-					res.status(200);
-				//how do we send back the aarrays via keys!!!?//
-					sails.log("DEBUG dates: "+dates);
-					sails.log("DEBUG rota_arr: "+rota_arr);
-					res.json({rotas:rota_arr,scheds:scheds,mdates:dates,users:user_hash});
-				})
-			});
 		});
 	},
 	

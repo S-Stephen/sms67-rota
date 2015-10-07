@@ -1,0 +1,180 @@
+
+
+	
+
+
+	  
+<div  ng-app="MembershipModule"  class="container">
+<div class="row">	    
+<p class="lead">
+	
+	
+	
+	
+<!-- end from https://gist.github.com/rnkoaa/8333940 -->
+
+Current members:<br/>
+<div class="table-responsive" ng-controller="MembershipController as membershipCtrl">
+
+<div ng-controller="ModalAccountFormController">
+<table class="table table-striped">
+<thead>
+    <tr>
+        <th>Username</th>
+	    <th>Display name</th>
+        <th>Email address</th>
+		<th>Roles</th>
+        <th></th>
+    </tr>
+</thead>
+
+      <tbody >
+	  
+		<tr ng-repeat="member in membershipCtrl.members">
+		<td>{{ member.username }} </td>
+		<td>{{ member.display_name }}</td>
+		<td>{{ member.email }}</td>
+		<td>
+		<span class="glyphicon glyphicon-pawn" aria-hidden="true"></span>
+		<span ng-show="member.manager" class="glyphicon glyphicon-king" aria-hidden="true"></span>
+		</td>
+		<td><button class="btn btn-primary btn-sm" ng-click="showForm(member)">Edit</button></td>
+		</tr>
+	  </tbody>
+	  <tfooter>
+	    <tr>
+		<td></td>
+		<td></td>
+		<td></td>
+		<td></td>
+		<td>
+		<button class="btn btn-primary btn-sm" ng-click="showForm()">Add user</button>
+		</td>
+		</tr>
+	  </tfooter>
+</table>
+<span class="glyphicon glyphicon-pawn" aria-hidden="true"></span> - Regular user, <span class="glyphicon glyphicon-king" aria-hidden="true"></span> - Manager
+			</div>
+
+</div> <!-- end modalAccountFormController -->
+
+
+
+
+<br/>
+
+
+<div class="table-responsive" ng-controller="RotaController as rotaCtrl">
+Current Rotas:<br/>
+<div class="table-responsive" ng-controller="ModalRotaFormController">
+<table class="table table-striped">
+<thead>
+    <tr>
+        <th>Code</th>
+        <th>Description</th>
+        <th></th>
+		
+    </tr>
+</thead>
+
+<% //todo filter out the non account users (users who login via raven will automatically be given an account!) %>
+<tbody>	
+	  
+		<tr ng-repeat="rota in rotaCtrl.rotas">
+		<td>{{ rota.rot_code }} </td>
+		<td>{{ rota.rot_description }}</td>
+		
+		<td><button class="btn btn-primary btn-sm" ng-click="showRotaForm(rota)">Edit</button></td>
+		</tr>
+	
+</tbody>
+<tfooter>
+	<tr><td></td><td></td>
+	<td>
+	<button class="btn btn-primary btn-sm" ng-click="showRotaForm()">Add rota</button>
+	</td></tr>
+</tfooter>
+</table>
+
+</div><!--end modalRotaFormController -->
+</div><!--end rotaCtrl -->
+
+
+</p>
+</div>
+
+	
+<!-- the .html files must exist within the ng-app -->
+	
+<script type="text/ng-template" id="modal-form.html">
+	<div class="modal-header">
+    <h3 ng-hide="vars.id">Create A New Account</h3>
+    <h3 ng-show="vars.id">Edit Account: {{ vars.username }} </h3>
+</div>
+<form name="form.userForm" ng-submit="submitForm(membershipCtrl.members)" novalidate>
+    <div class="modal-body">
+        <!-- USERNAME -->
+        <div class="form-group">
+            <label>Username</label>
+            <input type="text" name="username" class="form-control" ng-model="vars.username" ng-minlength="3" ng-maxlength="8"  ng-disabled="vars.id" required>
+            <p ng-show="form.userForm.username.$error.minlength" class="help-block">Username is too short.</p>
+            <p ng-show="form.userForm.username.$error.maxlength" class="help-block">Username is too long.</p>
+        </div>
+        <!-- NAME -->
+        <div class="form-group">
+            <label>Name</label>
+            <input type="text" name="display_name" class="form-control" ng-model="vars.display_name" required>
+            <p ng-show="form.userForm.name.$invalid && !form.userForm.name.$pristine" class="help-block">A name is required.</p>
+        </div>
+        <!-- EMAIL -->
+        <div class="form-group">
+            <label>Email</label>
+            <input type="email" name="email" class="form-control" ng-model="vars.email" required>
+            <p ng-show="form.userForm.email.$invalid && !form.userForm.email.$pristine" class="help-block">Enter a valid email.</p>
+        </div>
+		<div class="form-group">
+			<label>Roles</label>
+			<input type="checkbox" name="manager" class="form-control" ng-model="vars.manager">	
+		</div>
+		<input type="hidden" name="id" ng-model="vars.id"/>
+    </div>
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-primary" ng-disabled="form.userForm.$invalid">OK</button>
+        <!--<button class="btn btn-warning" ng-click="cancel()">Cancel</button>-->
+    </div>
+</form>
+	</script>
+	
+						
+<script type="text/ng-template" id="modal-rota-form.html">
+	<div class="modal-header">
+    <h3 ng-hide="vars.id">Create A New Rota</h3>
+    <h3 ng-show="vars.id">Edit Rota: {{ vars.rot_code }} </h3>
+</div>
+<form name="form.rotaForm" ng-submit="submitRotaForm(rotaCtrl.rotas)" novalidate>
+    <div class="modal-body">
+        <!-- Code -->
+        <div class="form-group">
+            <label>Rota code</label>
+            <input type="text" name="rot_code" class="form-control" ng-model="vars.rot_code" ng-minlength="3" ng-maxlength="3"  ng-disabled="vars.id" required>
+            <p ng-show="form.rotaForm.rot_code.$invalid && !form.userForm.name.$pristine" class="help-block">A three letter code is required.</p>
+            <p ng-show="form.rotaForm.rot_code.$error.minlength" class="help-block">Rota code must be 3 Characters long.</p>
+        </div>
+		
+        <!-- Description -->
+        <div class="form-group">
+            <label>Description</label>
+            <input type="text" name="rot_description" class="form-control" ng-model="vars.rot_description" required>
+            <p ng-show="form.rotaForm.rot_description.$invalid && !form.userForm.name.$pristine" class="help-block">A description is required.</p>
+            <p ng-show="form.rotaForm.rot_description.$error.maxlength" class="help-block">Description must be less than 255 Characters long.</p>
+        </div>
+		<input type="hidden" name="id" ng-model="vars.id"/>
+    </div>
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-primary" ng-disabled="form.rotaForm.$invalid">OK</button>
+        <!--<button class="btn btn-warning" ng-click="cancel()">Cancel</button>-->
+    </div>
+</form>
+	</script>
+	
+</div>
