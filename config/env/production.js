@@ -34,5 +34,5 @@ module.exports = {
   // log: {
   //   level: "silent"
   // }
-
+  hostname: 'http://simple-rota.herokuapp.com',
 };

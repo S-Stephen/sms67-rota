@@ -20,5 +20,5 @@ module.exports = {
   // models: {
   //   connection: 'someMongodbServer'
   // }
-
+  hostname: 'http://testsms67b.eng.cam.ac.uk:1337',
 };
