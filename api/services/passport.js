@@ -69,7 +69,7 @@ passport.connect = function (req, query, profile, next) {
     , provider;
 
   // Get the authentication provider from the query.
-  query.provider = req.param('provider') || query.provider; // this was overriding with undefined
+  query.provider = (req.param && req.param('provider'))? req.param('provider') : query.provider; // this was overriding with undefined
 
   // Use profile.provider or fallback to the query.provider if it is undefined
   // as is the case for OpenID, for example
@@ -80,7 +80,7 @@ passport.connect = function (req, query, profile, next) {
   if (!provider){
     return next(new Error('No authentication provider was identified.'));
   }
-  sails.log("profile: "+util.inspect(profile));
+  //sails.log("profile: "+util.inspect(profile));
   // If the profile object contains a list of emails, grab the first one and
   // add it to the user.
   if (profile.hasOwnProperty('emails')) {
@@ -114,15 +114,42 @@ passport.connect = function (req, query, profile, next) {
     }
 
     if (!req.user) {
-      sails.log("new user is signing up "+util.inspect(user));
+      //sails.log("new user is signing up "+util.inspect(user));
       // Scenario: A new user is attempting to sign up using a third-party
       //           authentication provider.
       // Action:   Create a new user and assign them a passport.
-      if (!passport) {
-      sails.log("new user is signing up and needs a passport "+util.inspect(user));
+      //sometimes we have apassport but no user - > something went wrong
+	  //check the passport has a user if not remove passport and create a new one
+      //we shoul dbe abl eto set the remove whilst continuing
+	  if(passport){
+		sails.log("passport user: "+passport.user);
+		if ( !passport.user ){
+			sails.log("removed orphaned passport record");
+			Passport.destroy({id:passport.id}).exec(function(){});
+			passport = undefined;
+		}
+		//we should have a user if not we need to create a passport!!
+		
+        // If the tokens have changed since the last session, update them
+        if (query.hasOwnProperty('tokens') && query.tokens !== passport.tokens) {
+          passport.tokens = query.tokens;
+        }
+
+	  sails.log("passport user befor efind user : "+passport.user);
+        // Save any updates to the Passport before moving on
+        passport.save(function (err, passport) {
+          if (err) {
+            return next(err);
+          }
+		  if(!passport.user){ //this is now a related object
+			//we need to scrap the passport and create a new one
+			//TODO  TIDY UP  FUNC1
+			
 	    user.username = user.username || user.email;
-		user.username =user.username.replace('cam.ac.uk','');
-        User.create(user, function (err, user) {
+		sails.log("user "+util.inspect(user));
+		//user.username =user.username.replace('cam.ac.uk','');
+		User.findOrCreate({username:user.username}).exec(function(err,found){
+        User.update({username:user.username}, user, function (err, users) {
           if (err) {
 			  sails.log("user not created - boo hoo error "+util.inspect(err));
             if (err.code === 'E_VALIDATION') {
@@ -138,7 +165,7 @@ passport.connect = function (req, query, profile, next) {
             return next(err);
           }
 
-          query.user = user.id;
+          query.user = users[0].id;
 		  sails.log("creating passport: "+util.inspect(query));
           Passport.create(query, function (err, passport) {
             // If a passport wasn't created, bail out
@@ -147,28 +174,65 @@ passport.connect = function (req, query, profile, next) {
               return next(err);
             }
 			sails.log("passport created");
-            next(err, user);
+            next(err, users[0]);
           });
         });
+		});
+			//TODO  TIDY UP END FUNC1
+		  }else{
+			sails.log("passport user during find user : "+passport.user);
+		  // if user is null now then we can no tfind a related user - we therefore need to remove the passort and add a new one!!
+			
+		  // Fetch the user associated with the Passport
+			User.findOne(passport.user.id, next);
+		  }
+        });
+		
+	  }
+	  
+	  
+      if (!passport) {
+	  //TODO  TIDY UP  FUNC1
+      //sails.log("new user is signing up and needs a passport "+util.inspect(user));
+	    user.username = user.username || user.email;
+		sails.log("user "+util.inspect(user));
+		//user.username =user.username.replace('cam.ac.uk','');
+		User.findOrCreate({username:user.username}).exec(function(err,found){
+        User.update({username:user.username}, user, function (err, users) {
+          if (err) {
+			  sails.log("user not created - boo hoo error "+util.inspect(err));
+            if (err.code === 'E_VALIDATION') {
+			  sails.log("user not created - boo hoo error "+util.inspect(err));
+              if (err.invalidAttributes.email) {
+                req.flash('error', 'Error.Passport.Email.Exists');
+              }
+              else {
+                req.flash('error', 'Error.Passport.User.Exists');
+              }
+            }
+
+            return next(err);
+          }
+
+          query.user = users[0].id;
+		  sails.log("creating passport: "+util.inspect(query));
+          Passport.create(query, function (err, passport) {
+            // If a passport wasn't created, bail out
+            if (err) {
+			  sails.log("passport not created - boo hoo error "+util.inspect(err));
+              return next(err);
+            }
+			sails.log("passport created");
+            next(err, users[0]);
+          });
+        });
+		});
+			//TODO TIDY UP END FUNC1
       }
       // Scenario: An existing user is trying to log in using an already
       //           connected passport.
       // Action:   Get the user associated with the passport.
       else {
-        // If the tokens have changed since the last session, update them
-        if (query.hasOwnProperty('tokens') && query.tokens !== passport.tokens) {
-          passport.tokens = query.tokens;
-        }
-
-        // Save any updates to the Passport before moving on
-        passport.save(function (err, passport) {
-          if (err) {
-            return next(err);
-          }
-
-          // Fetch the user associated with the Passport
-          User.findOne(passport.user.id, next);
-        });
       }
     } else {
       // Scenario: A user is currently logged in and trying to connect a new
@@ -256,6 +320,8 @@ passport.callback = function (req, res, next) {
       this.disconnect(req, res, next);
     }
     else {
+	
+	
       next(new Error('Invalid action'));
     }
   } else {
@@ -272,6 +338,7 @@ passport.callback = function (req, res, next) {
       this.authenticate(provider, next)(req, res, req.next);
     }
   }
+  
 };
 
 /**
@@ -327,12 +394,17 @@ passport.loadStrategies = function () {
     } else if (key == 'raven'){
        Strategy = strategies[key].strategy;
        sails.log("loading raven strategy");
+       //var conf = sails.config;
+       //hostname set in the env file
+       sails.log("sails config hostname: "+util.inspect(sails.config.hostname));
        self.use(new Strategy({
-	  audience: process.env.APP_BASEURL || 'http://testsms67b.eng.cam.ac.uk:1337',
-  	  desc: 'Rota',
-  	  msg: 'Login to demonstrate logging in to a node.js app using passport-raven',
-  	  debug: true,
-	  passReqToCallback: true 
+	  //audience: 'http://testsms67b.eng.cam.ac.uk:1337',
+	  //audience: 'http://testsms67a.eng.cam.ac.uk:9980',
+	  audience: sails.config.hostname, //'http://testsms67a.eng.cam.ac.uk:9980',
+  	  desc: sails.config.description, //'Passport Raven Demo',
+  	  msg: 'This application is only available to current staff and students',
+  	  debug: process.env.NODE_ENV !== 'production'  
+	//debug: true 
 	}, self.protocols.raven 
 /*        , function (crsid, response, cb) {
   		console.dir(response);
