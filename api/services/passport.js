@@ -403,7 +403,8 @@ passport.loadStrategies = function () {
 	  audience: sails.config.hostname, //'http://testsms67a.eng.cam.ac.uk:9980',
   	  desc: sails.config.description, //'Passport Raven Demo',
   	  msg: 'This application is only available to current staff and students',
-  	  debug: process.env.NODE_ENV !== 'production'  
+  	  debug: process.env.NODE_ENV !== 'production'  ,
+          passReqToCallback: true
 	//debug: true 
 	}, self.protocols.raven 
 /*        , function (crsid, response, cb) {
