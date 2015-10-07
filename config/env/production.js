@@ -34,5 +34,5 @@ module.exports = {
   // log: {
   //   level: "silent"
   // }
-  hostname: 'http://simple-rota.herokuapp.com',
+  hostname: process.env.APP_BASEURL || 'http://testsms67b.eng.cam.ac.uk:1337',
 };
