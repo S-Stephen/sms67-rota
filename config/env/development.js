@@ -22,3 +22,15 @@ module.exports = {
   // }
   hostname: 'http://testsms67b.eng.cam.ac.uk:1337',
 };
+
+
+
+module.exports.models = {
+
+  connection: 'devMysqlServer',
+
+
+};
+
+
+

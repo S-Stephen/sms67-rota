@@ -35,4 +35,14 @@ module.exports = {
   //   level: "silent"
   // }
   hostname: process.env.APP_BASEURL || 'http://testsms67b.eng.cam.ac.uk:1337',
+
 };
+
+
+module.exports.models = {
+
+  connection: 'prodMysqlServer',
+
+
+};
+

@@ -19,7 +19,9 @@
  * http://sailsjs.org/#/documentation/reference/sails.config/sails.config.connections.html
  */
 
+var  fs = require("fs");
 module.exports.connections = {
+
 
   /***************************************************************************
   *                                                                          *
@@ -40,16 +42,30 @@ module.exports.connections = {
   * Run: npm install sails-mysql                                             *
   *                                                                          *
   ***************************************************************************/
-  testMysqlServer: {
+  devMysqlServer: {
     adapter: 'sails-mysql',
     host: process.env.DB_HOST || '127.0.0.1',
     user: process.env.DB_USER || 'sms67',
     password: process.env.DB_PASS || '',
-    database: process.env.DB_NAME || 'test'
-    //module: 'sails-mysql',
-    // Thi soption has gone missing!
-    //url: 'mysql2://sms67:@localhost:3306/test'
+    database: process.env.DB_NAME || 'test',
   },
+
+
+
+  prodMysqlServer: {
+    adapter: 'sails-mysql',
+    host: process.env.DB_HOST || '127.0.0.1',
+    user: process.env.DB_USER || 'sms67',
+    password: process.env.DB_PASS || '',
+    database: process.env.DB_NAME || 'test',
+
+    ssl: {
+          ca: process.env.SERVER_CA,
+          cert: process.env.CLIENT_CERT,
+          key: process.env.CLIENT_KEY
+         }
+  },
+  
 
   someMysqlServer: {
     adapter: 'sails-mysql',
