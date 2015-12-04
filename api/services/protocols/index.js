@@ -13,6 +13,7 @@
  */
 module.exports = {
   local  : require('./local')
+,  mylocal  : require('./mylocal')
 , oauth  : require('./oauth')
 , oauth2 : require('./oauth2')
 , openid : require('./openid')
