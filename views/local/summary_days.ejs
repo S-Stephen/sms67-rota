@@ -1,0 +1,52 @@
+
+<div  ng-app="SummaryModule"  class="container">
+
+
+<div ng-controller="SummaryController as summaryCtrl" ng-init="init(<%= days %>)">
+    <div class="container">
+
+      <!-- Main component for a primary marketing message or call to action -->
+      <div class="jumbotron">
+	  
+	  
+		<div class="row" ng-cloak>
+			
+			<p><span ng-repeat="rot in rotas"><span class="text-danger">{{rot.rot_code}}</span>: {{rot.rot_description}} </span><p/>
+		
+		</div>
+	  
+		<div class="row" ></div>
+	    <!--<h2>Security schedules for the next three days:</h2>-->
+		<div ng-repeat="iday in adates"  ng-cloak>
+			<div ng-class="{'row':($index)%4==0}" ></div>
+			<div class="col-sm-3">
+			<div class="panel panel-primary">
+			<div class="panel-heading"><h4>{{ iday | easydate }}</h4></div>
+			<div class="panel-body ">
+			<span ng-repeat="sess in daySessions(iday.toDateString())">
+				<p>
+				<span class="text-danger">{{sess.scd_rota_code}}</span>: 
+				{{ users[sess.scd_user_username].display_name}}
+				<span ng-show="sess.scd_status  == 'requested' || sess.scd_status ==  'requestto' " tooltip="A request has been made to swap this session" class="glyphicon glyphicon-alert" aria-hidden="true"></span>
+				<span ng-show="sess.scd_status  == 'offerup' " tooltip="Session has been given up" class="glyphicon glyphicon-flash" aria-hidden="true"></span>
+				</p>
+			</span>
+			</div>
+			</div>
+			</div>
+			
+		</div>
+		
+		<div class="row"></div>
+		<div class="row">
+			<p  ng-cloak>
+			<span ng-repeat="rot in rotas"><span class="text-danger">{{rot.rot_code}}</span>: {{rot.rot_description}} </span>
+			</p>
+		</div>
+		</div><!-- jumbo -->
+
+		
+    </div> <!-- /container -->
+
+</div>
+	

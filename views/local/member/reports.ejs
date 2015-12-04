@@ -1,0 +1,78 @@
+
+
+
+<div class="container">
+<div class="jumbotron">
+
+
+<div  ng-app="MembershipModule" class="container">
+<div ng-controller="DatepickerDemoCtrl" class="row">	
+
+	<h3>Download your session information</h3>    
+<p class="lead">
+
+	<form method="post" action="/member/report/attendance" target="_new">
+	<h4>Please select the period</h4>
+    <div class="row">
+        <div class="col-md-3">
+			Start date (including)
+            <p class="input-group">
+				<input name="start" type="text" class="form-control" datepicker-popup="{{format}}"  ng-click="togglestart()" ng-model="startdt" is-open="calstatus.startopened"  min-date="minDate" max-date="maxDate" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" />
+               
+            </p>
+        </div>
+        <div class="col-md-3">
+			Start date (excluding)
+            <p class="input-group">
+				<input name="end" type="text" class="form-control" datepicker-popup="{{format}}"  ng-click="toggleend()" ng-model="enddt" is-open="calstatus.endopened"  min-date="minDate" max-date="maxDate" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" />
+               
+            </p>
+        </div>
+
+    </div>
+	<input type="submit" value="Download (re-run)" />
+	<button type="button" ng-click="show_report('/member/report/attendance')">Display</button>
+
+	</form>
+	
+		<div class="row" ng-show="results">
+			<div class="col-sm-6">
+				<h3>Attendance</h3>
+				<div class="row">
+					<div class="row">
+						<div class="col-sm-6"> <h4>Rota</h4> </div> 
+						<div class="col-sm-6"> <h4>Date</h4> </div> 
+					</div>
+				<div ng-repeat="sess in results">
+					<div class="row">
+						<div class="col-sm-6"> {{ sess.scd_rota_code }} </div>
+						<div class="col-sm-6"> {{ sess.scd_date | easydate }} </div>
+					</div>
+				</div>	
+				</div>
+			</div>
+		
+	
+		
+			<div class="col-sm-6">
+				<h3>Summary</h3>
+				<div class="row">
+					<div class="row">
+						<div class="col-sm-6"> <h4>Member Rota Day</h4> </div> 
+						<div class="col-sm-6"> <h4>Number</h4> </div> 
+					</div>
+				<div ng-repeat="(key, value) in summary">
+					<div class="row">
+						<div class="col-sm-6"> {{ key }} </div> 
+						<div class="col-sm-6"> {{ value }} </div> 
+					</div>
+				</div>
+				</div>
+			</div>
+		</div>
+</p>
+</div>	
+</div>
+
+</div>
+</div>
