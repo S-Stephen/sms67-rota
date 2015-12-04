@@ -241,7 +241,7 @@ module.exports = {
 				text: message
 		});
 	},
-    giveup: function(req,res,next){
+    offerup: function(req,res,next){
 		var params = req.params.all();
 		//the params represent the schedule to change - generally this will be the assignment of another user?
 		//but we need to pass the user's schedule to swap
@@ -249,7 +249,7 @@ module.exports = {
 		sails.log("giving up session: "+params.mine.id);
 		
 		//set the status for our schedule to requested
-		params.mine.scd_status='giveup';
+		params.mine.scd_status='offerup';
 		//set the status to their schedule to requested and requested_by to our id
 		//params.theirs.scd_status='requested';
 		//params.theirs.scd_request_by=params.mine.id;

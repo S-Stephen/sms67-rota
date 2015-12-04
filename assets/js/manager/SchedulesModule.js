@@ -31,7 +31,7 @@
 	if (!io.socket.alreadyListeningToOrders){
 		io.socket.alreadyListeningToOrders = true;
 		io.socket.on('schedule', function onServerSentEvent(msg){
-			console.log("we received an event");
+			//console.log("we received an event");
 			switch(msg.verb){
 				case 'removed':
 					var ele = msg.ele;
@@ -54,7 +54,7 @@
 				case 'created':
 					//add the schedule to our allrotas array
 					var ele = msg.ele;
-					console.log("DEBUG date: "+ele.scd_date);
+					//console.log("DEBUG date: "+ele.scd_date);
 					ele.scd_date=new Date(ele.scd_date);
 					ele.scd_date.setHours(12);
 					
@@ -68,7 +68,7 @@
 					
 					
 					
-					console.log("DEBUG date: "+ele.scd_date);
+					//console.log("DEBUG date: "+ele.scd_date);
 					v = $rootScope.allrotas[ele.scd_rota_code];
 					if (v === undefined){
 						$rootScope.allrotas[ele.scd_rota_code]={};
@@ -89,11 +89,11 @@
 					//find the schedule in our allrotas array
 					//re-displaying the allrotas array only semes to work for the actioning browser?!
 					var ele = msg.ele;
-					console.log(msg);
+					//console.log(msg);
 					eledate=new Date(ele.scd_date);
 					ele.scd_date=eledate;
 					ele.scd_date.setHours(12);
-					console.log("ele id: "+ele.id+"  ele date: "+ele.scd_date);
+					//console.log("ele id: "+ele.id+"  ele date: "+ele.scd_date);
 					if (ele.scd_date.scd_request_by) { ele.scd_date.scd_request_by.scd_date=new Date(ele.scd_date.scd_request_by.scd_date); }
 					if (ele.scd_date.scd_request_to){ele.scd_date.scd_request_to.scd_date=new Date(ele.scd_date.scd_request_to.scd_date);}
 					var index=0;
@@ -116,21 +116,38 @@
 						if (ele.scd_status=='requestto'){
 							$rootScope.myrequests[ele.id]=ele;
 						}
+						
+						//removed the requestto and myrequests entries
 					}
+					
+					//assume the update was not to add them into the pending lists
+					//Why not working (remove from the pendinglist after update!
+					//console.log(" the ele.id: "+ele.id);
+					if (ele.scd_status=='accepted' && $rootScope.myrequests[ele.id]){
+						//console.log("removed from myrequests");
+						delete $rootScope.myrequests[ele.id];
+					}
+					if (ele.scd_status=='accepted' && $rootScope.requeststo[ele.id]){
+						//console.log("removed from requeststo");
+						delete $rootScope.requeststo[ele.id];
+					}
+						
+					
+					
 					
 					//if(ele.scd_request_to && ele.scd_request_to.scd_user_username == mysched.me && ele.scd_request_to.scd_status == 'requestto'){
 					//	$rootScope.requeststo[ele.id]=ele;
 					//}
 					
 					$rootScope.$apply(); // this forecs our page to refresh after these changes
-					console.log("end of update for "+ele.id);
+					//console.log("end of update for "+ele.id);
 					break;
 				case 'grabbed':
 					//find the schedule in our allrotas array
 					//re-displaying the allrotas array only semes to work for the actioning browser?!
 					var ele = msg.ele;
 					var olduser = (msg.givenupby == mysched.me)? 1 : 0 ;
-					console.log(msg);
+					//console.log(msg);
 					//eledate=new Date(ele.scd_date);
 					ele.scd_date=new Date(ele.scd_date);
 					ele.scd_date.setHours(12);
@@ -149,7 +166,7 @@
 					
 					
 					$rootScope.$apply(); // this forecs our page to refresh after these changes
-					console.log("end of update for "+ele.id);
+					//console.log("end of update for "+ele.id);
 					break;
 				case 'sessionswapped':
 				
@@ -168,7 +185,7 @@
 					$rootScope.allrotas[ele1.scd_rota_code][ele1date.toDateString()].forEach(function(myele){
 						//the username and status has changed!!
 						if ( myele.id == ele1.id ){	
-							console.log("replaced ele1");
+							//console.log("replaced ele1");
 							$rootScope.allrotas[ele1.scd_rota_code][ele1date.toDateString()][index]=ele1;			
 						}
 						index++;
@@ -176,7 +193,7 @@
 					index=0;
 					$rootScope.allrotas[ele2.scd_rota_code][ele2date.toDateString()].forEach(function(myele){
 						if ( myele.id == ele2.id ){	
-							console.log("replaced ele2");
+							//console.log("replaced ele2");
 							$rootScope.allrotas[ele2.scd_rota_code][ele2date.toDateString()][index]=ele2;			
 						}
 						index++;
@@ -192,11 +209,11 @@
 						
 						//removed the requestto
 						if ($rootScope.myrequests[ele2.id]){
-							console.log("ele2 removed myrequests")
+							//console.log("ele2 removed myrequests")
 							delete $rootScope.myrequests[ele2.id];
 						}
 						if ($rootScope.requeststo[ele2.id]){
-							console.log("ele2 removed requeststo")
+							//console.log("ele2 removed requeststo")
 							delete $rootScope.requeststo[ele2.id];
 						}
 						
@@ -206,11 +223,11 @@
 						involved=2;
 						//removed the requestto
 						if ($rootScope.myrequests[ele1.id]){
-							console.log("ele1 removed myrequests")
+							//console.log("ele1 removed myrequests")
 							delete $rootScope.myrequests[ele1.id];
 						}
 						if ($rootScope.requeststo[ele1.id]){
-							console.log("ele1 removed requeststo")
+							//console.log("ele1 removed requeststo")
 							delete $rootScope.requeststo[ele1.id];
 						}
 					}
@@ -218,7 +235,7 @@
 					
 					
 					$rootScope.$apply(); // this forecs our page to refresh after these changes
-					console.log("end of accepted swap update for "+ele1.id);
+					//console.log("end of accepted swap update for "+ele1.id);
 					
 					//if I am the person assigned to the session add to my list
 					
@@ -233,7 +250,7 @@
 		//this will return a scheule with gaps - what we need to do is fill in the gaps:
 		mysched.me=data[0].scd_user_username;
 		$scope.me=data[0].scd_user_username;
-		console.log("DEBUG I am: "+mysched.me);
+		//console.log("DEBUG I am: "+mysched.me);
 		var first=new Date(data[0].scd_date); first.setHours(12);
 		var last=new Date(); last.setHours(12);
 		last = (first.getTime() < last.getTime())? first : last;
@@ -243,8 +260,8 @@
 		data.forEach(function(ele){
 			var eledate=new Date(ele.scd_date); eledate.setHours(12); //dates from waterline are not inflated
 			ele.scd_date=eledate;
-			//console.log("current date: "+eledate+"   last variable  "+last);
-			console.log(ele.id+"  requestby:"+ele.scd_request_by); 
+			////console.log("current date: "+eledate+"   last variable  "+last);
+			//console.log(ele.id+"  requestby:"+ele.scd_request_by); 
 			if (ele.scd_request_to){
 				var tmpdate=new Date(ele.scd_request_to.scd_date);
 				ele.scd_request_to.scd_date=tmpdate;
@@ -258,8 +275,8 @@
 			//attempt to fill the gaps in our days:
 			while (last.getTime() < eledate.getTime()){
 				//alert("looping before end ");
-				//console.log("looping the schedules pushing: "+last.getTime()+"  "+eledate.getTime());
-			    //console.log("pushing in whil : "+last);
+				////console.log("looping the schedules pushing: "+last.getTime()+"  "+eledate.getTime());
+			    ////console.log("pushing in whil : "+last);
 				
 				mysched.myschedule[last.toISOString()]={mykey:last,arr:[]};
 				//to remove start
@@ -268,7 +285,7 @@
 				
 				last=new Date(last.getTime()+1000*60*60*24)
 			}
-			//console.log("pushing : "+ele.scd_date);
+			////console.log("pushing : "+ele.scd_date);
 			//if (typeof mysched.myschedule[ele.scd_date.toDateString()] == undefined){
 				mysched.myschedule[ele.scd_date.toISOString()]=(mysched.myschedule[ele.scd_date.toISOString()] )? mysched.myschedule[ele.scd_date.toISOString()] : {mykey:ele.scd_date,arr:[]};
 			//}
@@ -285,7 +302,7 @@
 				last=new Date(last.getTime()+1000*60*60*24)
 			}
 		});
-		//console.log("last eledate: "+last);
+		////console.log("last eledate: "+last);
 		while (last.getTime() < end.getTime()){
 				//alert("looping ");
 				mysched.myschedule[last.toISOString()]={mykey:last,arr:[]};
@@ -308,7 +325,7 @@
 		data.forEach(function(ele){
 			var eledate=new Date(ele.scd_date); eledate.setHours(12);
 			ele.scd_date = eledate; // inflate to date 
-			console.log("finding the rota entries id: "+ele.id+" date: "+eledate.toISOString()+"   rota: "+ele.scd_rota_code+" user: "+ele.scd_user_username+" "+ele.scd_status);
+			//console.log("finding the rota entries id: "+ele.id+" date: "+eledate.toISOString()+"   rota: "+ele.scd_rota_code+" user: "+ele.scd_user_username+" "+ele.scd_status);
 			v = mysched.allrotas[ele.scd_rota_code];
 			if (v === undefined){
 				mysched.allrotas[ele.scd_rota_code]={};
@@ -352,7 +369,7 @@
 	};
 	
 	$scope.submitMembershipForm=function(){
-		console.log("submitted the membership form");
+		//console.log("submitted the membership form");
 		$scope.membershipForm.loading=true;
 		
 	}*/
@@ -364,10 +381,10 @@
 	var enddate = new Date(todaydate.getTime()+1000*60*60*24*90);
 	var dates=[];
 	while (todaydate.getTime() < enddate.getTime()){
-		console.log(todaydate.getTime()+"     <          "+enddate.getTime());
+		//console.log(todaydate.getTime()+"     <          "+enddate.getTime());
 		dates.push(todaydate);
 		todaydate=new Date(todaydate.getTime()+1000*60*60*24);
-		console.log(todaydate.getTime()+"     <          "+enddate.getTime());
+		//console.log(todaydate.getTime()+"     <          "+enddate.getTime());
 	}
 	
 	
@@ -381,16 +398,16 @@
 	
 	//debug the values of our rota arrays:
 	for(var i=0; i< mysched.allrotas.length; i++){
-		console.log("index: "+i);
+		//console.log("index: "+i);
 		var myarr = $scope.mysched.allrotas[i];
 		for(var j=0; i< myarr.length; j++){
 	//$scope.mysched.allrotas.forEach(function(rotacode){
-		//console.log("rota: "+rotacode);
+		////console.log("rota: "+rotacode);
 		
 		//myarr[j].forEach(function(myarr[j]){
-			//console.log("dateind: "+dateind);
+			////console.log("dateind: "+dateind);
 			myarr[j].foreach(function(myobjh){
-				console.log("all rotas: "+myobjh.scd_user_username+"  "+myobjh.scd_status+" "+myobjh.id);
+				//console.log("all rotas: "+myobjh.scd_user_username+"  "+myobjh.scd_status+" "+myobjh.id);
 			})
 		//})
 		}
@@ -427,7 +444,7 @@
 		$scope.acceptSession = function(invars){
 			//accept or decline a request to swap a session
 			$scope.vars=(invars)? invars : {} ;
-			console.log("in vars: "+invars);
+			//console.log("in vars: "+invars);
 			var modalInstance = $modal.open({
 				templateUrl: 'modal-accept.html',
 				controller: ModalAcceptCtrl,
@@ -448,7 +465,7 @@
 			$scope.vars=(invars)? invars : {} ;
 			$scope.inselect=(invars)? $rootScope.allrotas[invars.scd_rota_code] : {}; // we can essentially ignore the inselect (using the rootSCope arrays
 //			$scope.inselect=(inselect)? inselect : {};
-			console.log(inselect);
+			//console.log(inselect);
 			//alert("invars: "+$scope.vars.username);
 			
 				var modalInstance = $modal.open({
@@ -480,16 +497,16 @@
 			
 			$scope.swapwith=(invars)? invars : {} ;
 			$scope.mysessions=(inselect)? inselect : {};
-			console.log(inselect);
+			//console.log(inselect);
 			//alert("invars: "+$scope.vars.username);
 			
 			var minetheirs = (invars.scd_user_username == $scope.me )? 'mine' : 'theirs' ;
 			
-			console.log("root who: "+$scope.me+"  requesting: "+invars.scd_user_username);
+			//console.log("root who: "+$scope.me+"  requesting: "+invars.scd_user_username);
 			var modalInstance;
 			
 			if (minetheirs == 'mine'){
-				if ($scope.swapwith.scd_status == 'giveup' || $scope.swapwith.scd_status == 'requested'){
+				if ($scope.swapwith.scd_status == 'offerup' || $scope.swapwith.scd_status == 'requested'){
 					//if we are not the user then we can not request to swap as someone else has
 					
 					modalInstance = $modal.open({
@@ -540,28 +557,34 @@
 			
 					//we first need to flatten the select array (notice that the selection options will not be updated following model interations
 					//if lets say someone requests on one of our sessions
-					//console.log("setup the session select");
+					////console.log("setup the session select");
 					$scope.inselect=$rootScope.allrotas[invars.scd_rota_code];
 					$scope.select=function(){
 						flatten=[];
-						//console.log("let's flatten");
-						for (var rot in $rootScope.allrotas){
+						var nowd = new Date();
+						var yestd = new Date(nowd.getTime()-1000*60*60*24);
+						////console.log("let's flatten");
+						//for (var rot in $rootScope.allrotas){
+						var rot = invars.scd_rota_code
 							for( var idate in $rootScope.allrotas[rot]){
+								var mydate = new Date(idate)
+								if (mydate.getTime() > yestd.getTime()){ 
 								$rootScope.allrotas[rot][idate].forEach(function(session){
-									if (session.scd_user_username == $scope.me){
+									if (session.scd_user_username == $scope.me && session.scd_status != 'requested'){
 										flatten.push(session);
 									}
 								})
+								}
 							}
-						}
+						//}
 						//for (var key in $scope.myschedule) {
-						//	//console.log("key for myschedule: "+key);
+						//	////console.log("key for myschedule: "+key);
 						//	$scope.myschedule[key]['arr'].forEach(function(session){
-						//	//console.log("Adding array");
+						//	////console.log("Adding array");
 						//	//myarr['arr'].forEach(function(session){
-						//		//console.log("Adding session: "+session.scd_rota_code);
+						//		////console.log("Adding session: "+session.scd_rota_code);
 						//		if (session.scd_rota_code == $scope.swapwith.scd_rota_code){
-						//			//console.log("adding to the sesisons array:"+session.id);
+						//			////console.log("adding to the sesisons array:"+session.id);
 						//			flatten.push(session);
 						//		}
 						//	})
@@ -583,7 +606,7 @@
 					});
 				}
 			
-				if ($scope.swapwith.scd_status == 'giveup'){
+				if ($scope.swapwith.scd_status == 'offerup'){
 				//we can take thi ssession
 					modalInstance = $modal.open({
 						templateUrl: 'modal-grab-form.html',
@@ -637,7 +660,7 @@
 		//	$scope.myopts.push(row);
 		//});
 		
-			console.log("DEBUG how to update display  - chnage status");
+			//console.log("DEBUG how to update display  - chnage status");
 			//REMOVE from waiting lists -> transmit change in button colours!
 		
 		});
@@ -659,7 +682,7 @@
 		//	//alert("swap: "+row.scd_user_username);
 		//	$scope.myopts.push(row);
 		//});
-			console.log("DEBUG how to update display (swap the session's username + change status ");
+			//console.log("DEBUG how to update display (swap the session's username + change status ");
 			//REMOVE from waiting lists -> transmit change in button colours!
 		
 		});
@@ -696,7 +719,7 @@
 			
 				//alert("updating record: "+$scope.vars.username);
 				//vars stores the schedule we have 
-				console.log("request swap with: "+$scope.swap_session.id);
+				//console.log("request swap with: "+$scope.swap_session.id);
 				//but which schedulea re we attempting to swap this with?
 				//$scope.vars.scd_status = 'requested'; // will this update the page automatically?
 					
@@ -711,19 +734,19 @@
 //					var swapwithdate=new Date($scope.swap_session.scd_date);
 //					var donatedate=new Date($scope.vars.scd_date);
 //					var swap_sessionID=$scope.swap_session.id;
-//					console.log("swap session for: "+swap_sessionID);
+//					//console.log("swap session for: "+swap_sessionID);
 //					
-//					console.log("data returned from swap request: "+data);
-//					console.log("data returned from swap request: "+data[0].id);
+//					//console.log("data returned from swap request: "+data);
+//					//console.log("data returned from swap request: "+data[0].id);
 					
 					//update the chosen session (TODO update with object from post)
 //					var myi=0;
 //					$rootScope.allrotas[$scope.swap_session.scd_rota_code][swapwithdate.toDateString()].forEach(function(scd){
-//						console.log("looping swap array: ");
+//						//console.log("looping swap array: ");
 //						if (scd.id == swap_sessionID){
 //							$rootScope.allrotas[$scope.swap_session.scd_rota_code][swapwithdate.toDateString()][myi]=data[1];
 //							//$rootScope.allrotas[$scope.swap_session.scd_rota_code][swapwithdate.toDateString()][myi].scd_status='requested';
-//							console.log("hopefully swapped");
+//							//console.log("hopefully swapped");
 //						}
 //						
 //						myi++;
@@ -743,11 +766,11 @@
 					//update the donated session (TODO update with object from post) 
 //					myi=0;
 //					$rootScope.allrotas[$scope.vars.scd_rota_code][donatedate.toDateString()].forEach(function(scd){
-//						console.log("looping swap array: ");
+//						//console.log("looping swap array: ");
 //						if (scd.id == $scope.vars.id){
 //							$rootScope.allrotas[$scope.swap_session.scd_rota_code][donatedate.toDateString()][myi]=data[0]
 //							//$rootScope.allrotas[$scope.swap_session.scd_rota_code][donatedate.toDateString()][myi].scd_status='requested';
-//							console.log("hopefully swapped");
+//							//console.log("hopefully swapped");
 //						}
 //						myi++;
 //					});
@@ -766,20 +789,20 @@
 			
 			//then close the modal
 		} else {
-			//we have requested to give up the session:
+			//we have requested to offer up the session:
 		
-			console.log('giveup session: '+$scope.vars);
-			$scope.http.put('/member/schedule/giveup',{mine:$scope.vars}).success(function(data){	
-				//$scope.vars.scd_status = 'giveup';
+			//console.log('offerup session: '+$scope.vars);
+			$scope.http.put('/member/schedule/offerup',{mine:$scope.vars}).success(function(data){	
+				//$scope.vars.scd_status = 'offerup';
 				var myi=0;
 				var donatedate=new Date($scope.vars.scd_date);
 				$rootScope.allrotas[$scope.vars.scd_rota_code][donatedate.toDateString()].forEach(function(scd){
-					console.log("looping swap array: ");
+					//console.log("looping swap array: ");
 					if (scd.id == $scope.vars.id){
 						$rootScope.allrotas[$scope.vars.scd_rota_code][donatedate.toDateString()][myi]=data[0];
 						$scope.vars=data[0];
 						//$rootScope.allrotas[$scope.swap_session.scd_rota_code][donatedate.toDateString()][myi].scd_status='requested';
-						console.log("hopefully given up");
+						//console.log("hopefully given up");
 					}
 					myi++;
 				});
@@ -797,7 +820,7 @@
 //					}
 //					myi++;
 //				});
-				$modalInstance.dismiss('giveup');
+				$modalInstance.dismiss('offerup');
 			});
 		}
 	};
@@ -831,7 +854,7 @@
 			
 			//then close the modal
 		} else {
-			console.log('swapform is not in scope');
+			//console.log('swapform is not in scope');
 		}
 	};
  
@@ -849,14 +872,14 @@
 			$scope.acceptSession($scope.swapwith);
 					$modalInstance.close('closed');
 				
-			console.log('request accepted');
+			//console.log('request accepted');
 		
 	};
 	$scope.decline= function () {
 			$scope.declineSession($scope.swapwith);
 					$modalInstance.close('closed');
 				
-			console.log('request declined - sorry!');
+			//console.log('request declined - sorry!');
 		
 	};
  
@@ -877,13 +900,13 @@
 					//this updates our page but why doesn't the following
 					myi=0;
 					$rootScope.allrotas[$scope.swapwith.scd_rota_code][donatedate.toDateString()].forEach(function(scd){
-						console.log("looping swap array: ");
+						//console.log("looping swap array: ");
 						if (scd.id == data[0].id){
 							$rootScope.allrotas[$scope.swapwith.scd_rota_code][donatedate.toDateString()][myi]=data[0]
 							//$rootScope.allrotas[$scope.swap_session.scd_rota_code][donatedate.toDateString()][myi].scd_status='requested';
-							console.log("hopefully grabbed"); //(we go green again)
+							//console.log("hopefully grabbed"); //(we go green again)
 							
-							console.log("TODO add this to our list of sessions - remember trouble setting the [i] = scd!!")
+							//console.log("TODO add this to our list of sessions - remember trouble setting the [i] = scd!!")
 							
 						}
 						myi++;
@@ -893,7 +916,7 @@
 			
 			//then close the modal
 		} else {
-			console.log('swapform is not in scope');
+			//console.log('swapform is not in scope');
 		}
 	};
  

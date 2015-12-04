@@ -1,7 +1,4 @@
 
-Your schedules (<%= user.username %>):	
-
-
 	
 <div  ng-app="SchedulesModule"  class="container" ng-init="iam='<%= user.username %>'">
 
@@ -20,7 +17,7 @@ Your schedules (<%= user.username %>):
         <button type="submit" class="btn btn-primary" ng-disabled="form.swapForm.$invalid">Request</button>
 	
     <h3>Or</h3>
-        <button type="submit" class="btn btn-primary" ng-click="giveupSession()">Give up</button>
+        <button type="submit" class="btn btn-primary" ng-click="offerupSession()">Offer up</button>
 	</form>
 	</div>
 </script>
@@ -39,7 +36,7 @@ Your schedules (<%= user.username %>):
         <button type="submit" class="btn btn-primary" ng-disabled="form.swapWithForm.$invalid">Request</button>
 	
     <!--<h3>Or</h3>
-        <button type="submit" class="btn btn-primary">Give up</button>-->
+        <button type="submit" class="btn btn-primary">Offer up</button>-->
 	</form>
 	</div>
 </script>
@@ -147,7 +144,7 @@ Your schedules (<%= user.username %>):
 				<td><!--showSwapForm will be redundant if showSwapWithForm is used-->
 				<span ng-repeat="myrotacode in myscheduleCtrl.rotalist" >
 					<span ng-repeat="thissched in allrotas[myrotacode][mydate.toDateString()]" >
-						<span ng-show="thissched.scd_user_username == me" class="btn" ng-class="{requested:'btn-warning',requestto:'btn-warning',accepted:'btn-success',giveup:'btn-danger'}[thissched.scd_status]" ng-click="showSwapWithForm(thissched,allrotas[myrotacode])">
+						<span ng-show="thissched.scd_user_username == me" class="btn" ng-class="{requested:'btn-warning',requestto:'btn-warning',accepted:'btn-success',offerup:'btn-danger'}[thissched.scd_status]" ng-click="showSwapWithForm(thissched,allrotas[myrotacode])">
 							{{ thissched.scd_rota_code }}
 						</span>
 						<br ng-show="thissched.scd_user_username == me" />
@@ -157,7 +154,7 @@ Your schedules (<%= user.username %>):
 				<td ng-repeat="rotacode in myscheduleCtrl.rotalist">
 				<!-- allrotas rather than mysched.allrotas uses root scoped data -->
 				<span ng-repeat="schedule in allrotas[rotacode][mydate.toDateString()]">
-					<span class="btn" ng-class="{requested:'btn-warning',requestto:'btn-warning',accepted:'btn-success',giveup:'btn-danger'}[schedule.scd_status]" ng-click="showSwapWithForm(schedule,myscheduleCtrl.myschedule)"> 
+					<span class="btn" ng-class="{requested:'btn-warning',requestto:'btn-warning',accepted:'btn-success',offerup:'btn-danger'}[schedule.scd_status]" ng-click="showSwapWithForm(schedule,myscheduleCtrl.myschedule)"> 
 						{{ schedule.scd_user_username }}
 					</span>
 					<br/>

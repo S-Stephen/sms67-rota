@@ -29,6 +29,12 @@ module.exports = {
 		res.view('local/manage/schedules',{
 			user:req.user
 		});
+   },
+   
+   help : function(req,res,next){
+		res.view('local/manage/help',{
+			user:req.user
+		});
    }
 };
 

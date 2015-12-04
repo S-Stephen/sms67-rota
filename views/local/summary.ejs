@@ -1,33 +1,36 @@
 
 	
-<div  ng-app="SummaryModule"  class="container">
+<div  ng-app="SummaryModule"  class="container" >
 
 
-<div ng-controller="SummaryController as summaryCtrl">
+<div ng-controller="SummaryController as summaryCtrl" ng-init="init(3)">
+  <div cardlogin></div>
     <div class="container">
 
       <!-- Main component for a primary marketing message or call to action -->
       <div class="jumbotron">
-		<div class="row">
+		<div class="row" ng-cloak>
 	    <!--<h2>Security schedules for the next three days:</h2>-->
-		<div ng-repeat="iday in adates" class="col-md-4" class="panel panel-primary"><h2>{{ iday | easydate }}</h2>
+		<div ng-repeat="iday in adates">
+			<div class="col-md-4">
+			<div class="panel panel-primary">
+			<div class="panel-heading"><h2>{{ iday | easydate }}</h2></div>
 			<div class="panel-body">
-			<span ng-repeat="sess in daySessions(iday.toDateString())"><span class="text-danger">{{sess.scd_rota_code}}</span>: {{ users[sess.scd_user_username].display_name}}</p>
+			<span ng-repeat="sess in daySessions(iday.toDateString())">
+			<p ng-cloak><span class="text-danger" ng-cloak>{{sess.scd_rota_code}}</span>: {{ users[sess.scd_user_username].display_name}}
+			<span ng-show="sess.scd_status  == 'requested' || sess.scd_status ==  'requestto' " tooltip="A request has been made to swap this session" class="glyphicon glyphicon-alert" aria-hidden="true"></span>
+			<span ng-show="sess.scd_status  == 'offerup' " tooltip="Session has been given up" class="glyphicon glyphicon-flash" aria-hidden="true"></span>
+			</p>
 			</span>
+			</div>
+			</div>
 			</div>
 		</div>
 		</div><!-- row -->
 		
-		
-		<div class="row">
-			
-			
-		
-		<br/>
-		<br/>
-			<span ng-repeat="rot in rotas"><span class="text-danger">{{rot.rot_code}}</span>: {{rot.rot_description}} </span>
+		<div class="row" ng-cloak>
+			<p><span ng-repeat="rot in rotas"><span class="text-danger">{{rot.rot_code}}</span>: {{rot.rot_description}} </span></p>
 		</div>
-		
 		</div><!-- jumbo -->
 
 		

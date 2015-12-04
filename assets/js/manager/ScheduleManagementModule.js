@@ -17,7 +17,7 @@
   app.controller('DatepickerDemoCtrl', ['$scope','$modal','$rootScope','$log', function ($scope,$modal,$rootScope,$log) {
   
     $scope.addRepeatForm = function (rota) {
-		console.log("some log message");
+		//console.log("some log message");
 		$scope.repeat_start=new Date();
 		$rootScope.repeat_start=new Date();
 		$scope.repeat_end=new Date();
@@ -46,7 +46,7 @@
     };	
     
     $scope.delRepeatForm = function (rota) {
-		console.log("some log message");
+		//console.log("some log message");
 		$scope.del_start=new Date();
 		$rootScope.del_start=new Date();
 		$scope.del_end=new Date();
@@ -76,7 +76,7 @@
     };	  
 	
     $scope.addShiftForm = function (rota) {
-		console.log("some log message");
+		//console.log("some log message");
 		$scope.start=new Date();
 		$rootScope.start=new Date();
 		$scope.finish=new Date();
@@ -291,7 +291,7 @@
 	scheduleManager.members = [];
 
 	$http.get('/manager/memberships').success(function(data){	
-		console.log("we have some members - of course : "+data);
+		//console.log("we have some members - of course : "+data);
 		 scheduleManager.members = data;
 		$rootScope.members = scheduleManager.members;
 	});
@@ -309,7 +309,7 @@
 	$scope.datesAfter = function(indate){
 		var retdates=[];
 		indate=(indate)? new Date(indate) : new Date();
-		//console.log("indate: "+indate);
+		////console.log("indate: "+indate);
 		indate.setHours(12,0,0,0,0);
 		scheduleManager.dates.forEach(function(ldate){
 			if (ldate.getTime() > indate.getTime()){
@@ -336,16 +336,16 @@
 	if (!io.socket.alreadyListeningToOrders){
 		io.socket.alreadyListeningToOrders = true;
 		io.socket.on('schedule', function onServerSentEvent(msg){
-			console.log("we received an event");
+			//console.log("we received an event");
 			switch(msg.verb){
 				case 'removed':
 					var ele = msg.ele;
-					console.log("return ele date: "+ele.scd_date);
-					console.log("ele code: "+ele.scd_rota_code);
+					//console.log("return ele date: "+ele.scd_date);
+					//console.log("ele code: "+ele.scd_rota_code);
 					var tmpdate=new Date(ele.scd_date);
 					ele.scd_date = tmpdate;
-					console.log("return ele date: "+tmpdate.toDateString());
-					console.log("return ele date: "+ele.scd_date.toDateString());
+					//console.log("return ele date: "+tmpdate.toDateString());
+					//console.log("return ele date: "+ele.scd_date.toDateString());
 					//remove this ele from our allrotas array:
 					
 					var index=-1
@@ -357,7 +357,7 @@
 						myind++;
 					});
 					if (index>-1){
-						console.log("splice from array");
+						//console.log("splice from array");
 						$rootScope.allrotas[ele.scd_rota_code][ele.scd_date.toDateString()].splice(index,1);
 					}
 					$rootScope.$apply(); // this forecs our page to refresh after these changes
@@ -387,7 +387,7 @@
 					//find the schedule in our allrotas array
 					//re-displaying the allrotas array only semes to work for the actioning browser?!
 					var ele = msg.ele;
-					console.log(msg);
+					//console.log(msg);
 					//eledate=new Date(ele.scd_date);
 					ele.scd_date=new Date(ele.scd_date);
 					ele.scd_date.setHours(12);
@@ -417,14 +417,14 @@
 					
 					
 					$rootScope.$apply(); // this forecs our page to refresh after these changes
-					console.log("end of update for "+ele.id);
+					//console.log("end of update for "+ele.id);
 					break;
 				case 'grabbed':
 					//find the schedule in our allrotas array
 					//re-displaying the allrotas array only semes to work for the actioning browser?!
 					var ele = msg.ele;
 					var olduser = (msg.givenupby == mysched.me)? 1 : 0 ;
-					console.log(msg);
+					//console.log(msg);
 					//eledate=new Date(ele.scd_date);
 					ele.scd_date=new Date(ele.scd_date);
 					ele.scd_date.setHours(12);
@@ -440,7 +440,7 @@
 					})
 					
 					$rootScope.$apply(); // this forecs our page to refresh after these changes
-					console.log("end of update for "+ele.id);
+					//console.log("end of update for "+ele.id);
 					break;
 				case 'sessionswapped':
 				
@@ -459,7 +459,7 @@
 					$rootScope.allrotas[ele1.scd_rota_code][ele1date.toDateString()].forEach(function(myele){
 						//the username and status has changed!!
 						if ( myele.id == ele1.id ){	
-							console.log("replaced ele1");
+							//console.log("replaced ele1");
 							$rootScope.allrotas[ele1.scd_rota_code][ele1date.toDateString()][index]=ele1;			
 						}
 						index++;
@@ -467,7 +467,7 @@
 					index=0;
 					$rootScope.allrotas[ele2.scd_rota_code][ele2date.toDateString()].forEach(function(myele){
 						if ( myele.id == ele2.id ){	
-							console.log("replaced ele2");
+							//console.log("replaced ele2");
 							$rootScope.allrotas[ele2.scd_rota_code][ele2date.toDateString()][index]=ele2;			
 						}
 						index++;
@@ -483,11 +483,11 @@
 						
 						//removed the requestto
 						if ($rootScope.myrequests[ele2.id]){
-							console.log("ele2 removed myrequests")
+							//console.log("ele2 removed myrequests")
 							delete $rootScope.myrequests[ele2.id];
 						}
 						if ($rootScope.requeststo[ele2.id]){
-							console.log("ele2 removed requeststo")
+							//console.log("ele2 removed requeststo")
 							delete $rootScope.requeststo[ele2.id];
 						}
 						
@@ -496,23 +496,23 @@
 
 						
 						$rootScope.otherstuff.forEach(function(scd){
-							console.log("ele2: "+scd.id+"   :"+scd.scd_user_username+" "+scd.scd_date+"  "+scd.scd_rota_code+" "+scd.scd_status);
+							//console.log("ele2: "+scd.id+"   :"+scd.scd_user_username+" "+scd.scd_date+"  "+scd.scd_rota_code+" "+scd.scd_status);
 						});
 						involved=2;
 						//removed the requestto
 						if ($rootScope.myrequests[ele1.id]){
-							console.log("ele1 removed myrequests")
+							//console.log("ele1 removed myrequests")
 							delete $rootScope.myrequests[ele1.id];
 						}
 						if ($rootScope.requeststo[ele1.id]){
-							console.log("ele1 removed requeststo")
+							//console.log("ele1 removed requeststo")
 							delete $rootScope.requeststo[ele1.id];
 						}
 					}
 					
 					
 					$rootScope.$apply(); // this forecs our page to refresh after these changes
-					console.log("end of accepted swap update for "+ele1.id);
+					//console.log("end of accepted swap update for "+ele1.id);
 					
 					//if I am the person assigned to the session add to my list
 					
@@ -532,7 +532,7 @@
 		data.forEach(function(ele){
 			var eledate=new Date(ele.scd_date); eledate.setHours(12);
 			ele.scd_date = eledate; // inflate to date 
-			console.log("finding the rota entries id: "+ele.id+" date: "+eledate.toISOString()+"   rota: "+ele.scd_rota_code+" user: "+ele.scd_user_username+" "+ele.scd_status);
+			//console.log("finding the rota entries id: "+ele.id+" date: "+eledate.toISOString()+"   rota: "+ele.scd_rota_code+" user: "+ele.scd_user_username+" "+ele.scd_status);
 			v = scheduleManager.allrotas[ele.scd_rota_code];
 			if (v === undefined){
 				scheduleManager.allrotas[ele.scd_rota_code]={};
@@ -571,7 +571,7 @@ var  AddSessionModalInstanceCtrl = function ($scope, $modalInstance, sessionForm
 	$scope.submitForm = function () {
 		//create a session for this user / rota / date - or attempt to!
 		var session_mem = $scope.session_member;
-		console.log("create a session: "+$scope.mydate+"  rota: "+$scope.rota.rot_code+" user: "+session_mem.username);
+		//console.log("create a session: "+$scope.mydate+"  rota: "+$scope.rota.rot_code+" user: "+session_mem.username);
 		var postme={scd_user_username:session_mem.username, scd_date:$scope.mydate, scd_rota_code:$scope.rota.rot_code}
 		$scope.http.post('/manager/schedule/add',postme).success(function(data){					
 			$modalInstance.close('closed');
@@ -589,15 +589,15 @@ var  sessionManageModalInstanceCtrl = function ($scope, $modalInstance, sessionM
 	//alert("Scope message, , , :"+$scope.message);
 	//alert("Scope http: "+$scope.http);
 	$scope.submitForm = function () {
-		console.log("swap with?");
+		//console.log("swap with?");
 		
-		console.log("assign to?");
+		//console.log("assign to?");
 		
-		console.log("remove?");
+		//console.log("remove?");
 	
 		//create a session for this user / rota / date - or attempt to!
 		//var session_mem = $scope.session_member;
-		//console.log("create a session: "+$scope.mydate+"  rota: "+$scope.rota.rot_code+" user: "+session_mem.username);
+		////console.log("create a session: "+$scope.mydate+"  rota: "+$scope.rota.rot_code+" user: "+session_mem.username);
 		//var postme={scd_user_username:session_mem.username, scd_date:$scope.mydate, scd_rota_code:$scope.rota.rot_code}
 		//$scope.http.post('/manager/schedule/add',postme).success(function(data){					
 		//	$modalInstance.close('closed');
@@ -605,9 +605,9 @@ var  sessionManageModalInstanceCtrl = function ($scope, $modalInstance, sessionM
 	}
 	
 	$scope.remove = function(scd_session){
-		console.log("remove this session "+scd_session.id);
+		//console.log("remove this session "+scd_session.id);
 		$scope.http['delete']('/manager/schedule/del/'+scd_session.id).success(function(data){	
-			console.log("session removed");
+			//console.log("session removed");
 			$modalInstance.close('closed');
 		});
 	}
@@ -615,15 +615,15 @@ var  sessionManageModalInstanceCtrl = function ($scope, $modalInstance, sessionM
 		
 	//depending on the object received suggest a list of replacements:
 	//cannot swap with self! must swap with the same rota
-	$scope.actionSwap = function () {
+	$scope.managerActionSwap = function () {
 	
 		var body = {theirs:$scope.scd_session,mine:$scope.scd_session.scd_request_by}
-		if ($scope.scd_session.scd_request_by){
-			body={mine:$scope.scd_session,theirs:$scope.scd_session.scd_request_by};
+		if ($scope.scd_session.scd_request_to){
+			body={mine:$scope.scd_session,theirs:$scope.scd_session.scd_request_to};
 		}
 			
-		$scope.http.post('/member/schedule/accept',body).success(function(data){
-				console.log("DEBUG how to update display (swap the session's username + change status ");
+		$scope.http.post('/manager/schedule/accept',body).success(function(data){
+				//console.log("DEBUG how to update display (swap the session's username + change status ");
 		});
 		
 		$modalInstance.dismiss('accepted the swap');
@@ -634,31 +634,31 @@ var  sessionManageModalInstanceCtrl = function ($scope, $modalInstance, sessionM
 		if ($scope.scd_session.scd_request_by){
 			body={mine:$scope.scd_session,theirs:$scope.scd_session.scd_request_by};
 		}
-		$scope.http.post('/member/schedule/decline',body).success(function(data){
-				console.log("DEBUG how to update display (swap the session's username + change status ");
+		$scope.http.post('/manager/schedule/decline',body).success(function(data){
+				//console.log("DEBUG how to update display (swap the session's username + change status ");
 		});
 		$modalInstance.dismiss('removed the swap');
 	};
 	
 	$scope.assignToMember = function(new_user){
 		//update the schedule to belong to a different user
-		console.log("TODO test that this isn't part of a swap");
+		//console.log("TODO test that this isn't part of a swap");
 		$scope.scd_session.scd_user_username = new_user.username;
 		var sendme = $scope.scd_session; // we do thi sto prevent our display from changing!
 		sendme.scd_user_username = new_user.username;
 		$scope.http.put('/manager/schedule/update',sendme).success(function(data){
-			console.log("DEBUG how to update display (swap the session's username + change status ");
+			//console.log("DEBUG how to update display (swap the session's username + change status ");
 			$modalInstance.dismiss('sessin asisgned to another');
 		});
 	}
 	
 	$scope.swapWithSession = function(new_sess){
-		console.log("TODO test that this isn't part of a swap");
+		//console.log("TODO test that this isn't part of a swap");
 		//do two updates:
 		
 		var new_sess_user=new_sess.scd_user_username;
 		var cur_sess_user=$scope.scd_session.scd_user_username;
-		console.log("new_sess user: "+new_sess_user+"   session user: "+cur_sess_user);
+		//console.log("new_sess user: "+new_sess_user+"   session user: "+cur_sess_user);
 		
 		var send1=$scope.scd_session;
 		send1.scd_user_username=new_sess_user;
@@ -667,9 +667,9 @@ var  sessionManageModalInstanceCtrl = function ($scope, $modalInstance, sessionM
 		send2.scd_date=new Date(send2.scd_date);
 		send2.scd_user_username=cur_sess_user;
 		
-		console.log("send1 user: "+send1.scd_user_username+"   send2 user: "+send2.scd_user_username);
+		//console.log("send1 user: "+send1.scd_user_username+"   send2 user: "+send2.scd_user_username);
 		
-		console.log("how to place in some sort of transaction");
+		//console.log("how to place in some sort of transaction");
 		$scope.http.put('/manager/schedule/update',send1).success(function(data){
 			$scope.http.put('/manager/schedule/update',send2).success(function(data2){
 				$modalInstance.dismiss('session asisgned to another');
@@ -710,9 +710,9 @@ var  AddShiftModalInstanceCtrl = function ($scope, $modalInstance, shiftForm, $r
 				//create the shift
 				var ele={scd_date:start,scd_rota_code:rota.rot_code,scd_user_username:user.username,scd_status:'accepted'};
 				
-				console.log("create a shift pattern for: "+user.display_name+"  "+start);
+				//console.log("create a shift pattern for: "+user.display_name+"  "+start);
 				$scope.http.post('/manager/schedule/add',ele).success(function(data){					
-					console.log("added a schedule");
+					//console.log("added a schedule");
 				});		
 			
 				lorder.push(user);
@@ -734,20 +734,20 @@ var  DelRepeatModalInstanceCtrl = function ($scope, $modalInstance, delForm, $ro
 		var delme=[];
 		var pass=1;
 		var not_ready=""
-		console.log("in the submit function");
+		//console.log("in the submit function");
 		while(start.getTime() <= end.getTime()){ 
-			console.log("in the delete loop");
+			//console.log("in the delete loop");
 			if ($rootScope.allrotas[rota.rot_code][start.toDateString()]){
 			$rootScope.allrotas[rota.rot_code][start.toDateString()].forEach(function(sched){
 					if (sched.scd_status != 'accepted'){
-						console.log("There is a schedule part of a swap / giveup in the selection");
+						//console.log("There is a schedule part of a swap / offerup in the selection");
 						pass=-1;
 						not_ready=not_ready+" "+sched.scd_date.toDateString()+"-"+sched.scd_user_username+". ";
 						//start=new Date(end.getTime()+1000*60*60*24)
 					}else{
 						delme.push(sched);
 					}
-					console.log("in hello world adding sched: "+sched);
+					//console.log("in hello world adding sched: "+sched);
 			});
 			}
 			start=new Date(start.getTime()+1000*60*60*24);
@@ -756,7 +756,7 @@ var  DelRepeatModalInstanceCtrl = function ($scope, $modalInstance, delForm, $ro
 			$scope.error="";
 			delme.forEach(function(scd_session){
 				$scope.http['delete']('/manager/schedule/del/'+scd_session.id).success(function(data){	
-					console.log("session removed");
+					//console.log("session removed");
 				});
 			});
 			$modalInstance.dismiss('inserted schedule');
@@ -776,7 +776,7 @@ var  AddRepeatModalInstanceCtrl = function ($scope, $modalInstance, repeatForm, 
 	//alert("Scope message, , , :"+$scope.message);
 	//alert("Scope http: "+$scope.http);
 	$scope.datediff = function(date1,date2){
-		console.log("date1: "+date1);
+		//console.log("date1: "+date1);
 		 var datediff = date1.getTime() - date2.getTime();
 		 datediff=(datediff<0)? -1 * datediff : datediff;
 		//store the getTime diff - or +
@@ -798,19 +798,19 @@ var  AddRepeatModalInstanceCtrl = function ($scope, $modalInstance, repeatForm, 
 		var start=new Date(date_start);
 		var end=new Date(date_end);
 		var scheds=[];
-		console.log("in hello world");
-		console.log("start :"+$rootScope.repeat_start+"     end: "+$rootScope.repeat_end);
-		console.log("start :"+start+"     end: "+end);
+		//console.log("in hello world");
+		//console.log("start :"+$rootScope.repeat_start+"     end: "+$rootScope.repeat_end);
+		//console.log("start :"+start+"     end: "+end);
 		while (start.getTime()<=end.getTime()){
-				console.log("loop in hello world");
+				//console.log("loop in hello world");
 			if ( $rootScope.allrotas[rota.rot_code][start.toDateString()] ){
 				$rootScope.allrotas[rota.rot_code][start.toDateString()].forEach(function(sched){
 					scheds.push(sched);
-					console.log("in hello world adding sched: "+sched);
+					//console.log("in hello world adding sched: "+sched);
 				});
 			}else{
 				tmp1={'scd_user_username' : 'none', 'scd_date' : start};
-				console.log("in hello world creating a spacer: "+tmp1['scd_date'].toDateString());
+				//console.log("in hello world creating a spacer: "+tmp1['scd_date'].toDateString());
 				scheds.push(tmp1);
 			}
 			start=new Date(start.getTime()+1000*60*60*24);
@@ -824,35 +824,36 @@ var  AddRepeatModalInstanceCtrl = function ($scope, $modalInstance, repeatForm, 
 		//loop the entire block until repeat finished?
 		
 		//var arr = $scope.listRepeat(rota,start,end);
-		//console.log("just before foreach call");
+		////console.log("just before foreach call");
 		//arr.forEach(function(data){
-		//	console.log("data: "+data.scd_date);
-		//	console.log("data: "+data.scd_date.toDateString());
+		//	//console.log("data: "+data.scd_date);
+		//	//console.log("data: "+data.scd_date.toDateString());
 		//});
 		//$scope.listRepeat(rota,start,end).forEach(function(data){
-		//	console.log("data: "+data.scd_date);
-		//	console.log("data: "+data.scd_date.toDateString());
+		//	//console.log("data: "+data.scd_date);
+		//	//console.log("data: "+data.scd_date.toDateString());
 		//});
-		//console.log("start: "+start);
-		//console.log("end: "+end);
-		//console.log("begin: "+begin);
-		//console.log("finish: "+finish);
+		////console.log("start: "+start);
+		////console.log("end: "+end);
+		////console.log("begin: "+begin);
+		////console.log("finish: "+finish);
 		
 		//this is listRepeat but inline: 
 		var scheds=[];
-		console.log("in hello world");
-		console.log("start :"+$rootScope.repeat_start+"     end: "+$rootScope.repeat_end);
-		console.log("start :"+start+"     end: "+end);
+		//console.log("in hello world");
+		//console.log("start :"+$rootScope.repeat_start+"     end: "+$rootScope.repeat_end);
+		//console.log("start :"+start+"     end: "+end);
 		while (start.getTime()<=end.getTime()){
-				console.log("loop in hello world");
+				//console.log("loop in hello world");
 			if ( $rootScope.allrotas[rota.rot_code][start.toDateString()] ){
 				$rootScope.allrotas[rota.rot_code][start.toDateString()].forEach(function(sched){
 					scheds.push(sched);
-					console.log("in hello world adding sched: "+sched.scd_date.toDateString()+"  by: "+sched.scd_user_username);
+					//console.log("for username: "+sched.scd_user_username);
+					//console.log("in hello world adding sched: "+sched.scd_date.toDateString()+"  by: "+sched.scd_user_username);
 				});
 			}else{
 				tmp1={'scd_user_username' : 'none', 'scd_date' : start};
-				console.log("in hello world creating a spacer: "+tmp1['scd_date'].toDateString());
+				//console.log("in hello world creating a spacer: "+tmp1['scd_date'].toDateString());
 				scheds.push(tmp1);
 			}
 			start=new Date(start.getTime()+1000*60*60*24);
@@ -871,7 +872,7 @@ var  AddRepeatModalInstanceCtrl = function ($scope, $modalInstance, repeatForm, 
 					last=1;
 					break;
 				}
-				console.log("mapping :"+ele.scd_user_username+" "+scheds[i].scd_date+" to "+ele.scd_date+" offset: "+offset+" finish date: "+finish);
+				//console.log("mapping :"+ele.scd_user_username+" "+scheds[i].scd_date+" to "+ele.scd_date+" offset: "+offset+" finish date: "+finish);
 				$scope.http.post('/manager/schedule/add',ele).success(function(data){					
 					//$modalInstance.close('closed');
 				});		
@@ -889,7 +890,7 @@ var  AddRepeatModalInstanceCtrl = function ($scope, $modalInstance, repeatForm, 
 	
 		//create repeats based on the dates given.
 		//var session_mem = $scope.session_member;
-		//console.log("create a session: "+$scope.mydate+"  rota: "+$scope.rota.rot_code+" user: "+session_mem.username);
+		////console.log("create a session: "+$scope.mydate+"  rota: "+$scope.rota.rot_code+" user: "+session_mem.username);
 		//var postme={scd_user_username:session_mem.username, scd_date:$scope.mydate, scd_rota_code:$scope.rota.rot_code}
 		//$scope.http.post('/manager/schedule/add',postme).success(function(data){					
 		//	$modalInstance.close('closed');

@@ -2,6 +2,7 @@
 (function(){  
 
   //change otherstuff from an array to a hash - >rename myschedule
+  //change otherstuff from an array to a hash - >rename myschedule
 
   var app = angular.module('SummaryModule',['ui.bootstrap']);
 
@@ -11,18 +12,28 @@
      return tmpdate.toDateString();
    };
   });
-  
+
   // get the summary list and wait for data re changes
   app.controller('SummaryController', ['$scope','$rootScope','$http','$log', function ($scope,$rootScope,$http,$log) {
+	$scope.init = function(days){
+		$scope.days = days;
+		$scope.pop_summary();
+	}
 	 //populate the lists from our API
 	$scope.rotas=[];
 	$rootScope.allrotas=[];
-	$http.get('/public/summary').success(function(data){	
+	$scope.pop_summary = function (){
+	
+		$http.get('/public/summary/'+$scope.days).success(function(data){	
 		$scope.rotas=data.rotas; //rots is sending back an array but we are not getting it nor the date objects!!
 		$rootScope.rotas=data.rotas;
 		
 		$scope.users=data.users;
 		$rootScope.users=data.users;
+		
+		//used to set the required field on our submit form
+		$scope.iscardhost=(data.iscardhost < 0)? "" : "true";
+		$rootScope.iscardhost=(data.iscardhost < 0)? "" : "true";
 		
 		console.log("users: "+data.users);
 		//$scope.users.forEach(function(usr){
@@ -85,7 +96,9 @@
 		});
 		
 		
-	});
+		});
+	
+	}
 	
 	$scope.daySessions = function(idate){
 		var day_arr=[];	
@@ -250,6 +263,21 @@
 			}
 		});
 	}
-  }]);
+  }]).directive('cardlogin',function(){
+                //display the selection screen for a particular student
+                //So we can embed in a Modal or Accordian
+    return {
+        //restrict: 'E',
+        // scope: {
+            // session: '=instudent'
+        // },
+		//template: "Hello everyone!!"
+		//we need to set cardhost == true if we are a card host!!!
+		scope: false,
+		
+		
+        templateUrl: '/templates/card-login.html'
+    };
+  });
   
 })();

@@ -137,6 +137,9 @@ exports.login = function (req, identifier, password, next) {
   var isEmail = validator.isEmail(identifier)
     , query   = {};
 
+  sails.log("in the local protocol");
+  sails.log("identifier: "+identifier);
+	
   if (isEmail) {
     query.email = identifier;
   }

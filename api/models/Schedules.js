@@ -23,6 +23,8 @@ module.exports = {
 	//	collection: 'Schedules',
 	//	via: 'scd_request_by'
 	//},
+	scd_start: 'STRING', //imported from the rots table
+	scd_finish: 'STRING',
 	scd_request_by:{
 		model: 'Schedules'
 	},

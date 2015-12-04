@@ -31,6 +31,7 @@
             + Use a different or additional preprocessor, like SASS, SCSS or Stylus
     -->
 
+    <script src="/js/dependencies/angular.js"></script>
     <!--STYLES-->
     <link rel="stylesheet" href="/styles/importer.css">
     <link rel="stylesheet" href="/styles/vendor/bootstrap-theme.min.css">
@@ -41,7 +42,6 @@
   </head>
 
   <body>
-
     
     <nav class="navbar navbar-inverse navbar-fixed-top">
       <div class="container">
@@ -52,23 +52,38 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">Security Rota</a>
+          <a class="navbar-brand" href="/index">Security Rota</a>
         </div>
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="index">Home</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#contact">Contact</a></li>
+			
+			<% if( typeof(user) !== 'undefined' ){ %>
+            		<li class="active"><a href="/index">Swap</a></li>
+            		<li class="active"><a href="/member/reports">Reports</a></li>
+			<% } %>
 			<% if( typeof(user) !== 'undefined' && user.manager ){ %>
 			<!--<li><a href="manage">Manage</a></li>-->
 			<li class="dropdown">
 				<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Manage<span class="caret"></span></a>
 				<ul class="dropdown-menu" role="menu">
-				<li ><a href="manage">Users + Rotas</a></li>
-				<li ><a href="schedules">Schedules</a></li>
+				<li ><a href="/manage">Users + Rotas</a></li>
+				<li ><a href="/manage/schedules">Schedules</a></li>
+				<li ><a href="/manage/reports">Reports</a></li>
+				<li ><a href="/manage/help">Help</a></li>
 				</ul>
 			</li>
 			<% } %>
+			<li ><a href="/summary">Three day view</a></li>
+			<li ><a href="/summary/8">Eight day view</a></li>
+			<li ><a href="/summary/28">Four week view</a></li>
+			<!--<li class="dropdown">
+				<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Summary<span class="caret"></span></a>
+				<ul class="dropdown-menu" role="menu">
+				<li ><a href="/summary">Three Day</a></li>
+				<li ><a href="/summary/8">Eight day</a></li>
+				<li ><a href="/summary/28">Four week</a></li>
+				</ul>
+			</li>-->
           </ul>
          <% if( typeof(user) !== 'undefined' ){ %>
          <form class="navbar-form navbar-right" method="post" action="/logout">
@@ -112,7 +127,7 @@
     -->
 
     <!--TEMPLATES-->
-    
+    <script type="text/javascript" src="/jst.js"></script>
     <!--TEMPLATES END-->
 
 
@@ -147,8 +162,6 @@
     <script src="/js/dependencies/ui-bootstrap-tpls-0.13.0.min.js"></script>
     <script src="/js/manager/MembershipModule.js"></script>
     <script src="/js/local/manage_user_modal.js"></script>
-    <script src="/js/manager/MemberController.js"></script>
-    <script src="/js/manager/MembershipController.js"></script>
     <script src="/js/manager/ScheduleManagementModule.js"></script>
     <script src="/js/manager/SchedulesModule.js"></script>
     <script src="/js/public/SummaryModule.js"></script>

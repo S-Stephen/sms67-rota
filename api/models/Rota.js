@@ -11,6 +11,8 @@ module.exports = {
     rot_code  : { type: 'string', unique: true },
     rot_description  : { type: 'string', unique: true },
     rot_order  : { type: 'integer', unique: true },
+	rot_starttime : {type: 'string' },
+	rot_finishtime : { type: 'string' }
   }
 };
 

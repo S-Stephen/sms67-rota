@@ -7,7 +7,7 @@
 <div  ng-app="ScheduleManagementModule"  class="container">
 
 <h3>
-Setup rotas / modify the sessions (drag drop)
+Setup rotas / modify the sessions
 </h3>
 
 <div class="table-responsive" ng-controller="MyScheduleController as myScheduleCtrl">
@@ -146,7 +146,7 @@ Setup rotas / modify the sessions (drag drop)
 		<h3>Note: This session has an active request to swap with another: </h3>
 		{{ scd_session.scd_request_by.scd_user_username }} {{ scd_session.scd_request_by.scd_date }} 
 		{{ scd_session.scd_request_to.scd_user_username }} {{ scd_session.scd_request_to.scd_date }} <br/>
-		<button type="submit" class="btn btn-warning" ng-click="actionSwap()">Action this swap</button>
+		<button type="submit" class="btn btn-warning" ng-click="managerActionSwap()">Action this swap</button>
 		<button type="submit" class="btn btn-warning" ng-click="removeSwap()">Remove this swap</button>
 		
 	</span>

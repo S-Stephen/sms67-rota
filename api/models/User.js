@@ -6,6 +6,7 @@ var User = {
     username  : { type: 'string', unique: true },
     email     : { type: 'email' }, //,  unique: true },
     display_name     : { type: 'string' }, //,  unique: true },
+	cardid : { type: 'string' }, 
     manager     : { type: 'boolean' }, //,  unique: true },
     passports : { collection: 'Passport', via: 'user' }
   }

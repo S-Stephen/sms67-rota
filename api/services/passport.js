@@ -291,6 +291,7 @@ passport.endpoint = function (req, res) {
   this.authenticate(provider, options)(req, res, req.next);
 };
 
+
 /**
  * Create an authentication callback endpoint
  *
@@ -302,26 +303,32 @@ passport.endpoint = function (req, res) {
  * @param {Function} next
  */
 passport.callback = function (req, res, next) {
-  var provider = req.param('provider', 'raven') //'local')
+  var provider = ( req.param('provider') )?  req.param('provider') : 'raven' //, 'raven') //'local')
     , action   = req.param('action');
 
+	
   sails.log("in call back");
+  sails.log("provider: "+provider);
+  sails.log("action: "+action);
 
   // Passport.js wasn't really built for local user registration, but it's nice
   // having it tied into everything else.
   if (provider === 'local' && action !== undefined) {
-    if (action === 'register' && !req.user) {
-      this.protocols.local.register(req, res, next);
+    if (action === 'login' && !req.user) {
+      this.protocols.mylocal.login(req, res, next);
+    }
+    else if (action === 'registercard' && req.user) {
+      this.protocols.mylocal.registercard(req, res, next);
     }
     else if (action === 'connect' && req.user) {
-      this.protocols.local.connect(req, res, next);
+      this.protocols.mylocal.connect(req, res, next);
     }
     else if (action === 'disconnect' && req.user) {
       this.disconnect(req, res, next);
     }
     else {
 	
-	
+		sails.log("invalid action");
       next(new Error('Invalid action'));
     }
   } else {
@@ -379,11 +386,11 @@ passport.loadStrategies = function () {
       _.extend(options, strategies[key].options || {});
 
       // Only load the local strategy if it's enabled in the config
-      if (strategies.local) {
+      //if (strategies.local) {
         Strategy = strategies[key].strategy;
 
         self.use(new Strategy(options, self.protocols.local.login));
-      }
+      //}
     } else if (key === 'bearer') {
 
       if (strategies.bearer) {

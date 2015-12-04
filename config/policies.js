@@ -52,11 +52,41 @@ module.exports.policies = {
 	//
    // mine for PAssport:
    //
-   //AuthController: true,
+   // 'AuthController':  { 
+		// '*': true,
+		// 'callback': ['cardhostAuth']			
+	// },
+   'indexController': { 
+		'*': ['passport', 'sessionAuth'],
+		'summary': ['passport',true],
+		'summaryDays': ['passport',true]
+	},
+   'ScheduleController' :  { 
+		'*': ['passport', 'sessionAuth'],
+		'declineswap_manager':['passport','sessionAuth','isManager'],
+		'acceptswap_manager':['passport','sessionAuth','isManager'],
+		'create_manager':['passport','sessionAuth','isManager'],
+		summarylistdays: true
+	},
+	
+   'RotaController' : { 
+		'*' : ['passport','sessionAuth','isManager'],
+		'list' : ['passport','sessionAuth']
+	},
+   'ReportsController' : { '*': ['passport', 'sessionAuth'], 'manager_index': ['passport','sessionAuth','isManager'], 'manager_fullsummary': ['passport','sessionAuth','isManager']},
+   'UserController' :  ['passport','sessionAuth','isManager'],
+   'ManageController': ['passport', 'sessionAuth','isManager'],
    '*': ['passport', 'sessionAuth'],
-  'auth': {
-    '*': ['passport']
+  'AuthController': {
+    '*': ['passport'],
+    'registercard': ['passport','cardhostAuth'],
+    'callback_local': ['passport','cardhostAuth']	
   },
+  // //we could writ eabove as:
+  // 'auth': {
+    // '*': ['passport'],
+    // 'callback': ['cardhostAuth']	
+  // },
   // DEBUG allow everthing through whilst we investigate the model access (seems to break passport)
   //'*': true
 };

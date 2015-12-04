@@ -33,6 +33,7 @@ var AuthController = {
   login: function (req, res) {
     var strategies = sails.config.passport
       , providers  = {};
+	  
 
     // Get a list of available providers for use in your templates.
     Object.keys(strategies).forEach(function (key) {
@@ -52,6 +53,7 @@ var AuthController = {
     , errors    : req.flash('error')
     });
   },
+
 
   /**
    * Log out a user and return them to the homepage
@@ -111,7 +113,7 @@ var AuthController = {
   },
 
   /**
-   * Create a authentication callback endpoint
+   * Create a authentication callback endpoints (_local is limited by cardaccess)
    *
    * This endpoint handles everything related to creating and verifying Pass-
    * ports and users, both locally and from third-aprty providers.
@@ -126,69 +128,24 @@ var AuthController = {
    * @param {Object} req
    * @param {Object} res
    */
-  callback: function (req, res) {
-    sails.log("in the ControllerAuth.callback ");
-    function tryAgain (err) {
-      sails.log("another attempt to login ");
-      // Only certain error messages are returned via req.flash('error', someError)
-      // because we shouldn't expose internal authorization errors to the user.
-      // We do return a generic error and the original request body.
-      var flashError = req.flash('error')[0];
+  callback_local: function (req, res) {
+	sails.log("local callback called");
+	
+    AuthActionServices.callback(req,res);
+	
 
-      if (err && !flashError ) {
-        req.flash('error', 'Error.Passport.Generic');
-      } else if (flashError) {
-        req.flash('error', flashError);
-      }
-      req.flash('form', req.body);
-
-      // If an error was thrown, redirect the user to the
-      // login, register or disconnect action initiator view.
-      // These views should take care of rendering the error messages.
-      var action = req.param('action');
-      sails.log("action:  "+action);
-
-      switch (action) {
-        case 'register':
-          res.redirect('/register');
-          break;
-        case 'disconnect':
-          res.redirect('back');
-          break;
-        default:
-          res.redirect('/login');
-      }
-    }
-
-    passport.callback(req, res, function (err, user, challenges, statuses) {
-      sails.log("in function ppassed to passport callback");
-      if (err || !user) {
-        return tryAgain(challenges);
-      }
-      sails.log("we are okay and will continue");
-      req.login(user, function (err) {
-        if (err) {
-          return tryAgain(err);
-        }
-        
-        sails.log("the session will be marked as authenticated");
-        // Mark the session as authenticated to work with default Sails sessionAuth.js policy
-        req.session.authenticated = true
-        
-        // Upon successful login, send the user to the homepage were req.user
-        // will be available.
-        sails.log("about to redirect to /");
-		
-		//are we  registered user?
-		
-		//else direct to summary screen
-		
-		
-        res.redirect('/summary');
-      });
-    });
   },
 
+  callback: function (req, res) {
+	sails.log("callback called");
+    AuthActionServices.callback(req,res);
+  },
+
+  
+   register_card: function(req, res){
+	 AuthActionServices.register_card(req,res);
+   },
+  
   /**
    * Disconnect a passport from a user
    *

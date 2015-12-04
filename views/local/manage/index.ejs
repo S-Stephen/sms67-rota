@@ -38,7 +38,10 @@ Current members:<br/>
 		<span class="glyphicon glyphicon-pawn" aria-hidden="true"></span>
 		<span ng-show="member.manager" class="glyphicon glyphicon-king" aria-hidden="true"></span>
 		</td>
-		<td><button class="btn btn-primary btn-sm" ng-click="showForm(member)">Edit</button></td>
+		<td>
+			<button class="btn btn-primary btn-sm" ng-click="showForm(member)">Edit</button>
+			<button class="btn btn-primary btn-sm" ng-click="regCard(member)" tooltip="registering a card will overwrite any existing cards">{{ member.cardid ? "Re-Register Card" : "Register Card"}}</button>
+		</td>
 		</tr>
 	  </tbody>
 	  <tfooter>
@@ -104,6 +107,22 @@ Current Rotas:<br/>
 </div>
 
 	
+<script type="text/ng-template" id="modal-regcard.html">
+	<div class="modal-header">
+    <h3 ng-hide="vars.id">Register card</h3>
+    <h3 ng-show="vars.id">Present card for: {{ vars.username }} </h3>
+	</div>
+	
+	<form name="form.userForm"  ng-submit="submitForm()">
+        <input type="hidden" name="username" class="form-control" ng-model="vars.username" ng-disabled="vars.id" required/>
+		<input type="text" name="cardid1" ng-model="vars.cardid1" autofocus required style="position:fixed; top:0; left:0; z-index: -200"/>
+		<input type="hidden" name="email" ng-model="vars.email"/>
+	</form>
+	
+	<div ng-show="message" class="alert alert-danger">
+		{{message}}
+	</div>
+</script>
 <!-- the .html files must exist within the ng-app -->
 	
 <script type="text/ng-template" id="modal-form.html">
