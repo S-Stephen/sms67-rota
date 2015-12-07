@@ -159,6 +159,7 @@ module.exports.routes = {
 
 
 ,'get /icals': 'ScheduleController.icaloutput'
+,'get /icals/:code': 'ScheduleController.icaloutput_code'
 
 
 };

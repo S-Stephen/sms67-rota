@@ -220,6 +220,37 @@ module.exports = {
 				cal+="DTSTAMP:"+ev.scd_date.getFullYear()+("0" + (ev.scd_date.getMonth() + 1)).slice(-2)+("0" + ev.scd_date.getDate()).slice(-2)+"T000000Z\r\n";
 				cal+="DTSTART:"+ev.scd_date.getFullYear()+("0" + (ev.scd_date.getMonth() + 1)).slice(-2)+("0" + ev.scd_date.getDate()).slice(-2)+"T000000Z\r\n";
 				cal+="DTEND:"+ev.scd_date.getFullYear()+("0" + (ev.scd_date.getMonth() + 1)).slice(-2)+("0" + ev.scd_date.getDate()).slice(-2)+"T235959Z\r\n";
+				cal+="SUMMARY:"+ev.scd_user_username+" "+ev.scd_rota_code+"\r\n";
+				cal+="END:VEVENT\r\n";
+				row++;
+			})
+			
+			res.status(200);
+			cal+="END:VCALENDAR\r\n"
+			res.send(cal);
+			//res.send("your ical: ");
+			//res.json(data);
+		});
+	},
+	icaloutput_code: function(req,res,next){
+	
+		var code = req.param('code');
+	
+		var nowd = new Date();
+		var fdate=(new Date(nowd.getTime()-1000*60*60*24)) 
+		var cal="BEGIN:VCALENDAR\r\n";
+		cal+="VERSION:2.0\r\n"
+		cal+="PRODID:-//hacksw/handcal//NONSGML v1.0//EN\r\n";
+		var row=0
+		Schedules.find().where({ scd_date: { '>': fdate}, scd_rota_code : code }).sort('scd_date ASC').exec(function(err,data){
+			//sails.log("found some swaps: "+data);
+			data.forEach(function gen_cal(ev){
+				//sails.log("have row");
+				cal+="BEGIN:VEVENT\r\n";
+				cal+="UID:wq-AF23B2"+row+"@eng.cam\r\n";
+				cal+="DTSTAMP:"+ev.scd_date.getFullYear()+("0" + (ev.scd_date.getMonth() + 1)).slice(-2)+("0" + ev.scd_date.getDate()).slice(-2)+"T000000Z\r\n";
+				cal+="DTSTART:"+ev.scd_date.getFullYear()+("0" + (ev.scd_date.getMonth() + 1)).slice(-2)+("0" + ev.scd_date.getDate()).slice(-2)+"T000000Z\r\n";
+				cal+="DTEND:"+ev.scd_date.getFullYear()+("0" + (ev.scd_date.getMonth() + 1)).slice(-2)+("0" + ev.scd_date.getDate()).slice(-2)+"T235959Z\r\n";
 				cal+="SUMMARY:"+ev.scd_user_username+"\r\n";
 				cal+="END:VEVENT\r\n";
 				row++;
