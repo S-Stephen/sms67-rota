@@ -59,12 +59,14 @@ module.exports.connections = {
     password: process.env.DB_PASS || '',
     database: process.env.DB_NAME || 'test',
 
-    ssl: {
+/*    ssl: {
           ca: process.env.SERVER_CA,
           cert: process.env.CLIENT_CERT,
           key: process.env.CLIENT_KEY
          }
+*/
   },
+
   
 
   someMysqlServer: {
