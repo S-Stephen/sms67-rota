@@ -36,6 +36,10 @@ module.exports = {
   // }
   hostname: process.env.APP_BASEURL || 'http://testsms67b.eng.cam.ac.uk:1337',
 
+  cardhosts: [ '129.169.14.209' ],
+
+  emailfrom: "sms67@eng.cam.ac.uk",
+
 };
 
 
