@@ -99,16 +99,20 @@ module.exports = {
 			Rota.find({sort:'rot_order'}).exec(function foundRotas(err,rotas){
 			
 				var rota_arr=[];
+				if (rotas){
 				rotas.forEach(function(rot){
 					rota_arr.push(rot); // thi swill be used in an ng-orderBy
 				});
+				}
 				User.find().exec(function users(err,users){
 					var user_hash={};
 					sails.log("users: "+users);
+					if (users){
 					users.forEach(function(muser){
 						//assume it's okay for public to have emails
 						user_hash[muser.username]=muser;
 					})
+					}
 					res.status(200);
 				//how do we send back the aarrays via keys!!!?//
 					sails.log("DEBUG dates: "+dates);
