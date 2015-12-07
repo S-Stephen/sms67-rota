@@ -42,7 +42,8 @@ module.exports.session = {
   ***************************************************************************/
 
   adapter: 'redis',
-   url: process.env.REDIS_URL || 'redis://127.0.0.1:6379'
+  //url: process.env.REDIS_URL || 'redis://127.0.0.1:6379'
+  // url: 'redis_blah://127.0.0.1:6379'
   /***************************************************************************
   *                                                                          *
   * The following values are optional, if no options are set a redis         *
@@ -52,12 +53,22 @@ module.exports.session = {
   *                                                                          *
   ***************************************************************************/
 
-  // host: 'localhost',
-  // port: 6379,
-  // ttl: <redis session TTL in seconds>,
-  // db: 0,
-  // pass: <redis auth password>,
-  // prefix: 'sess:',
+   host: process.env.REDIS_HOST || 'ec2-54-195-242-227.eu-west-1.compute.amazonaws.com',
+   port: process.env.REDIS_PORT || 12159,
+   //ttl: <redis session TTL in seconds>,
+   db: process.env.REDIS_DB || 'h',
+   pass: process.env.REDIS_PW || 'pcl61dsoqrn4jgen910hb0peurb',
+   prefix: 'sess:',
+
+/*
+   host: 'localhost',
+   port: 6379,
+   ttl: <redis session TTL in seconds>,
+   db: 0,
+   pass: <redis auth password>,
+   prefix: 'sess:',
+*/
+
 
 
   /***************************************************************************
