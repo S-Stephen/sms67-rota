@@ -210,6 +210,7 @@ module.exports = {
 		var cal="BEGIN:VCALENDAR\r\n";
 		cal+="VERSION:2.0\r\n"
 		cal+="PRODID:-//hacksw/handcal//NONSGML v1.0//EN\r\n";
+		cal+="X-WR-CALNAME:All Rotas\r\n";
 		var row=0
 		Schedules.find().where({ scd_date: { '>': fdate} }).sort('scd_date ASC').exec(function(err,data){
 			//sails.log("found some swaps: "+data);
@@ -241,6 +242,7 @@ module.exports = {
 		var cal="BEGIN:VCALENDAR\r\n";
 		cal+="VERSION:2.0\r\n"
 		cal+="PRODID:-//hacksw/handcal//NONSGML v1.0//EN\r\n";
+		cal+="X-WR-CALNAME:"+code+" Rota\r\n";
 		var row=0
 		Schedules.find().where({ scd_date: { '>': fdate}, scd_rota_code : code }).sort('scd_date ASC').exec(function(err,data){
 			//sails.log("found some swaps: "+data);
