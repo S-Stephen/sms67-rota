@@ -66,7 +66,8 @@ module.exports.policies = {
 		'declineswap_manager':['passport','sessionAuth','isManager'],
 		'acceptswap_manager':['passport','sessionAuth','isManager'],
 		'create_manager':['passport','sessionAuth','isManager'],
-		summarylistdays: true
+		summarylistdays: true,
+		icaloutput: true
 	},
 	
    'RotaController' : { 
