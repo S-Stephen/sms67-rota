@@ -9,17 +9,31 @@ module.exports = {
 	
     create_manager: function(req,res,next){
 		var params = req.params.all();
-		sails.log("DEBUG adding a new schedule here! "+params);
+		var mydate = new Date(params.scd_date);
+		sails.log("DEBUG adding a new schedule here! "+mydate.getDay());
 		
-		params.scd_status="accepted";
-		Schedules.create(params, function(err, data){
-			if (err) return next(err);
 		
-			res.status(201);
-			sails.log("DEBUG new Schedule: "+data);
-			sails.sockets.blast('schedule',{verb:'created',ele:data});
-			res.json(data);
-		});
+		//TODO this isn't yet there as the hours are different depending on the day
+		
+		RotaSessions.findOne({ros_rota_code:params.scd_rota_code,ros_day:{'like':'%'+mydate.getDay()+'%'}}).exec(function foundOne(err,data){
+			
+			//trouble if no data found!
+			
+			params.scd_start=data.ros_start_time;
+			params.scd_finish=data.ros_end_time;
+			
+			params.scd_status="accepted";
+			Schedules.create(params, function(err, data){
+			//we need to populate the start finish times too!
+				if (err) return next(err);
+		
+				res.status(201);
+				sails.log("DEBUG new Schedule: "+data);
+				sails.sockets.blast('schedule',{verb:'created',ele:data});
+				res.json(data);
+			});
+		})
+
 	},
 	
 	//list the scheules for the current user (req.user.username)
@@ -220,8 +234,8 @@ module.exports = {
 				cal+="BEGIN:VEVENT\r\n";
 				cal+="UID:wq-AF23B2"+row+"@eng.cam\r\n";
 				cal+="DTSTAMP:"+ev.scd_date.getFullYear()+("0" + (ev.scd_date.getMonth() + 1)).slice(-2)+("0" + ev.scd_date.getDate()).slice(-2)+"T000000Z\r\n";
-				cal+="DTSTART:"+ev.scd_date.getFullYear()+("0" + (ev.scd_date.getMonth() + 1)).slice(-2)+("0" + ev.scd_date.getDate()).slice(-2)+"T000000Z\r\n";
-				cal+="DTEND:"+ev.scd_date.getFullYear()+("0" + (ev.scd_date.getMonth() + 1)).slice(-2)+("0" + ev.scd_date.getDate()).slice(-2)+"T235959Z\r\n";
+				cal+="DTSTART:"+ev.scd_date.getFullYear()+("0" + (ev.scd_date.getMonth() + 1)).slice(-2)+("0" + ev.scd_date.getDate()).slice(-2)+"T"+ev.scd_start+"Z\r\n";
+				cal+="DTEND:"+ev.scd_date.getFullYear()+("0" + (ev.scd_date.getMonth() + 1)).slice(-2)+("0" + ev.scd_date.getDate()).slice(-2)+"T"+ev.scd_finish+"Z\r\n";
 				cal+="SUMMARY:"+ev.scd_user_username+" "+ev.scd_rota_code+"\r\n";
 				cal+="END:VEVENT\r\n";
 				row++;
@@ -253,8 +267,8 @@ module.exports = {
 				cal+="BEGIN:VEVENT\r\n";
 				cal+="UID:wq-AF23B2"+row+"@eng.cam\r\n";
 				cal+="DTSTAMP:"+ev.scd_date.getFullYear()+("0" + (ev.scd_date.getMonth() + 1)).slice(-2)+("0" + ev.scd_date.getDate()).slice(-2)+"T000000Z\r\n";
-				cal+="DTSTART:"+ev.scd_date.getFullYear()+("0" + (ev.scd_date.getMonth() + 1)).slice(-2)+("0" + ev.scd_date.getDate()).slice(-2)+"T000000Z\r\n";
-				cal+="DTEND:"+ev.scd_date.getFullYear()+("0" + (ev.scd_date.getMonth() + 1)).slice(-2)+("0" + ev.scd_date.getDate()).slice(-2)+"T235959Z\r\n";
+				cal+="DTSTART:"+ev.scd_date.getFullYear()+("0" + (ev.scd_date.getMonth() + 1)).slice(-2)+("0" + ev.scd_date.getDate()).slice(-2)+"T"+ev.scd_start+"Z\r\n";
+				cal+="DTEND:"+ev.scd_date.getFullYear()+("0" + (ev.scd_date.getMonth() + 1)).slice(-2)+("0" + ev.scd_date.getDate()).slice(-2)+"T"+ev.scd_finish+"Z\r\n";
 				cal+="SUMMARY:"+ev.scd_user_username+"\r\n";
 				cal+="END:VEVENT\r\n";
 				row++;

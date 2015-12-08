@@ -53,11 +53,11 @@ module.exports.session = {
   *                                                                          *
   ***************************************************************************/
 
-   host: process.env.REDIS_HOST || 'ec2-54-195-242-227.eu-west-1.compute.amazonaws.com',
-   port: process.env.REDIS_PORT || 12159,
+   host: process.env.REDIS_HOST || 'localhost',
+   port: process.env.REDIS_PORT || 6379,
    //ttl: <redis session TTL in seconds>,
-   db: process.env.REDIS_DB || 'h',
-   pass: process.env.REDIS_PW || 'pcl61dsoqrn4jgen910hb0peurb',
+   db: process.env.REDIS_DB || '',
+   pass: process.env.REDIS_PW || '',
    prefix: 'sess:',
 
 /*
