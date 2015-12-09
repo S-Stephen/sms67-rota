@@ -27,10 +27,11 @@ a.icon-raven {
 
 <% if (Object.keys(providers).length) {%>
   <h4>You can use one of these...</h4>
-
+<!--
   <% Object.keys(providers).forEach(function (key) { %>
    <button class="btn btn-info"><a <%= (providers[key].name == 'raven')? 'class=icon-raven'  : "" %> href="/auth/<%= providers[key].slug %>" role="button"><%= providers[key].name %></a></button>
   <% }) %>
+-->
   <% Object.keys(providers).forEach(function (key) { %>
    <a <%= (providers[key].name == 'raven')? 'class=icon-raven'  : "" %> href="/auth/<%= providers[key].slug %>" role="button"><%= providers[key].name %></a>
   <% }) %>
