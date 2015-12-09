@@ -58,16 +58,16 @@ module.exports.passport = {
 /*    }
   },
 */
-  // google: {
-    // name: 'Google',
-    // protocol: 'oauth2',
-    // strategy: require('passport-google-oauth').OAuth2Strategy,
-    // options: {
-      // clientID: '972117638860-4uvfb32bp2pm3a4u4642q6bj5o873erp.apps.googleusercontent.com',
-      // clientSecret: 'aPamjW0_qZq0GvFoYP-qp7Mc',
-      // scope: "email"
-    // }
-  // },
+   google: {
+     name: 'Google',
+     protocol: 'oauth2',
+     strategy: require('passport-google-oauth').OAuth2Strategy,
+     options: {
+       clientID: '972117638860-4uvfb32bp2pm3a4u4642q6bj5o873erp.apps.googleusercontent.com',
+       clientSecret: 'aPamjW0_qZq0GvFoYP-qp7Mc',
+       scope: "email"
+     }
+   },
 
 /*
   cas: {
