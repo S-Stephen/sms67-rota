@@ -65,7 +65,7 @@ module.exports.passport = {
      options: {
        clientID: '972117638860-4uvfb32bp2pm3a4u4642q6bj5o873erp.apps.googleusercontent.com',
        clientSecret: 'aPamjW0_qZq0GvFoYP-qp7Mc',
-       callbackURL: 'http://www.securityrota.co.uk/auth/google/callback',
+//       callbackURL: 'http://www.securityrota.co.uk/auth/google/callback',
        scope: "email"
      }
    },
