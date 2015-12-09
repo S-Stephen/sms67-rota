@@ -63,9 +63,11 @@ module.exports.passport = {
      protocol: 'oauth2',
      strategy: require('passport-google-oauth').OAuth2Strategy,
      options: {
-       clientID: '972117638860-4uvfb32bp2pm3a4u4642q6bj5o873erp.apps.googleusercontent.com',
-       clientSecret: 'aPamjW0_qZq0GvFoYP-qp7Mc',
-//       callbackURL: 'http://www.securityrota.co.uk/auth/google/callback',
+       clientID: '972117638860-3fmdsmj1sahc48d24tvjelpulia4crr1.apps.googleusercontent.com',
+       //clientID: '972117638860-4uvfb32bp2pm3a4u4642q6bj5o873erp.apps.googleusercontent.com',
+       clientSecret: '7KvZjoe_nu96tnMATGT2KlZ6',
+       //clientSecret: 'aPamjW0_qZq0GvFoYP-qp7Mc',
+       callbackURL: 'http://www.securityrota.co.uk/auth/google/callback',
        scope: "email"
      }
    },

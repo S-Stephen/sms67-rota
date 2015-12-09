@@ -35,7 +35,7 @@ module.exports = {
   //   level: "silent"
   // }
   //for google API:
-  proxyHost:  process.env.APP_BASEURL || 'http://testsms67b.eng.cam.ac.uk:1337/',
+  //proxyHost:  process.env.APP_BASEURL || 'http://testsms67b.eng.cam.ac.uk:1337/',
 
 
   hostname: process.env.APP_BASEURL || 'http://testsms67b.eng.cam.ac.uk:1337',
