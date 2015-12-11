@@ -58,7 +58,7 @@ module.exports.passport = {
 /*    }
   },
 */
-   google: {
+/*   google: {
      name: 'Google',
      protocol: 'oauth2',
      strategy: require('passport-google-oauth').OAuth2Strategy,
@@ -71,7 +71,7 @@ module.exports.passport = {
        scope: "email"
      }
    },
-
+*/
 /*
   cas: {
     name: 'CAS',

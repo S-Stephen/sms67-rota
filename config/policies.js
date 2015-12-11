@@ -66,6 +66,8 @@ module.exports.policies = {
 		'declineswap_manager':['passport','sessionAuth','isManager'],
 		'acceptswap_manager':['passport','sessionAuth','isManager'],
 		'create_manager':['passport','sessionAuth','isManager'],
+		'update_manager':['passport','sessionAuth','isManager'],
+		'del_manager':['passport','sessionAuth','isManager'],
 		summarylistdays: true,
 		icaloutput: true,
 		icaloutput_code: true
@@ -79,11 +81,11 @@ module.exports.policies = {
    'UserController' :  ['passport','sessionAuth','isManager'],
    'ManageController': ['passport', 'sessionAuth','isManager'],
    '*': ['passport', 'sessionAuth'],
-  'AuthController': {
-    '*': ['passport'],
-    'registercard': ['passport','cardhostAuth'],
-    'callback_local': ['passport','cardhostAuth']	
-  },
+   'AuthController': {
+		'*': ['passport'],
+		'registercard': ['passport','cardhostAuth'],
+		'callback_local': ['passport','cardhostAuth']	
+	},
   // //we could writ eabove as:
   // 'auth': {
     // '*': ['passport'],

@@ -96,6 +96,7 @@ module.exports.routes = {
 
 ,'get /member/schedule': 'ScheduleController.list' // member
 ,'get /rota/schedule/all': 'ScheduleController.listall' // member
+,'get /rota/usernames': 'ScheduleController.usernamelookup' // member
 ,'get /rota/schedule/swap/:rota/:user': 'ScheduleController.swapfor' // member- lists scheules we can swap with
 //request a swap - two objects are passed mine theirs
 

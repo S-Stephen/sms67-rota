@@ -154,7 +154,7 @@
 				<td ng-repeat="rotacode in myscheduleCtrl.rotalist">
 				<!-- allrotas rather than mysched.allrotas uses root scoped data -->
 				<span ng-repeat="schedule in allrotas[rotacode][mydate.toDateString()]">
-					<span class="btn" ng-class="{requested:'btn-warning',requestto:'btn-warning',accepted:'btn-success',offerup:'btn-danger'}[schedule.scd_status]" ng-click="showSwapWithForm(schedule,myscheduleCtrl.myschedule)"> 
+					<span tooltip="{{myscheduleCtrl.userlookup[schedule.scd_user_username]}}" class="btn" ng-class="{requested:'btn-warning',requestto:'btn-warning',accepted:'btn-success',offerup:'btn-danger'}[schedule.scd_status]" ng-click="showSwapWithForm(schedule,myscheduleCtrl.myschedule)"> 
 						{{ schedule.scd_user_username }}
 					</span>
 					<br/>

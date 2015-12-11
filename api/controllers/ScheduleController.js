@@ -36,6 +36,13 @@ module.exports = {
 
 	},
 	
+	usernamelookup: function(req,res,next){
+		User.find().exec(function(err,data){
+			res.status(200);
+			res.json(data);
+		});
+	},
+	
 	//list the scheules for the current user (req.user.username)
 	list: function(req,res,next){
 		Schedules.find().where({'scd_user_username':req.user.username}).populate('scd_request_by').populate('scd_request_to').sort('scd_date ASC').exec(function(err,data){

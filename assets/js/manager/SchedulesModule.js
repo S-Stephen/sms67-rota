@@ -23,6 +23,7 @@
 	mysched.myschedule = {}; // {mykey:Date, arr:[]}the date will be the key
     mysched.allrotas = {};
 	mysched.rotalist =[];
+	mysched.userlookup = {};
 	mysched.myrequests={};//array of requests I have made (rot-date)
 	mysched.requeststo={};//array of all the requests other people have made (rot-date)
 	mysched.me=''; // TODO Fix setting this currently relies on the user haveing a session assigned
@@ -336,6 +337,14 @@
 			}
 			mysched.allrotas[ele.scd_rota_code][eledate.toDateString()].push(ele);	
 		})
+	});
+	
+	
+	$http.get('/rota/usernames').success(function(data){	
+		
+		data.forEach(function(ele){
+			mysched.userlookup[ele.username]=ele.display_name;
+		});
 	});
 	
 	//Get a list of swap request sessions I've made
