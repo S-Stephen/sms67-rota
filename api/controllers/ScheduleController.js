@@ -272,11 +272,12 @@ module.exports = {
 			//sails.log("found some swaps: "+data);
 			data.forEach(function gen_cal(ev){
 				//sails.log("have row");
+				var utcdate=new Date(ev.scd_date.getTime())
 				cal+="BEGIN:VEVENT\r\n";
 				cal+="UID:wq"+code+"-"+row+"@eng.cam\r\n";
 				//cal+="DTSTAMP:"+ev.scd_date.getFullYear()+("0" + (ev.scd_date.getMonth() + 1)).slice(-2)+("0" + ev.scd_date.getDate()).slice(-2)+"T000000Z\r\n";
-				cal+="DTSTART:"+ev.scd_date.getFullYear()+("0" + (ev.scd_date.getMonth() + 1)).slice(-2)+("0" + ev.scd_date.getDate()).slice(-2)+"T"+ev.scd_start+"\r\n";
-				cal+="DTEND:"+ev.scd_date.getFullYear()+("0" + (ev.scd_date.getMonth() + 1)).slice(-2)+("0" + ev.scd_date.getDate()).slice(-2)+"T"+ev.scd_finish+"\r\n";
+				cal+="DTSTART;Europe/London:"+ev.scd_date.getFullYear()+("0" + (ev.scd_date.getMonth() + 1)).slice(-2)+("0" + ev.scd_date.getDate()).slice(-2)+"T"+ev.scd_start+"\r\n";
+				cal+="DTEND;Europe/London:"+ev.scd_date.getFullYear()+("0" + (ev.scd_date.getMonth() + 1)).slice(-2)+("0" + ev.scd_date.getDate()).slice(-2)+"T"+ev.scd_finish+"\r\n";
 				cal+="SUMMARY:"+ev.scd_user_username+"\r\n";
 				cal+="END:VEVENT\r\n";
 				row++;
