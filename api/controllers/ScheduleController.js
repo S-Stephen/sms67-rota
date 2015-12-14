@@ -266,6 +266,7 @@ module.exports = {
 		cal+="PRODID:-//hacksw/handcal//NONSGML v1.0//EN\r\n";
 		cal+="X-WR-CALNAME:"+code+" Rota\r\n";
 		cal+="X-PUBLISHED-TTL:PT1H\r\n";
+		cal+="X-WR-TIMEZONE:Europe/London\r\n";
 		var row=0
 		Schedules.find().where({ scd_date: { '>': fdate}, scd_rota_code : code }).sort('scd_date ASC').exec(function(err,data){
 			//sails.log("found some swaps: "+data);
@@ -274,8 +275,8 @@ module.exports = {
 				cal+="BEGIN:VEVENT\r\n";
 				cal+="UID:wq"+code+"-"+row+"@eng.cam\r\n";
 				//cal+="DTSTAMP:"+ev.scd_date.getFullYear()+("0" + (ev.scd_date.getMonth() + 1)).slice(-2)+("0" + ev.scd_date.getDate()).slice(-2)+"T000000Z\r\n";
-				cal+="DTSTART;TZID=Europe/London:"+ev.scd_date.getFullYear()+("0" + (ev.scd_date.getMonth() + 1)).slice(-2)+("0" + ev.scd_date.getDate()).slice(-2)+"T"+ev.scd_start+"\r\n";
-				cal+="DTEND;TZID=Europe/London:"+ev.scd_date.getFullYear()+("0" + (ev.scd_date.getMonth() + 1)).slice(-2)+("0" + ev.scd_date.getDate()).slice(-2)+"T"+ev.scd_finish+"\r\n";
+				cal+="DTSTART:"+ev.scd_date.getFullYear()+("0" + (ev.scd_date.getMonth() + 1)).slice(-2)+("0" + ev.scd_date.getDate()).slice(-2)+"T"+ev.scd_start+"\r\n";
+				cal+="DTEND:"+ev.scd_date.getFullYear()+("0" + (ev.scd_date.getMonth() + 1)).slice(-2)+("0" + ev.scd_date.getDate()).slice(-2)+"T"+ev.scd_finish+"\r\n";
 				cal+="SUMMARY:"+ev.scd_user_username+"\r\n";
 				cal+="END:VEVENT\r\n";
 				row++;
