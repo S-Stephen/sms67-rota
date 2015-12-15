@@ -239,7 +239,7 @@ module.exports = {
 			data.forEach(function gen_cal(ev){
 				//sails.log("have row");
 				cal+="BEGIN:VEVENT\r\n";
-				cal+="UID:wq-ALL"+code+"-"+ev.scd_user_username+"-"+row+"@eng.cam\r\n";
+				cal+="UID:wq-ALL"+ev.scd_rota_code+"-"+ev.scd_user_username+"-"+row+"@eng.cam\r\n";
 				//cal+="UID:wq-AF23B2"+row+"@eng.cam\r\n";
 				cal+="DTSTART;TZID=/Europe/London:"+ev.scd_date.getFullYear()+("0" + (ev.scd_date.getMonth() + 1)).slice(-2)+("0" + ev.scd_date.getDate()).slice(-2)+"T"+ev.scd_start+"\r\n";
 				cal+="DTEND;TZID=/Europe/London:"+ev.scd_date.getFullYear()+("0" + (ev.scd_date.getMonth() + 1)).slice(-2)+("0" + ev.scd_date.getDate()).slice(-2)+"T"+ev.scd_finish+"\r\n";
