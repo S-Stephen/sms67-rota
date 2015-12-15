@@ -239,7 +239,8 @@ module.exports = {
 			data.forEach(function gen_cal(ev){
 				//sails.log("have row");
 				cal+="BEGIN:VEVENT\r\n";
-				cal+="UID:wq-AF23B2"+row+"@eng.cam\r\n";
+				cal+="UID:wq-ALL"+code+"-"+ev.scd_user_username+"-"+row+"@eng.cam\r\n";
+				//cal+="UID:wq-AF23B2"+row+"@eng.cam\r\n";
 				cal+="DTSTART;TZID=/Europe/London:"+ev.scd_date.getFullYear()+("0" + (ev.scd_date.getMonth() + 1)).slice(-2)+("0" + ev.scd_date.getDate()).slice(-2)+"T"+ev.scd_start+"\r\n";
 				cal+="DTEND;TZID=/Europe/London:"+ev.scd_date.getFullYear()+("0" + (ev.scd_date.getMonth() + 1)).slice(-2)+("0" + ev.scd_date.getDate()).slice(-2)+"T"+ev.scd_finish+"\r\n";
 				cal+="SUMMARY:"+ev.scd_user_username+" "+ev.scd_rota_code+"\r\n";
@@ -271,9 +272,9 @@ module.exports = {
 			//sails.log("found some swaps: "+data);
 			data.forEach(function gen_cal(ev){
 				//sails.log("have row");
-				var utcdate=new Date(ev.scd_date.getTime())
+				//var utcdate=new Date(ev.scd_date.getTime())
 				cal+="BEGIN:VEVENT\r\n";
-				cal+="UID:wq"+code+"-"+row+"@eng.cam\r\n";
+				cal+="UID:wq"+code+"-"+ev.scd_user_username+"-"+row+"@eng.cam\r\n";
 				//cal+="DTSTAMP:"+ev.scd_date.getFullYear()+("0" + (ev.scd_date.getMonth() + 1)).slice(-2)+("0" + ev.scd_date.getDate()).slice(-2)+"T000000Z\r\n";
 				cal+="DTSTART;TZID=/Europe/London:"+ev.scd_date.getFullYear()+("0" + (ev.scd_date.getMonth() + 1)).slice(-2)+("0" + ev.scd_date.getDate()).slice(-2)+"T"+ev.scd_start+"\r\n";
 				cal+="DTEND;TZID=/Europe/London:"+ev.scd_date.getFullYear()+("0" + (ev.scd_date.getMonth() + 1)).slice(-2)+("0" + ev.scd_date.getDate()).slice(-2)+"T"+ev.scd_finish+"\r\n";
