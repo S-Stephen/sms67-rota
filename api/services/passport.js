@@ -103,6 +103,7 @@ passport.connect = function (req, query, profile, next) {
   if (!user.username && !user.email) {
     return next(new Error('Neither a username nor email was available'));
   }
+  
   sails.log("in Passport.js connect ");
   Passport.findOne({
     provider   : provider
@@ -135,7 +136,7 @@ passport.connect = function (req, query, profile, next) {
           passport.tokens = query.tokens;
         }
 
-	  sails.log("passport user befor efind user : "+passport.user);
+	    sails.log("passport user befor efind user : "+passport.user);
         // Save any updates to the Passport before moving on
         passport.save(function (err, passport) {
           if (err) {
@@ -197,35 +198,46 @@ passport.connect = function (req, query, profile, next) {
 	    user.username = user.username || user.email;
 		sails.log("user "+util.inspect(user));
 		//user.username =user.username.replace('cam.ac.uk','');
-		User.findOrCreate({username:user.username}).exec(function(err,found){
-        User.update({username:user.username}, user, function (err, users) {
-          if (err) {
-			  sails.log("user not created - boo hoo error "+util.inspect(err));
-            if (err.code === 'E_VALIDATION') {
-			  sails.log("user not created - boo hoo error "+util.inspect(err));
-              if (err.invalidAttributes.email) {
-                req.flash('error', 'Error.Passport.Email.Exists');
-              }
-              else {
-                req.flash('error', 'Error.Passport.User.Exists');
-              }
-            }
+		
+		//we do not want to creat eany new users via the passport at the moment so only use find (not findOrCreate)
+		
+		//User.findOrCreate({username:user.username}).exec(function(err,found){
+		 
+		User.find({username:user.username}).exec(function(err,found){
+		  if (found.length){
+		    User.update({username:user.username}, user, function (err, users) {
+              if (err) {
+			      sails.log("user not created - boo hoo error "+util.inspect(err));
+                if (err.code === 'E_VALIDATION') {
+			      sails.log("user not created - boo hoo error "+util.inspect(err));
+                  if (err.invalidAttributes.email) {
+                    req.flash('error', 'Error.Passport.Email.Exists');
+                  }
+                  else {
+                    req.flash('error', 'Error.Passport.User.Exists');
+                  }
+                }
 
-            return next(err);
-          }
+                return next(err);
+              }
 
-          query.user = users[0].id;
-		  sails.log("creating passport: "+util.inspect(query));
-          Passport.create(query, function (err, passport) {
-            // If a passport wasn't created, bail out
-            if (err) {
-			  sails.log("passport not created - boo hoo error "+util.inspect(err));
-              return next(err);
-            }
-			sails.log("passport created");
-            next(err, users[0]);
-          });
-        });
+              query.user = users[0].id;
+		      sails.log("creating passport: "+util.inspect(query));
+              Passport.create(query, function (err, passport) {
+              // If a passport wasn't created, bail out
+                if (err) {
+			      sails.log("passport not created - boo hoo error "+util.inspect(err));
+                  return next(err);
+                }
+			    sails.log("passport created");
+                next(err, users[0]);
+              });
+            });
+		  }else{
+			//do not create a new record  -all records will be added by an admin
+			
+			return next(new Error('No account was found'));
+		  }
 		});
 			//TODO TIDY UP END FUNC1
       }

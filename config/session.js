@@ -58,7 +58,7 @@ module.exports.session = {
    //ttl: <redis session TTL in seconds>,
    db: process.env.REDIS_DB || '',
    pass: process.env.REDIS_PW || '',
-   prefix: 'sess:',
+   prefix: 'cued_rota:',
 
 /*
    host: 'localhost',
