@@ -297,8 +297,9 @@
 	});
   
 	scheduleManager.dates=[];
-	var mydate=new Date();
+	var mydate=new Date(); // sets the beginning date two weeks ago
 	mydate.setHours(12,0,0,0);
+	mydate.setDate(mydate.getDate()-14);
 	var lastdate=new Date(mydate.getTime()+1000*60*60*24*300); //two months?
 	while (mydate.getTime() < lastdate.getTime()){
 		scheduleManager.dates.push(new Date(mydate.getTime()));
@@ -819,7 +820,7 @@ var  AddRepeatModalInstanceCtrl = function ($scope, $modalInstance, repeatForm, 
 		//return ['hello','world',rota.rot_code,$rootScope.repeat_start];
 	}	
 	$scope.submitForm = function (rota,start,end,begin,finish) {
-	
+		console.log("submitted the form to create a repeating pattern")
 		//what is the best way to do this?
 		//loop the entire block until repeat finished?
 		
@@ -865,6 +866,7 @@ var  AddRepeatModalInstanceCtrl = function ($scope, $modalInstance, repeatForm, 
 		var last=-1;
 		while(last < 0){
 			for(i=0;i<scheds.length;i++){
+				if (scheds[i].scd_user_username != 'none'){
 			//arr.forEach(function(ele){
 				var ele={scd_date:scheds[i].scd_date,scd_rota_code:scheds[i].scd_rota_code,scd_user_username:scheds[i].scd_user_username,scd_status:'accepted'};
 				ele.scd_date=new Date(ele.scd_date.getTime()+offset*24*60*60*1000);
@@ -873,9 +875,11 @@ var  AddRepeatModalInstanceCtrl = function ($scope, $modalInstance, repeatForm, 
 					break;
 				}
 				//console.log("mapping :"+ele.scd_user_username+" "+scheds[i].scd_date+" to "+ele.scd_date+" offset: "+offset+" finish date: "+finish);
-				$scope.http.post('/manager/schedule/add',ele).success(function(data){					
+					//only action if we have a session to add
+					$scope.http.post('/manager/schedule/add',ele).success(function(data){					
 					//$modalInstance.close('closed');
-				});		
+					});
+				}
 			//});
 			}
 			offset=loop_offset+offset+1;
