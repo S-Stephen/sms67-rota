@@ -12,6 +12,56 @@ Setup rotas / modify the sessions
 
 <div class="table-responsive" ng-controller="MyScheduleController as myScheduleCtrl">
 
+<!-- Replace user -->
+<script type="text/ng-template" id="modal-replace-user.html"> 
+        <div class="modal-header">
+            <h3>Replace {{rota.rot_code}} shifts between users</h3>
+        </div>
+        <div class="modal-body">
+	<form class="form-horizontal" name="form.replaceUserForm" ng-submit="submitForm()" novalidate>
+		<div class="form-group">
+			<label for="replace" class="control-label col-xs-2">Replace:</label>
+			<div class="col-xs-8">
+				<select id="replace" ng-model="session_member_from" class="form-control cols-xs-10"  ng-options='member as  member.display_name+" ("+member.username+")" for member in members track by member.username' required></select>
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="with" class="control-label col-xs-2">With:</label>
+			<div class="col-xs-8">
+			<select id="with" ng-model="session_member_to" class="form-control"  ng-options='member as  member.display_name+" ("+member.username+")" for member in members track by member.username' required></select>
+          <!--<pre>Selected date is: <em>{{dt | date:'fullDate' }}</em></pre>-->
+			</div>
+		</div>
+		<div class="form-group">
+		<div class="form-vertical">
+		  <label for="from" class="control-label col-xs-2">From:</label>
+            <div class="col-xs-8">
+              <input id="from" type="text" class="form-control" datepicker-popup="dd-MMMM-yyyy" ng-model="from" is-open="opened" ng-required="true" close-text="Close" />             
+            </div>
+			<span class="input-group-btn">
+				<button type="button" class="btn btn-default" ng-click="open($event)">
+				<i class="glyphicon glyphicon-calendar"></i></button>
+			</span>  
+		</div>
+		</div>
+		<div class="form-group">
+		  <label for="until" class="control-label col-xs-2">Until: </label>
+            <div class="col-xs-8">
+              <input id="until" type="text" class="form-control" datepicker-popup="dd-MMMM-yyyy" ng-model="until" is-open="opened1" ng-required="true" close-text="Close" />
+            </div>
+			<span class="input-group-btn">
+              <button style="height:34px;" class="btn btn-default" ng-click="open1($event)">
+              <i class="glyphicon glyphicon-calendar"></i></button> <b><- button not working</b>
+            </span>
+         </div>
+	</form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" ng-disabled="form.replaceUserForm.$invalid" ng-click="ok()">OK</button>
+            <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+        </div>
+</script>
+
 <!-- Add a user to a rota -->
 <script type="text/ng-template" id="modal-add-session.html">
 	<div class="modal-header">
@@ -75,7 +125,7 @@ Setup rotas / modify the sessions
 	<br/>
 	<form class="form-inline" name="form.delForm" ng-submit="submitForm(rota,$rootScope.del_start,$rootScope.del_end)" novalidate>
 	<div class="form-group">
-	<h4>Please select the beginning of the period:</h4>
+		<h4>Please select the beginning of the period:</h4>
 		<p>
 		<select ng-model="$rootScope.del_start"  ng-options="mydate as mydate.toDateString() for mydate in dates" required>
 		</select> 
@@ -172,7 +222,6 @@ Setup rotas / modify the sessions
 	</div>
 </script>
 
-
 		<span ng-repeat="member in $rootScope.members">{{member.username}}</span>
 	<tabset>
 	
@@ -187,8 +236,13 @@ Setup rotas / modify the sessions
 			<span class="btn btn-primary" ng-click="addRepeatForm(rota)">Repeat a selection</span>
 			<span class="btn btn-primary" ng-click="addShiftForm(rota)">Create shifting pattern</span>
 			<span class="btn btn-primary" ng-click="delRepeatForm(rota)">Remove a selection</span>
+			<span class="btn btn-primary" ng-click="replaceUserForm(rota)">Replace a person</span>
+			<span class="btn btn-primary" ng-click="getMonth(monthoffset)">Get month</span>
+			<span class="btn btn-primary" ng-click="getAll()">Get all</span>
 				
 			</div>
+			
+			<div ng-show="viewType == 'Rota'">
 			<table>
 				<thead>
 				<tr>
@@ -221,6 +275,83 @@ Setup rotas / modify the sessions
 				</tr>
 				</tbody>
 			</table>
+			</div>
+			
+			<div class="jumbotron" ng-show="viewType =='Month'">
+			
+			<div style="text-align:center">
+			<h3>
+			<span class="btn glyphicon glyphicon-menu-left" ng-click="getMonth(monthoffset-1)"></span>
+			{{ month(dates[8].getMonth()) }} - {{ dates[8].getFullYear() }}
+			<span class="btn glyphicon glyphicon-menu-right" ng-click="getMonth(monthoffset+1)"></span></h3>
+			</div>
+			<table>
+			<thead><tr>
+			<th ></th>
+			<th ng-repeat="day in dates track by $index" ng-if="$index < 7">
+				<div style="text-align: center">{{ weekday(day.getDay()) }}</div>
+			</th>
+			</tr></thead>
+			
+			<!-- we show a month at a time but display all the rotas -->
+			<!-- columns are days -->
+			<!-- rows are rotas -->
+			<tbody ng-repeat="day in dates track by $index" ng-if="$index%7==0" style="border: solid thin">
+			
+				<tr>
+					<td class="col-xs-1"></td>
+					<td class="col-xs-1" ng-repeat="i in [$index,$index+1,$index+2,$index+3,$index+4,$index+5,$index+6]" ng-if="dates[i]!=null">
+						<div ng-show="dates[8].getMonth() == dates[i].getMonth() "  style="text-align: center">{{ dates[i].getDate() }} </div>
+					</td>
+				</tr>
+			
+				<tr ng-repeat="rota in rotalist" style="border-top: solid thin">
+				  <!-- this repeat sets a new index -->
+				  <td class="col-xs-1" >{{rota.rot_code}}</td>
+				  <td class="col-xs-1"   ng-repeat="i in [$parent.$index,$parent.$index+1,$parent.$index+2,$parent.$index+3,$parent.$index+4,$parent.$index+5,$parent.$index+6]" >
+					<div class="col-xs-1">
+						<div ng-show="dates[8].getMonth() == dates[i].getMonth() " class="btn btn-xs btn-primary" ng-class="{requested:'btn-warning',requestto:'btn-warning'}[scd_session.scd_status]"  ng-repeat="scd_session in allrotas[rota.rot_code][dates[i].toDateString()]"  ng-click="sessionManage(scd_session)">
+							<b> {{scd_session.scd_user_username}}</b>
+						</div>
+					</div>
+				  </td>
+				</tr>	
+				
+			</tbody>
+			</table>
+			
+			<ol>
+			<dt>TODOs</dt>
+			<li>unable to swap with session out of the boundary of the month using this view (though you can re assign to anyone)</li>
+			</ol>
+<!--		<div class="row" >
+			<div class="col-xs-1"></div>
+			<div ng-repeat="day in dates track by $index" ng-if="$index < 7">
+				<div class="col-xs-1" style="text-align: center">{{ weekday(day.getDay()) }}</div>
+			</div>
+			</div>
+			
+			<div ng-repeat="day in dates track by $index" ng-if="$index%7==0">
+				<div class="row">
+				  <div class="col-xs-1"></div>
+				  <div class="col-xs-1 letter-box" ng-repeat="i in [$index,$index+1,$index+2,$index+3,$index+4,$index+5,$index+6]" ng-if="dates[i]!=null">
+					<div style="text-align: center">{{ dates[i].getDate() }} </div>
+				  </div>
+				</div>
+
+				<div class="row"  ng-repeat="rota in rotalist">
+				  <div class="col-xs-1" >{{rota.rot_code}}</div>
+					  <div class="col-xs-1 letter-box"   ng-repeat="i in [$parent.$index,$parent.$index+1,$parent.$index+2,$parent.$index+3,$parent.$index+4,$parent.$index+5,$parent.$inde+6]" >
+					  <div class="col-xs-1">
+						<div class="btn btn-xs btn-primary" ng-class="{requested:'btn-warning',requestto:'btn-warning'}[scd_session.scd_status]"  ng-repeat="scd_session in allrotas[rota.rot_code][dates[i].toDateString()]"  ng-click="sessionManage(scd_session)">
+							<b> {{scd_session.scd_user_username}}</b>
+						</div>
+					  </div>
+				  </div>
+				</div>
+			</div>	
+-->
+			</div>
 		</tab>
 	</tabset>
 	

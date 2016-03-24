@@ -59,6 +59,26 @@ module.exports = {
 		});
 	},
 	
+	//retrieve the schedules for all rotas all dates!! 
+	listmonth: function(req,res,next){
+		// param monthoffset - the month we are retrieving
+		// This will include the monday before if the 1st is not a monday
+		var monthoffset = parseInt(req.param('monthoffset'))// we need to test that this is an integer 
+		if (monthoffset =='NaN'){ monthoffset=0; }
+		var startdate = new Date();
+		startdate.setMonth(startdate.getMonth()+monthoffset)
+		startdate.setDate(1)
+		startdate.setHours(0,0,0,0);
+		var enddate = new Date(startdate)
+		enddate.setMonth(enddate.getMonth()+1)
+		// if the start date is not a monday we need to set to the first monday (helps layout later)
+		startdate.setDate(startdate.getDay()*-1)
+		
+		Schedules.find().where({scd_date:{'>=':startdate,'<':enddate}}).sort('scd_rota_code').populate('scd_request_by').populate('scd_request_to').sort('scd_date ASC').exec(function(err,data){
+			res.status(200);
+			res.json(data);
+		});
+	},
 	//list the schedules for the current and next two days
 	summarylist: function(req,res,next){
 		var nowd = new Date();
@@ -307,6 +327,30 @@ module.exports = {
 	
 	update_manager: function(req,res,next){
 		SwapActionsService.update(req,res,next);
+	},
+	
+	update_manager_bulk: function(req,res,next){
+		//given a <start date> and <end date> (inclusive)
+		//replace all the session for <user1> with <user2>
+		//for <inrota>
+		var startdate = new Date(req.param('startdate'));
+		var enddate = new Date(req.param('enddate'));
+		startdate.setHours(0,0,0,0);
+		
+		var myreq=req
+		//Schedules.find().where({ scd_rota_code: req.param('rota'), scd_user_username: req.param('session_member_from') }).exec(function(err,data){
+		var myQuery = Schedules.find(); //.where({scd_date: { '>=': req.param('startdate')}})
+		myQuery.where({ scd_date: {'<=':req.param('enddate'),  '>=': startdate}, scd_rota_code: req.param('rota'), scd_user_username: req.param('session_member_from') }).exec(function(err,data){
+			sails.log("error: "+err);
+			if (data){
+				data.forEach(function(ele){
+				myreq.body.id = ele.id
+				myreq.body.scd_user_username=req.param('session_member_to')
+				SwapActionsService.update(myreq,res,next);
+				});
+			}
+			res.status(201); //hopefulyl after all the processing
+		})
 	},
 	
     update: function(req,res,next){

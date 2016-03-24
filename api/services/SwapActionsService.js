@@ -4,7 +4,7 @@ module.exports ={
 	del: function(req,res,next){
 		var okay = 0;
 		if (  req.user.manager){
-			console.log("we are the manager or we are the user");
+			//console.log("we are the manager or we are the user");
 			okay =1;
 		}
 		if (!okay){
@@ -18,7 +18,7 @@ module.exports ={
 			if (err) return next(err);
 			
 			//if we ar epart of a request to swap then we need to undo the request
-			console.log("TODO place in a transaction");
+			//console.log("TODO place in a transaction");
 			//todo ho wdo we put this in a transaction?
 			
 			if (myscd.scd_request_to){
@@ -111,26 +111,35 @@ module.exports ={
 		});
 	},
 	update: function(req,res,next){	
-		var params = req.params.all();
+		var params = req.params.all(); //all gets body and 
+		
+		// HELP I tried to set the params before calling this func in ScheduleController update_manager_bulk but not working
+		if (req.body.scd_user_username){params.scd_user_username = req.body.scd_user_username}
+		if (req.body.id){params.id = req.body.id}
+		
 		//we must be the mine user or manager to decline a swap
 		var okay = 0;
 		if ( req.user.username == params.scd_user_username || req.user.manager ){
-			console.log("we are the manager or we are the user");
+			//console.log("we are the manager or we are the user");
 			okay =1;
 		}
 		if (!okay){
-			res.status(403);
+			if (!res.headersSent) { res.status(403); } // we migh tneed to avoid sending thi sif the headers have already been sent by a bulk update
 			return;
 		}
 	
-	
-		Schedules.update(params.id, params, function(err, data){
+		//console.log("the schedule we are updating: "+params.id+" or "+req.body.id+" username:"+params.scd_user_username)
+		
+		var id = params.id
+		delete params['id'] //passing the id seems to attempt to update the id to itself ->not allowed as it already exists
+		Schedules.update(id, params, function(err, data){
 			if (err) return next(err);
 		
-			res.status(201);
 			sails.sockets.blast('schedule',{verb:'update',ele:data[0]});
-			res.json(data);
+			if (!res.headersSent) { res.status(201);res.json(data); }
+			
 		});
+		
 	},
 		
     offerup: function(req,res,next){
@@ -140,7 +149,7 @@ module.exports ={
 		//but we need to pass the user's schedule to swap
 		var okay = 0;
 		if ( req.user.username == params.mine.scd_user_username || req.user.manager){
-			console.log("we are the manager or we are the user");
+			//console.log("we are the manager or we are the user");
 			okay =1;
 		}
 		if (!okay){
@@ -179,7 +188,7 @@ module.exports ={
 		//but we need to pass the user's schedule to swap
 		var okay = 0;
 		if ( req.user.username == params.mine.scd_user_username || req.user.manager){
-			console.log("we are the manager or we are the user");
+			//console.log("we are the manager or we are the user");
 			okay =1;
 		}
 		if (!okay){
@@ -254,13 +263,13 @@ module.exports ={
 		//therefore the status will go back to accepted
 		
 		var params = req.params.all();
-		console.log("DEBUG TODO check auths that I own can update 'mine'");
-		console.log("DEBUG TODO should we chnage dates or user?");
+		//console.log("DEBUG TODO check auths that I own can update 'mine'");
+		//console.log("DEBUG TODO should we chnage dates or user?");
 		
 		//we must be the mine user or manager to decline a swap
 		var okay = 0;
 		if ( req.user.username == params.mine.scd_user_username || req.user.manager ){
-			console.log("we are the manager or we are the user");
+			//console.log("we are the manager or we are the user");
 			okay =1;
 		}
 		if (!okay){
@@ -314,13 +323,13 @@ module.exports ={
 	declineSwap: function(req,res,next){
 	
 		var params = req.params.all();
-		console.log("DEBUG TODO check auths that I own can update 'mine'");
+		//console.log("DEBUG TODO check auths that I own can update 'mine'");
 		//params.message; // not used at the moment but we shoul dput in th eemail and record in database
 	
 		//we must be the mine user or manager to decline a swap
 		var okay = 0;
 		if ( req.user.username == params.mine.scd_user_username || req.user.manager ){
-			console.log("we are the manager or we are the user");
+			//console.log("we are the manager or we are the user");
 			okay =1;
 		}
 		if (!okay){
