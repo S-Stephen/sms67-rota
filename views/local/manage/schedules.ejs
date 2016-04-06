@@ -12,6 +12,39 @@ Setup rotas / modify the sessions
 
 <div class="table-responsive" ng-controller="MyScheduleController as myScheduleCtrl">
 
+<script type="text/ng-template" id="modal-session-breakdown.html"> 
+        <div class="modal-header">
+            <h3>Session breakdown for {{ month(dates[8].getMonth()) }} - {{ dates[8].getFullYear() }}</h3>
+        </div>
+		<div class="modal-body">
+		<table class="table-bordered" style="width:100%">
+		<tr>
+			<th>Name</th>
+			<th>Mornings</th>
+			<th>Evenings</th>
+			<th>Night</th>
+			<th></th>
+			<th>Sat AM</th>
+			<th>Sat PM</th>
+			<th>Sun AM</th>
+			<th>Sun PM</th>
+		</tr>
+		<tr ng-show="rotacount[member.username]" ng-repeat="member in members | orderBy:'display_name'">
+			<th>{{member.display_name}} ({{member.username}})</th>
+			<td>{{ rotacount[member.username]['MOR'] }} </td>
+			<td>{{ rotacount[member.username]['EVE'] }}</td>
+			<td>{{ rotacount[member.username]['LEV'] }}</td>
+			<td></td>
+			<td>{{ rotacount[member.username]['WEA-A'] }}</td>
+			<td>{{ rotacount[member.username]['WEP-A'] }}</td>
+			<td>{{ rotacount[member.username]['WEA-U'] }}</td>
+			<td>{{ rotacount[member.username]['WEP-U'] }}</td>
+			</tr>
+		
+		</table>
+		</div>
+		<p>Please cut and paste names and days into the finance spreadsheet</p>
+</script>
 <!-- Replace user -->
 <script type="text/ng-template" id="modal-replace-user.html"> 
         <div class="modal-header">
@@ -280,12 +313,14 @@ Setup rotas / modify the sessions
 			<div class="jumbotron" ng-show="viewType =='Month'">
 			
 			<div style="text-align:center">
+			<div class="btn" style="float:right" ng-click="viewSessionBreakdown(monthoffset)">session breakdown</div>
 			<h3>
 			<span class="btn glyphicon glyphicon-menu-left" ng-click="getMonth(monthoffset-1)"></span>
 			{{ month(dates[8].getMonth()) }} - {{ dates[8].getFullYear() }}
-			<span class="btn glyphicon glyphicon-menu-right" ng-click="getMonth(monthoffset+1)"></span></h3>
+			<span class="btn glyphicon glyphicon-menu-right" ng-click="getMonth(monthoffset+1)"></span>
+			</h3>
 			</div>
-			<table>
+			<table  class="table-bordered" >
 			<thead><tr>
 			<th ></th>
 			<th ng-repeat="day in dates track by $index" ng-if="$index < 7">
@@ -296,7 +331,7 @@ Setup rotas / modify the sessions
 			<!-- we show a month at a time but display all the rotas -->
 			<!-- columns are days -->
 			<!-- rows are rotas -->
-			<tbody ng-repeat="day in dates track by $index" ng-if="$index%7==0" style="border: solid thin">
+			<tbody ng-repeat="day in dates track by $index" ng-if="$index%7==0" >
 			
 				<tr>
 					<td class="col-xs-1"></td>
@@ -305,7 +340,7 @@ Setup rotas / modify the sessions
 					</td>
 				</tr>
 			
-				<tr ng-repeat="rota in rotalist" style="border-top: solid thin">
+				<tr ng-repeat="rota in rotalist">
 				  <!-- this repeat sets a new index -->
 				  <td class="col-xs-1" >{{rota.rot_code}}</td>
 				  <td class="col-xs-1"   ng-repeat="i in [$parent.$index,$parent.$index+1,$parent.$index+2,$parent.$index+3,$parent.$index+4,$parent.$index+5,$parent.$index+6]" >
