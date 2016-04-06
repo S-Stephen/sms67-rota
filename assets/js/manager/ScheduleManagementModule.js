@@ -464,6 +464,30 @@
 		var month=  ["January","February","March","April","May","June","July","August","September","October","November","December"];
 		return month[inmonth]
 	}
+		
+	//alert("hello - in MembershipController but why not in Member Controller?");
+//	$scope.members = [];
+//	
+//	$scope.members = function(){
+//		$scope.http.get('/manager/memberships').success(function(data){	
+//			$scope.members = data
+//		});
+//	}
+//	$scope.members();
+	
+	$scope.countScheds = function(userid,schedid,monthid){
+		//counts the number of schedules a particular user has in a particular month
+		//requires access to $scope.allrotas
+		var num =0
+		for (var key in $scope.allrotas[schedid] ){
+			$scope.allrotas[schedid][key].forEach(function(ele){
+				if ( ele.scd_date.getMonth() == monthid && ele.scd_user_username == userid){
+					num++;
+				}
+			})
+		}
+		return num
+	}
 	
     scheduleManager=this;
     $scope.http = $http;
@@ -822,6 +846,7 @@
 		//sails.log("monthoffset: "+monthoffset);
 		var startdate = new Date();
 		startdate.setMonth(startdate.getMonth()+monthoffset)
+		var getmonth = startdate.getMonth()
 		startdate.setDate(1)
 		startdate.setHours(0,0,0,0);
 		var enddate = new Date(startdate)
@@ -836,13 +861,29 @@
 		}
 		//$scope.weeks = $scope.weeksfn($scope.dates) // is there another way to do this (event on dates array?)
 		$scope.allrotas ={}
+		$scope.rotacount={} // holds the count of rotas a user has done
 		$http.get('/rota/schedule/month/'+offset).success(function(data){
 			// all will return those from a particular start date forward
 			data.forEach(function(ele){
 				var eledate=new Date(ele.scd_date); eledate.setHours(12);
+				if (eledate.getMonth() != getmonth){
+					return;
+				}
+				var mycode=ele.scd_rota_code; // we need to differentiate between sat and sun
+				if ( eledate.getDay() == 6 ){
+					mycode=ele.scd_rota_code+"-A";
+				}
+				if ( eledate.getDay() == 0 ){
+					mycode=ele.scd_rota_code+"-U";
+				}
 				ele.scd_date = eledate; // inflate to date 
 				//console.log("finding the rota entries id: "+ele.id+" date: "+eledate.toISOString()+"   rota: "+ele.scd_rota_code+" user: "+ele.scd_user_username+" "+ele.scd_status);
+				t = $scope.rotacount[ele.scd_user_username]
+				if (t === undefined){
+					$scope.rotacount[ele.scd_user_username]={};
+				}
 				v = $scope.allrotas[ele.scd_rota_code];
+				//we need to differentiate between Sat and sun weekends -> WEA-A WEA-U
 				if (v === undefined){
 					$scope.allrotas[ele.scd_rota_code]={};
 				}
@@ -850,10 +891,44 @@
 				if (w === undefined){
 					$scope.allrotas[ele.scd_rota_code][eledate.toDateString()]=[];
 				}
+				x = $scope.rotacount[ele.scd_user_username][mycode];
+				if (x === undefined){
+					$scope.rotacount[ele.scd_user_username][mycode]=1;
+				}else{
+					$scope.rotacount[ele.scd_user_username][mycode]++;
+				}
+				console.log("rota: "+mycode+" date: "+ele.scd_date)
 				$scope.allrotas[ele.scd_rota_code][eledate.toDateString()].push(ele);	
 			})
 			$rootScope.allrotas= $scope.allrotas;
+			$rootScope.rotacount= $scope.rotacount;
 		});
+	}
+	
+	$scope.viewSessionBreakdown = function(){
+		//open a modal 
+		
+        var modalInstance = $modal.open({
+            templateUrl: 'modal-session-breakdown.html',
+            controller: SessionBreakdownModalInstanceCtrl,
+            scope: $scope,
+			rootScope: $rootScope,
+			size: 'lg',
+            resolve: {
+                delForm: function () {
+                    return $scope.delForm;
+                }
+            }
+        });
+
+        modalInstance.result.then(function (selectedItem) {
+               $scope.selected = selectedItem;
+		}, function () {
+			$log.info('Modal dismissed at: ' + new Date());
+		});
+		//modal displays in a table the number of sessions per person
+		
+		
 	}
 	
 	$http.get('/rotas').success(function(data){
@@ -876,6 +951,14 @@
 	$scope.getAll();
 }]);
   
+var  SessionBreakdownModalInstanceCtrl = function ($scope, $modalInstance, $rootScope) {
+	$scope.form = {}
+	
+    $scope.cancel = function () {
+        $modalInstance.dismiss('cancel');
+    };
+ 
+}
 var  AddSessionModalInstanceCtrl = function ($scope, $modalInstance, sessionForm, $rootScope) {
 	$scope.form = {}
 	//alert("Scope message, , , :"+$scope.message);
