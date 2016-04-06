@@ -28,6 +28,9 @@ Setup rotas / modify the sessions
 			<th>Sat PM</th>
 			<th>Sun AM</th>
 			<th>Sun PM</th>
+			<th></th>
+			<th></th>
+			<th>Extras</th>
 		</tr>
 		<tr ng-show="rotacount[member.username]" ng-repeat="member in members | orderBy:'display_name'">
 			<th>{{member.display_name}} ({{member.username}})</th>
@@ -39,6 +42,12 @@ Setup rotas / modify the sessions
 			<td>{{ rotacount[member.username]['WEP-A'] }}</td>
 			<td>{{ rotacount[member.username]['WEA-U'] }}</td>
 			<td>{{ rotacount[member.username]['WEP-U'] }}</td>
+			<td></td>
+			<td></td>
+			<td>
+				<span ng-show="rotacount[member.username ]['HOA']">{{ rotacount[member.username ]['HOA'] }}* HOA </span> 
+				<span ng-show="rotacount[member.username ]['HOP']">{{ rotacount[member.username ]['HOP'] }}* HOP </span> 
+			</td>
 			</tr>
 		
 		</table>
