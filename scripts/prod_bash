@@ -1,0 +1,8 @@
+
+#source this to provide node env for our init script
+
+export NODE_BIN_DIR=/opt/CUED-web/apps/node_v0.10.31/node-v0.10.31-linux-x64/bin
+export PATH=${PATH}:$NODE_BIN_DIR
+
+
+
