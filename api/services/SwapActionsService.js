@@ -21,37 +21,40 @@ module.exports ={
 			//console.log("TODO place in a transaction");
 			//todo ho wdo we put this in a transaction?
 			
-			if (myscd.scd_request_to){
-				sails.log("updating the request_to object : "+myscd.scd_request_to);
-				Schedules.update(myscd.scd_request_to, {scd_status:'accepted'}, function(err, mine1){
-					if (err) return next(err);
-					//res.status(201);
-					sails.sockets.blast('schedule',{verb:'update',ele:mine1[0]});
-					//res.json(mine);
-			
-				});		
-			}
-			if  (myscd.scd_request_by){
-				sails.log("updating the request_by object "+myscd.scd_request_by);
-				Schedules.update(myscd.scd_request_by, {scd_status:'accepted'}, function(err, mine2){
-					if (err) return next(err);
-					//res.status(201);
-					sails.sockets.blast('schedule',{verb:'update',ele:mine2[0]});
-					//res.json(mine);
-			
-				});		
-			}
-			
-			sails.log("totd test that the object actualy exists");
-			Schedules.destroy({id:req.param('scd_id')}).exec(function(err){
-			
-				sails.log("remove session id: "+req.param('scd_id'));
-				if (err) return next(err);
-				res.status(201);
-				sails.sockets.blast('schedule',{verb:'removed',ele:myscd});
-				res.json(params);
+			if (myscd){
+				// possible double click - silently ignore?
+				if (myscd.scd_request_to){
+					sails.log("updating the request_to object : "+myscd.scd_request_to);
+					Schedules.update(myscd.scd_request_to, {scd_status:'accepted'}, function(err, mine1){
+						if (err) return next(err);
+						//res.status(201);
+						sails.sockets.blast('schedule',{verb:'update',ele:mine1[0]});
+						//res.json(mine);
 				
-			});
+					});		
+				}
+				if  (myscd.scd_request_by){
+					sails.log("updating the request_by object "+myscd.scd_request_by);
+					Schedules.update(myscd.scd_request_by, {scd_status:'accepted'}, function(err, mine2){
+						if (err) return next(err);
+						//res.status(201);
+						sails.sockets.blast('schedule',{verb:'update',ele:mine2[0]});
+						//res.json(mine);
+				
+					});		
+				}
+				
+				sails.log("totd test that the object actualy exists");
+				Schedules.destroy({id:req.param('scd_id')}).exec(function(err){
+				
+					sails.log("remove session id: "+req.param('scd_id'));
+					if (err) return next(err);
+					res.status(201);
+					sails.sockets.blast('schedule',{verb:'removed',ele:myscd});
+					res.json(params);
+					
+				});
+			}
 		});
 	},
 	
