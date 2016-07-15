@@ -642,15 +642,15 @@
 					var ele = msg.ele;
 					eledate=new Date(ele.scd_date);
 					ele.scd_date=eledate.setHours(12);
-					v = mysched.allrotas[ele.scd_rota_code];
+					v = $rootScope.allrotas[ele.scd_rota_code];
 					if (v === undefined){
-						mysched.allrotas[ele.scd_rota_code]={};
+						$rootScope.allrotas[ele.scd_rota_code]={};
 					}
-					w = mysched.allrotas[ele.scd_rota_code][eledate.toDateString()];
+					w = $rootScope.allrotas[ele.scd_rota_code][eledate.toDateString()];
 					if (w === undefined){
-						mysched.allrotas[ele.scd_rota_code][eledate.toDateString()]=[];
+						$rootScope.allrotas[ele.scd_rota_code][eledate.toDateString()]=[];
 					}
-					mysched.allrotas[ele.scd_rota_code][eledate.toDateString()].push(ele)
+					$rootScope.allrotas[ele.scd_rota_code][eledate.toDateString()].push(ele)
 					//if I am the person assigned to the session add to my list
 					
 					$rootScope.$apply(); // this forecs our page to refresh after these changes
@@ -1083,10 +1083,8 @@ var  AddShiftModalInstanceCtrl = function ($scope, $modalInstance, shiftForm, $r
 	$scope.form = {}
 
 	$scope.submitForm = function (rota,lorder,rotadays,start,end) {
-		alert("thank you for trying");
 		
 		//lorder holds the order with which the users are to be added
-		
 		
 		//rotadays holds the days that are to be used - convert to a hash
 		var dayhash=[];
