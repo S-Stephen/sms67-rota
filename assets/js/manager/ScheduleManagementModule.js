@@ -4,7 +4,7 @@
 
   //change otherstuff from an array to a hash - >rename myschedule
 
-  var app = angular.module('ScheduleManagementModule',['ui.bootstrap']);
+  var app = angular.module('ScheduleManagementModule',['ui.bootstrap','myReuseableMod']);
   
   app.filter('easydate', function () {
    return function (indate) {
@@ -399,7 +399,7 @@
 	  };
   }]);
   
-  app.controller('MyScheduleController',['$http','$modal','$log','$scope','$rootScope',function($http,$modal,$log,$scope,$rootScope){
+  app.controller('MyScheduleController',['$http','$modal','$log','$scope','$rootScope','handleMySocketsSrvc',function($http,$modal,$log,$scope,$rootScope,handleMySocketsSrvc){
 	  
 	$scope.monthoffset=0;
 	$scope.mondays = function (indate){
@@ -606,13 +606,14 @@
 	mysched.myrequests={};//array of requests I have made (rot-date)
 	mysched.requeststo={};//array of all the requests other people have made (rot-date)
 	mysched.me=''; // TODO Fix setting this currently relies on the user haveing a session assigned
-	
+
+    //setup listners for sockets etc
+	handleMySocketsSrvc(io)
 	//attempt to setup a socket listener that will keep the objects up to date
 	if (!io.socket.alreadyListeningToOrders){
 		io.socket.alreadyListeningToOrders = true;
 		//Note - we access and modify the rootScope because the ng-repeat to display the rotas is within another ng-repeat (scope)
 		io.socket.on('schedule', function onServerSentEvent(msg){
-			//console.log("we received an event");
 			switch(msg.verb){
 				case 'removed':
 					var ele = msg.ele;
@@ -633,7 +634,6 @@
 					break;
 				case 'created':
 					//add the schedule to our allrotas array
-					console.log("recieved created notification")
 					var ele = msg.ele;
 					ele.scd_date=new Date(ele.scd_date);
 					ele.scd_date.setHours(12);
@@ -775,10 +775,6 @@
 					}
 					if(ele2.scd_user_username == mysched.me){
 
-						
-						$rootScope.otherstuff.forEach(function(scd){
-							//console.log("ele2: "+scd.id+"   :"+scd.scd_user_username+" "+scd.scd_date+"  "+scd.scd_rota_code+" "+scd.scd_status);
-						});
 						involved=2;
 						//removed the requestto
 						if ($rootScope.myrequests[ele1.id]){
