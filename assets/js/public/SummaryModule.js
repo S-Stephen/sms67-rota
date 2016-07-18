@@ -50,9 +50,9 @@
 			console.log("ERRORORORORO we are getting sent back and array but are not inflating it!rota: "+rot);
 		}
 		
-		$scope.rotas.forEach(function(rot){
-			console.log("setup array for: -"+rot.rot_code+"-   -");
-		});
+		//$scope.rotas.forEach(function(rot){
+		//	console.log("setup array for: -"+rot.rot_code+"-   -");
+		//});
 		
 		$scope.scheds=data.scheds;
 		console.log("scheds: "+$scope.scheds);
@@ -62,10 +62,12 @@
 		var i=0;
 		$scope.adates.forEach(function(idate){
 			var mdate=new Date(idate);
-			$scope.adates[i]=mdate; // update the dates array to be objects rather than the textual representation
+			//$scope.adates[i]=mdate; // update the dates array to be objects rather than the textual representation
+			$scope.adates[i]=new Date(idate); // update the dates array to be objects rather than the textual representation
+			$scope.adates[i].setHours(12,0,0,0);
 			mdate=mdate.toDateString();
 			$scope.rotas.forEach(function(rot){
-				console.log("setup array for: -"+rot.rot_code+"-   -"+mdate);
+				//console.log("setup array for: -"+rot.rot_code+"-   -"+mdate);
 				//$rootScope.allrotas[rot.rot_code]={mdate:[]};
 				$rootScope.allrotas[rot.rot_code]=[];
 				$rootScope.allrotas[rot.rot_code][mdate]=[];
@@ -112,14 +114,17 @@
 			$rootScope.allrotas[rot.rot_code][idate].forEach(function(session){
 				day_arr.push(session);
 			})
-			}else{
-				console.log("no array for: "+rot.rot_code+" idate:"+idate);
 			}
+			//else{
+			//	console.log("no array for: "+rot.rot_code+" idate:"+idate);
+			//}
 		}
 		);
 		return day_arr;
 	};
-	
+	 // to allow socke library to be used across pages
+	 mysched={}
+	 
 	if (!io.socket.alreadyListeningToOrders){
 		io.socket.alreadyListeningToOrders = true;
 		io.socket.on('schedule', function onServerSentEvent(msg){
@@ -127,14 +132,8 @@
 			switch(msg.verb){
 				case 'removed':
 					var ele = msg.ele;
-					console.log("return ele date: "+ele.scd_date);
-					console.log("ele code: "+ele.scd_rota_code);
-					var tmpdate=new Date(ele.scd_date);
-					ele.scd_date = tmpdate;
-					console.log("return ele date: "+tmpdate.toDateString());
-					console.log("return ele date: "+ele.scd_date.toDateString());
+					ele.scd_date = new Date(ele.scd_date);
 					//remove this ele from our allrotas array:
-					
 					var index=-1
 					var myind=0
 					$rootScope.allrotas[ele.scd_rota_code][ele.scd_date.toDateString()].forEach(function(scd){
@@ -144,37 +143,35 @@
 						myind++;
 					});
 					if (index>-1){
-						console.log("splice from array");
 						$rootScope.allrotas[ele.scd_rota_code][ele.scd_date.toDateString()].splice(index,1);
 					}
 					$rootScope.$apply(); // this forecs our page to refresh after these changes
 					break;
 				case 'created':
 					//add the schedule to our allrotas array
-					
 					var ele = msg.ele;
-					eledate=new Date(ele.scd_date);
-					ele.scd_date=eledate.setHours(12);
-					
-					w = $rootScope.allrotas[ele.scd_rota_code][eledate.toDateString()];
+					ele.scd_date=new Date(ele.scd_date);
+					ele.scd_date.setHours(12);
+					v = $rootScope.allrotas[ele.scd_rota_code];
+					if (v === undefined){
+						$rootScope.allrotas[ele.scd_rota_code]={}; //TODO SummaryModule - ignore as it is not a day we will deliver
+					}
+					w = $rootScope.allrotas[ele.scd_rota_code][ele.scd_date.toDateString()];
 					if (w === undefined){
-						//ignore not a day we will deliver
-					}else{
-						//add the new extra session
-						$rootScope.allrotas[ele.scd_rota_code][eledate.toDateString()].push(ele)
-					}//if I am the person assigned to the session add to my list
+						$rootScope.allrotas[ele.scd_rota_code][ele.scd_date.toDateString()]=[]; //TODO SummaryModule - ignore as it is not a day we will deliver
+					}
+					$rootScope.allrotas[ele.scd_rota_code][ele.scd_date.toDateString()].push(ele)
+					//if I am the person assigned to the session add to my list
 					
 					$rootScope.$apply(); // this forecs our page to refresh after these changes
 					break;
 				case 'update':
 					//RULE 1: WE never change the date of a session only user and status!
 				
-				
+					console.log("updating session: "+msg.ele.scd_date)
 					//find the schedule in our allrotas array
 					//re-displaying the allrotas array only semes to work for the actioning browser?!
 					var ele = msg.ele;
-					console.log(msg);
-					//eledate=new Date(ele.scd_date);
 					ele.scd_date=new Date(ele.scd_date);
 					ele.scd_date.setHours(12);
 					if (ele.scd_date.scd_request_by) { ele.scd_date.scd_request_by.scd_date=new Date(ele.scd_date.scd_request_by.scd_date); }
@@ -188,10 +185,35 @@
 						index++;
 					})
 					
+					//For clients who are logged in requests for swap need to be updated (whether requester or requestee)
+					//Update our rota if it is our session (NB it might have changed to our session in which case we muct add it! (and removed the old one)
+					if (mysched && ele.scd_user_username == mysched.me){
+						//end to remove
+						//if update status is to requested then we need to ad dthis to our myrequests hash
+						if (ele.scd_status=='requested'){
+							$rootScope.requeststo[ele.id]=ele;
+						}
+						if (ele.scd_status=='requestto'){
+							$rootScope.myrequests[ele.id]=ele;
+						}
+					}
 					
+					//For the users view (displayng their swap requests)
+					if ($rootScope.myrequests){ // TODO  - check does this successfully test for empty myrequests array 
+						//assume the update was not to add them into the pending lists
+						//Why not working (remove from the pendinglist after update!
+						//console.log(" the ele.id: "+ele.id);
+						if (ele.scd_status=='accepted' && $rootScope.myrequests[ele.id]){
+							//console.log("removed from myrequests");
+							delete $rootScope.myrequests[ele.id];
+						}
+						if (ele.scd_status=='accepted' && $rootScope.requeststo[ele.id]){
+							//console.log("removed from requeststo");
+							delete $rootScope.requeststo[ele.id];
+						}
+					}
 					
 					$rootScope.$apply(); // this forecs our page to refresh after these changes
-					console.log("end of update for "+ele.id);
 					break;
 				case 'grabbed':
 					//find the schedule in our allrotas array

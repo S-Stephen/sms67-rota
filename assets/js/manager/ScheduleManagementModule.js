@@ -610,19 +610,14 @@
 	//attempt to setup a socket listener that will keep the objects up to date
 	if (!io.socket.alreadyListeningToOrders){
 		io.socket.alreadyListeningToOrders = true;
+		//Note - we access and modify the rootScope because the ng-repeat to display the rotas is within another ng-repeat (scope)
 		io.socket.on('schedule', function onServerSentEvent(msg){
 			//console.log("we received an event");
 			switch(msg.verb){
 				case 'removed':
 					var ele = msg.ele;
-					//console.log("return ele date: "+ele.scd_date);
-					//console.log("ele code: "+ele.scd_rota_code);
-					var tmpdate=new Date(ele.scd_date);
-					ele.scd_date = tmpdate;
-					//console.log("return ele date: "+tmpdate.toDateString());
-					//console.log("return ele date: "+ele.scd_date.toDateString());
+					ele.scd_date = new Date(ele.scd_date);
 					//remove this ele from our allrotas array:
-					
 					var index=-1
 					var myind=0
 					$rootScope.allrotas[ele.scd_rota_code][ele.scd_date.toDateString()].forEach(function(scd){
@@ -632,25 +627,25 @@
 						myind++;
 					});
 					if (index>-1){
-						//console.log("splice from array");
 						$rootScope.allrotas[ele.scd_rota_code][ele.scd_date.toDateString()].splice(index,1);
 					}
 					$rootScope.$apply(); // this forecs our page to refresh after these changes
 					break;
 				case 'created':
 					//add the schedule to our allrotas array
+					console.log("recieved created notification")
 					var ele = msg.ele;
-					eledate=new Date(ele.scd_date);
-					ele.scd_date=eledate.setHours(12);
+					ele.scd_date=new Date(ele.scd_date);
+					ele.scd_date.setHours(12);
 					v = $rootScope.allrotas[ele.scd_rota_code];
 					if (v === undefined){
 						$rootScope.allrotas[ele.scd_rota_code]={};
 					}
-					w = $rootScope.allrotas[ele.scd_rota_code][eledate.toDateString()];
+					w = $rootScope.allrotas[ele.scd_rota_code][ele.scd_date.toDateString()];
 					if (w === undefined){
-						$rootScope.allrotas[ele.scd_rota_code][eledate.toDateString()]=[];
+						$rootScope.allrotas[ele.scd_rota_code][ele.scd_date.toDateString()]=[];
 					}
-					$rootScope.allrotas[ele.scd_rota_code][eledate.toDateString()].push(ele)
+					$rootScope.allrotas[ele.scd_rota_code][ele.scd_date.toDateString()].push(ele)
 					//if I am the person assigned to the session add to my list
 					
 					$rootScope.$apply(); // this forecs our page to refresh after these changes
@@ -662,8 +657,6 @@
 					//find the schedule in our allrotas array
 					//re-displaying the allrotas array only semes to work for the actioning browser?!
 					var ele = msg.ele;
-					console.log(msg.ele);
-					//eledate=new Date(ele.scd_date);
 					ele.scd_date=new Date(ele.scd_date);
 					ele.scd_date.setHours(12);
 					if (ele.scd_date.scd_request_by) { ele.scd_date.scd_request_by.scd_date=new Date(ele.scd_date.scd_request_by.scd_date); }
@@ -677,9 +670,9 @@
 						index++;
 					})
 					
+					//For clients who are logged in requests for swap need to be updated (whether requester or requestee)
 					//Update our rota if it is our session (NB it might have changed to our session in which case we muct add it! (and removed the old one)
-					if (ele.scd_user_username == mysched.me){
-						
+					if (mysched && ele.scd_user_username == mysched.me){
 						//end to remove
 						//if update status is to requested then we need to ad dthis to our myrequests hash
 						if (ele.scd_status=='requested'){
@@ -690,9 +683,22 @@
 						}
 					}
 					
+					//For the users view (displayng their swap requests)
+					if ($rootScope.myrequests){ // TODO  - check does this successfully test for empty myrequests array 
+						//assume the update was not to add them into the pending lists
+						//Why not working (remove from the pendinglist after update!
+						//console.log(" the ele.id: "+ele.id);
+						if (ele.scd_status=='accepted' && $rootScope.myrequests[ele.id]){
+							//console.log("removed from myrequests");
+							delete $rootScope.myrequests[ele.id];
+						}
+						if (ele.scd_status=='accepted' && $rootScope.requeststo[ele.id]){
+							//console.log("removed from requeststo");
+							delete $rootScope.requeststo[ele.id];
+						}
+					}
 					
 					$rootScope.$apply(); // this forecs our page to refresh after these changes
-					//console.log("end of update for "+ele.id);
 					break;
 				case 'grabbed':
 					//find the schedule in our allrotas array

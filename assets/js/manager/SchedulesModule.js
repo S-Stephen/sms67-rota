@@ -32,13 +32,11 @@
 	if (!io.socket.alreadyListeningToOrders){
 		io.socket.alreadyListeningToOrders = true;
 		io.socket.on('schedule', function onServerSentEvent(msg){
-			//console.log("we received an event");
 			switch(msg.verb){
 				case 'removed':
 					var ele = msg.ele;
 					ele.scd_date = new Date(ele.scd_date);
 					//remove this ele from our allrotas array:
-					
 					var index=-1
 					var myind=0
 					$rootScope.allrotas[ele.scd_rota_code][ele.scd_date.toDateString()].forEach(function(scd){
@@ -55,21 +53,8 @@
 				case 'created':
 					//add the schedule to our allrotas array
 					var ele = msg.ele;
-					//console.log("DEBUG date: "+ele.scd_date);
 					ele.scd_date=new Date(ele.scd_date);
 					ele.scd_date.setHours(12);
-					
-					
-					
-					//if (ele.scd_user_username == mysched.me){
-					//	mysched.myschedule[ele.scd_date.toISOString()]=(mysched.myschedule[ele.scd_date.toISOString()] )? mysched.myschedule[ele.scd_date.toISOString()] : {mykey:ele.scd_date,arr:[]};
-					//	$rootScope.myschedule[ele.scd_date.toISOString()]['arr'].push(ele);
-					//	$rootScope.$applyAsync(); // this forecs our page to refresh a
-					//}
-					
-					
-					
-					//console.log("DEBUG date: "+ele.scd_date);
 					v = $rootScope.allrotas[ele.scd_rota_code];
 					if (v === undefined){
 						$rootScope.allrotas[ele.scd_rota_code]={};
@@ -79,7 +64,7 @@
 						$rootScope.allrotas[ele.scd_rota_code][ele.scd_date.toDateString()]=[];
 					}
 					$rootScope.allrotas[ele.scd_rota_code][ele.scd_date.toDateString()].push(ele)
-					//if I am the person assigned to the session add to my list
+					//if I am the person assigned to the session add to my list!
 					
 					$rootScope.$apply(); // this forecs our page to refresh after these changes
 					break;
@@ -90,11 +75,8 @@
 					//find the schedule in our allrotas array
 					//re-displaying the allrotas array only semes to work for the actioning browser?!
 					var ele = msg.ele;
-					//console.log(msg);
-					eledate=new Date(ele.scd_date);
-					ele.scd_date=eledate;
+					ele.scd_date=new Date(ele.scd_date);
 					ele.scd_date.setHours(12);
-					//console.log("ele id: "+ele.id+"  ele date: "+ele.scd_date);
 					if (ele.scd_date.scd_request_by) { ele.scd_date.scd_request_by.scd_date=new Date(ele.scd_date.scd_request_by.scd_date); }
 					if (ele.scd_date.scd_request_to){ele.scd_date.scd_request_to.scd_date=new Date(ele.scd_date.scd_request_to.scd_date);}
 					var index=0;
@@ -106,9 +88,9 @@
 						index++;
 					})
 					
+					//For clients who are logged in requests for swap need to be updated (whether requester or requestee)
 					//Update our rota if it is our session (NB it might have changed to our session in which case we muct add it! (and removed the old one)
-					if (ele.scd_user_username == mysched.me){
-						
+					if (mysched && ele.scd_user_username == mysched.me){
 						//end to remove
 						//if update status is to requested then we need to ad dthis to our myrequests hash
 						if (ele.scd_status=='requested'){
@@ -117,31 +99,35 @@
 						if (ele.scd_status=='requestto'){
 							$rootScope.myrequests[ele.id]=ele;
 						}
-						
-						//removed the requestto and myrequests entries
 					}
 					
-					//assume the update was not to add them into the pending lists
-					//Why not working (remove from the pendinglist after update!
-					//console.log(" the ele.id: "+ele.id);
-					if (ele.scd_status=='accepted' && $rootScope.myrequests[ele.id]){
-						//console.log("removed from myrequests");
-						delete $rootScope.myrequests[ele.id];
+					//For the users view (displayng their swap requests)
+					if ($rootScope.myrequests){ // TODO  - check does this successfully test for empty myrequests array 
+						//assume the update was not to add them into the pending lists
+						//Why not working (remove from the pendinglist after update!
+						//console.log(" the ele.id: "+ele.id);
+						if (ele.scd_status=='accepted' && $rootScope.myrequests[ele.id]){
+							//console.log("removed from myrequests");
+							delete $rootScope.myrequests[ele.id];
+						}
+						if (ele.scd_status=='accepted' && $rootScope.requeststo[ele.id]){
+							//console.log("removed from requeststo");
+							delete $rootScope.requeststo[ele.id];
+						}
 					}
-					if (ele.scd_status=='accepted' && $rootScope.requeststo[ele.id]){
-						//console.log("removed from requeststo");
-						delete $rootScope.requeststo[ele.id];
-					}
-						
-					
-					
-					
-					//if(ele.scd_request_to && ele.scd_request_to.scd_user_username == mysched.me && ele.scd_request_to.scd_status == 'requestto'){
-					//	$rootScope.requeststo[ele.id]=ele;
-					//}
+					// //assume the update was not to add them into the pending lists
+					// //Why not working (remove from the pendinglist after update!
+					// //console.log(" the ele.id: "+ele.id);
+					// if (ele.scd_status=='accepted' && $rootScope.myrequests[ele.id]){
+						// //console.log("removed from myrequests");
+						// delete $rootScope.myrequests[ele.id];
+					// }
+					// if (ele.scd_status=='accepted' && $rootScope.requeststo[ele.id]){
+						// //console.log("removed from requeststo");
+						// delete $rootScope.requeststo[ele.id];
+					// }
 					
 					$rootScope.$apply(); // this forecs our page to refresh after these changes
-					//console.log("end of update for "+ele.id);
 					break;
 				case 'grabbed':
 					//find the schedule in our allrotas array
