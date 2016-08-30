@@ -106,9 +106,12 @@ module.exports ={
 		});		
 		var nodemailer = require('nodemailer');
 		var transporter = nodemailer.createTransport(); //uses local transport:
+		var myto = (sails.config.emaildebug)? sails.config.emaildebug : sails.config.rotaemail ;
+		var mycc = (sails.config.emaildebug)? [sails.config.emaildebug] : [givenupby+'@eng.cam.ac.uk',params.theirs.scd_user_username+'@eng.cam.ac.uk'];
 		transporter.sendMail({
 				from: sails.config.emailfrom, //'sms67@eng.cam.ac.uk',
-				to: 'sms67@eng.cam.ac.uk',
+				to: myto,
+				cc: mycc,
 				subject:  "SR "+params.theirs.scd_rota_code+" "+params.theirs.scd_date.toDateString()+" Session taken",
 				text: message
 		});
@@ -178,9 +181,11 @@ module.exports ={
 		});		//a request has been made to swap sesisons email:
 		var nodemailer = require('nodemailer');
 		var transporter = nodemailer.createTransport(); //uses local transport:
+		var myto = (sails.config.emaildebug)? sails.config.emaildebug : sails.config.rotaemail ;
+		//var mycc = (sails.config.emaildebug)? [sails.config.emaildebug] : [params.mine.scd_user_username+'@eng.cam.ac.uk',params.theirs.scd_user_username+'@eng.cam.ac.uk'];
 		transporter.sendMail({
 				from: sails.config.emailfrom, //'sms67@eng.cam.ac.uk',
-				to: 'sms67@eng.cam.ac.uk',
+				to: myto,
 				subject: "SR "+params.mine.scd_rota_code+" "+params.mine.scd_date.toDateString()+" Session given up",
 				text: message
 		});
@@ -245,12 +250,14 @@ module.exports ={
 		//a request has been made to swap sesisons email:
 		var nodemailer = require('nodemailer');
 		var transporter = nodemailer.createTransport(); //uses local transport:
+		var myto = (sails.config.emaildebug)? sails.config.emaildebug : params.theirs.scd_user_username+'@eng.cam.ac.uk';
+		var mycc = (sails.config.emaildebug)? [sails.config.emaildebug] : [params.mine.scd_user_username+'@eng.cam.ac.uk',sails.config.rotaemail];
 		transporter.sendMail({
 				from: sails.config.emailfrom, //'sms67@eng.cam.ac.uk',
-				to: 'stephen.shorrock@gmail.com',
-				cc: ['sms67@eng.cam.ac.uk','sms67@cam.ac.uk'],
+				to: myto, 
+				cc: mycc,
 				subject: "SR - "+params.mine.scd_rota_code+" "+minedate.toDateString()+" - "+theirdate.toDateString(),
-				text: "There has been a request to swap a session: \n\n"+message
+				text: "There has been a request to swap a session on the security rota: \n\r\n\r"+message+"\n\n\nTo accept or decline this request please visit: "+sails.config.hostname+"/index"
 		});
 		
 		}else{
@@ -284,7 +291,7 @@ module.exports ={
 		
 		var minedate = new Date(params.mine.scd_date);
 		var theirdate = new Date(params.theirs.scd_date);
-		var message="Swap accepted\n\nThe request by "+params.mine.scd_user_username+" to swap "+params.mine.scd_rota_code+"  "+minedate.toDateString()+" with "+theirdate.toDateString()+"  ("+params.theirs.scd_user_username+") has been ACCEPTED";
+		var message="Swap accepted\n\r\n\rThe request by "+params.mine.scd_user_username+" to swap "+params.mine.scd_rota_code+"  "+minedate.toDateString()+" with "+theirdate.toDateString()+"  ("+params.theirs.scd_user_username+") has been ACCEPTED";
 		
 		params.mine.scd_status='accepted';
 		params.mine.scd_request_by=undefined;
@@ -314,9 +321,12 @@ module.exports ={
 		});		//a request has been made to swap sesisons email:
 		var nodemailer = require('nodemailer');
 		var transporter = nodemailer.createTransport(); //uses local transport:
+		var myto = (sails.config.emaildebug)? sails.config.emaildebug : sails.config.rotaemail ;
+		var mycc = (sails.config.emaildebug)? [sails.config.emaildebug] : [params.mine.scd_user_username+'@eng.cam.ac.uk',params.theirs.scd_user_username+'@eng.cam.ac.uk'];
 		transporter.sendMail({
 				from: sails.config.emailfrom, //'sms67@eng.cam.ac.uk',
-				to: 'sms67@eng.cam.ac.uk',
+				to: myto,
+				cc: mycc,
 				subject: "SR - "+params.mine.scd_rota_code+" "+minedate.toDateString()+" - "+theirdate.toDateString()+" accepted",
 				text: message
 		});
@@ -331,7 +341,7 @@ module.exports ={
 	
 		//we must be the mine user or manager to decline a swap
 		var okay = 0;
-		if ( req.user.username == params.mine.scd_user_username || req.user.manager ){
+		if ( req.user.manager || req.user.username == params.mine.scd_user_username  ){
 			//console.log("we are the manager or we are the user");
 			okay =1;
 		}
@@ -343,7 +353,7 @@ module.exports ={
 	
 		var minedate = new Date(params.mine.scd_date);
 		var theirdate = new Date(params.theirs.scd_date);
-		var message="Swap declined\n\nThe request by "+params.mine.scd_user_username+" to swap "+params.mine.scd_rota_code+"  "+minedate.toDateString()+" with "+theirdate.toDateString()+"  ("+params.theirs.scd_user_username+") has been DECLINED";
+		var message="Swap declined\n\r\n\rThe request by "+params.mine.scd_user_username+" to swap "+params.mine.scd_rota_code+"  "+minedate.toDateString()+" with "+theirdate.toDateString()+"  ("+params.theirs.scd_user_username+") has been DECLINED";
 	
 		params.mine.scd_status='accepted';
 		params.mine.scd_request_by=undefined;
@@ -368,9 +378,13 @@ module.exports ={
 		//a request has been made to swap sesisons email:
 		var nodemailer = require('nodemailer');
 		var transporter = nodemailer.createTransport(); //uses local transport:
+		
+		var myto = (sails.config.emaildebug)? sails.config.emaildebug : sails.config.rotaemail ;
+		var mycc = (sails.config.emaildebug)? [sails.config.emaildebug] : [params.mine.scd_user_username+'@eng.cam.ac.uk',params.theirs.scd_user_username+'@eng.cam.ac.uk'];
 		transporter.sendMail({
 				from: sails.config.emailfrom, //'sms67@eng.cam.ac.uk',
-				to: 'sms67@eng.cam.ac.uk',
+				to: myto,
+				cc: mycc,
 				subject: "SR - "+params.mine.scd_rota_code+" "+minedate.toDateString()+" - "+theirdate.toDateString()+" rejected",
 				text: message
 		});
