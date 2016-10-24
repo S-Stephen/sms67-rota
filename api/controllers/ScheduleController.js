@@ -52,8 +52,11 @@ module.exports = {
 	},
 	
 	//retrieve the schedules for all rotas all dates!! 
+	//This turned out to be too much so just return the ones from today - two weeks
 	listall: function(req,res,next){
-		Schedules.find().where({}).sort('scd_rota_code').populate('scd_request_by').populate('scd_request_to').sort('scd_date ASC').exec(function(err,data){
+		var startdate = new Date()
+		startdate.setDate(startdate.getDay()*-14)
+		Schedules.find().where({scd_date:{'>':startdate}}).sort('scd_rota_code').populate('scd_request_by').populate('scd_request_to').sort('scd_date ASC').exec(function(err,data){
 			res.status(200);
 			res.json(data);
 		});
