@@ -37,9 +37,19 @@
     "socket.io-redis": "^0.1.4",
     "validator": "^3.39.0"
   },
+  "devDependencies": { 
+     "mocha": "^2.3.4", 
+     "sails-memory": "^0.10.5", 
+     "should": "^7.1.1", 
+     "supertest": "^1.1.0",
+     "sails-fixtures":"^1.0.8",
+     "supertest-session":"^2.0.1",
+     "passport-http-bearer":"^1.0.1"
+  }, 
   "scripts": {
     "start": "node app.js",
-    "debug": "node debug app.js"
+    "debug": "node debug app.js",
+    "test": "PORT=9998 NODE_ENV=test mocha -R spec -b --recursive"
   },
   "main": "app.js",
   "repository": {

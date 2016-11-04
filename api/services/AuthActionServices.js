@@ -70,6 +70,7 @@ module.exports ={
     passport.callback(req, res, function (err, user, challenges, statuses) {
       sails.log("in function ppassed to passport callback");
       if (err || !user) {
+		sails.log("try again");
         return tryAgain(challenges);
       }
       sails.log("we are okay and will continue user:"+user);

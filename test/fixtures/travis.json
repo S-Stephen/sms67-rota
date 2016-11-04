@@ -1,0 +1,49 @@
+[
+  {
+    "model":"Rota",
+    "items":[
+      {
+        "id":1,
+        "rot_code:":"EVE",
+        "rot_description":"Evening",
+        "rot_order":2
+      },
+      {
+        "id":2,
+        "rot_code:":"MOR",
+        "rot_description":"Morning",
+        "rot_order":1
+      },
+      {
+        "id":4,
+        "rot_code:":"LEV",
+        "rot_description":"Night",
+        "rot_order":4
+      },
+      {
+        "id":11,
+        "rot_code:":"HOA",
+        "rot_description":"Holiday (Easter / Christmas) AM",
+        "rot_order":13
+      },
+      {
+        "id":13,
+        "rot_code:":"WEA",
+        "rot_description":"Weekend AM",
+        "rot_order":7
+      },
+      {
+        "id":14,
+        "rot_code:":"WEP",
+        "rot_description":"Weekend PM",
+        "rot_order":9
+      },
+      {
+        "id":15,
+        "rot_code:":"HOP",
+        "rot_description":"Holiday (Easter / Christmas) PM",
+        "rot_order":15
+      }
+    ]
+  }
+]

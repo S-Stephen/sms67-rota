@@ -1,3 +1,16 @@
 language: node_js
 node_js:
     - "0.10.31"
+
+# whitelisted branches:
+# branches:
+#  only:
+#    - travis
+
+services:
+  - redis-server
+  - mysql
+  
+# newer versions of mysql do not create 'test' database by default
+before_install:
+  - mysql -e "create database IF NOT EXISTS travis_rota;" -uroot
