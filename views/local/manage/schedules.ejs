@@ -127,42 +127,6 @@ Setup rotas / modify the sessions
 	</div>
 </script>
 
-<!-- Create a repeat -->
-<script type="text/ng-template" id="modal-add-repeat.html">
-	<div class="modal-header">
-	<h2>Repeat sessions for {{rota.rot_code}} ({{ rota.rot_description }}) </h2>
-	<br/>
-	<form class="form-inline" name="form.repeatForm" ng-submit="submitForm(rota,$rootScope.repeat_start,$rootScope.repeat_end,$rootScope.repeat_begin,$rootScope.repeat_finish)" novalidate>
-	<div class="form-group">
-	<h4>Please select the period used to repeat:</h4>
-		<p>
-		<select ng-model="$rootScope.repeat_start"  ng-options="mydate as mydate.toDateString() for mydate in dates" required>
-		</select> 
-		to 
-		<select ng-model="$rootScope.repeat_end" ng-options="mydate as mydate.toDateString() for mydate in datesAfter($rootScope.repeat_start)" required>
-		</select> (inclusive)<br/>
-		</p>
-		<p>
-		</p>
-		<br/>
-		<h4>Please select the period to repeat for</h4>
-		<br/>
-		<select ng-model="$rootScope.repeat_begin" ng-options="mydate as mydate.toDateString() for mydate in datesAfter($rootScope.repeat_end)" required>
-		</select>
-		to
-		<select ng-model="$rootScope.repeat_finish" ng-options="mydate as mydate.toDateString() for mydate in datesAfter($rootScope.repeat_begin)" required>
-		</select> (inclusive)<br/>
-		
-		<br/>
-		<br/>
-        <button type="submit" class="btn btn-success" ng-disabled="form.repeatForm.$invalid">Add</button>
-		<button type="submit" class="btn btn-danger" ng-click="cancel()">Cancel</button>
-	</div>
-	</form>
-	
-	
-	</div>
-</script>
 
 <!-- Delete a selection -->
 <script type="text/ng-template" id="modal-del-repeat.html">
@@ -279,7 +243,6 @@ Setup rotas / modify the sessions
 				</accordion-group>-->
 			</form>	
 			</accordian>
-			<span class="btn btn-primary" ng-click="addRepeatForm(rota)">Repeat a selection</span>
 			<span class="btn btn-primary" ng-click="addShiftForm(rota)">Create shifting pattern</span>
 			<span class="btn btn-primary" ng-click="delRepeatForm(rota)">Remove a selection</span>
 			<span class="btn btn-primary" ng-click="replaceUserForm(rota)">Replace a person</span>
