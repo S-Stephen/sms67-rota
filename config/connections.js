@@ -50,6 +50,14 @@ module.exports.connections = {
     database: process.env.DB_NAME || 'test',
   },
 
+  testMysqlServer: {
+    adapter: 'sails-mysql',
+    host: process.env.DB_HOST || '127.0.0.1',
+    user: process.env.DB_USER || 'travis',
+    password: process.env.DB_PASS || '',
+    database: process.env.DB_NAME || 'travis_rota',
+  },
+
 
 
   prodMysqlServer: {
