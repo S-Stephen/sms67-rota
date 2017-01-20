@@ -1,3 +1,5 @@
-# Rota
+# RotaMAnager
 
-a [Sails](http://sailsjs.org) application
+Application to manage security rota schedules.
+
+
