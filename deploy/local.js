@@ -25,7 +25,8 @@ module.exports = {
 
 module.exports.models = {
 // DB_HOST=testmysql5-c6vm DB_NAME=securityrota_dev DB_PASS=securityrota_xx DB_USER=securityrota_web
-  connection: 'devMysqlServer'
+  connection: 'devMysqlServer',
+  migrate: 'alter'
 };
 
 module.exports.connections = {
