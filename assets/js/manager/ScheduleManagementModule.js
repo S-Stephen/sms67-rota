@@ -632,7 +632,7 @@
 		startdate.setMonth(startdate.getMonth()+monthoffset)
 		var getmonth = startdate.getMonth()
 		startdate.setDate(1)
-		startdate.setHours(0,0,0,0);
+		startdate.setHours(12,0,0,0); //set as midday to avoid summer time issues
 		var enddate = new Date(startdate)
 		enddate.setMonth(enddate.getMonth()+1)
 		var indexoffset = (startdate.getDay() == 0)? 6 : startdate.getDay()-1;
