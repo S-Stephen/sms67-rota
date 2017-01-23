@@ -35,7 +35,7 @@ module.exports.connections = {
     adapter: 'sails-mysql',
     host: process.env.DB_HOST || 'localhost',
     user: process.env.DB_USER || 'sec_rota_web',
-    password: process.env.DB_PASS || '',
+    password: process.env.DB_PASS || 'sec_rota_pass',
     database: process.env.DB_NAME || 'sec_rota_dev',
   },
 }
