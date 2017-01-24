@@ -24,3 +24,14 @@ to log in as a regular user we use:
         })
 ```
 
+## Test data
+
+Test data is loaded from fixtures/travis.json
+
+__Three__ fake users are created
+
+* 'fake1' - is amanger
+* 'fake2' 
+* 'fake3'
+
+Use these users when manipulating records
