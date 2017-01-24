@@ -66,12 +66,6 @@
     "items":[
       {
         "protocol":"bearer",
-        "accessToken":"goldenticket",
-        "provider":"travis",
-        "user":1
-      },
-      {
-        "protocol":"bearer",
         "accessToken":"silverticket",
         "provider":"travis",
         "user":2
