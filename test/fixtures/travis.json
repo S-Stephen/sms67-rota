@@ -2,7 +2,8 @@
   {
     "model":"User",
     "items":[
-    {
+    { 
+      "id": 2,
       "username":"test0002",
       "email":"sms67+RMTST2@cam.ac.uk",
       "display_name":"Test user 2"
@@ -58,6 +59,28 @@
         "rot_code":"HOP",
         "rot_description":"Holiday (Easter / Christmas) PM",
         "rot_order":15
+      }
+    ]
+  },{
+    "model":"Passport",
+    "items":[
+      {
+        "protocol":"bearer",
+        "accessToken":"goldenticket",
+        "provider":"travis",
+        "user":1
+      },
+      {
+        "protocol":"bearer",
+        "accessToken":"silverticket",
+        "provider":"travis",
+        "user":2
+      },
+      {
+        "protocol":"bearer",
+        "accessToken":"paperticket",
+        "provider":"travis",
+        "user":100
       }
     ]
   }
