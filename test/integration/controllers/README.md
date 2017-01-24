@@ -13,7 +13,7 @@ Two level of access are available:
 
 to log in as a regular user we use:
 
-'''
+```{r}
   agent
         .get('/auth/bearer')
         .set('authorization','Bearer silverticket')
@@ -22,5 +22,5 @@ to log in as a regular user we use:
         .end(function(err,res){
             //next stage of process goes here
         })
-'''
+```
 
