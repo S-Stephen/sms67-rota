@@ -6,7 +6,7 @@ These tests check the success / failure of the Controller endpoints
 
 __Bearer__ authorization has been activated for the test environment.  
 
-Two level of access are available:
+Two level of access are available (loaded via the passport elements in fixtures/travis.json):
 
 * 'Bearer goldenticket' - mapped to a user with management privileges
 * 'Bearer silverticket' - mapped to a user with regular privileges
