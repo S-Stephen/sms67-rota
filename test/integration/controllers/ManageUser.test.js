@@ -75,7 +75,7 @@ describe('UserManagementController', function() {
 
 
   //Test that, as a manager, we can update a user record
-  describe('#manager_update_use',function(){
+  describe('#manager_update_user',function(){
 
     it('create a new user',function (done){
       var agent =  request.agent(sails.hooks.http.app);
@@ -122,7 +122,7 @@ describe('UserManagementController', function() {
 
 
   //Test that, as a regular user, we can NOT update a user record
-  describe('#manager_update_use',function(){
+  describe('#nonmanager_update_user',function(){
 
     it('create a new user',function (done){
       var agent =  request.agent(sails.hooks.http.app);
@@ -161,44 +161,3 @@ describe('UserManagementController', function() {
 })
 
 
-
-describe('RotaManagementController', function() {
-  //1 Test that we can log in as a manager and create a rota
-  //2 That that rota then exists in the new database
-
-  describe('#manager_create_rota',function(){
-    it('create a new rota',function (done){
-      var agent =  request.agent(sails.hooks.http.app);
-
-      var mreq = agent
-        .get('/auth/bearer')
-        .set('authorization','Bearer goldenticket')
-        .redirects(1)
-        .expect(200)
-       //.get(myapp)
-        .end(function(err,res){
-            if (err){
-		          sails.log.debug("Authorization failed"); 
-		          return done(err) 
-	          }
-            agent
-            .post('/manager/rota/add/')
-            .send(
-                 {rot_code: "zzz", rot_description: "some rota"}
-             ).expect(201)
-              .end(function(err,res){
-                  if (err){ 
-			              sails.log.debug(" there was an error adding a new user "+err); 
-			              return done(err);
-		              }
-                    User.findOne({username:'testaddu'})
-                      .then(function(testUser) {
-                      //console.log(JSON.stringify(testUser))
-                        assert.equal(true,!!testUser,"a test user has been created")
-                        done();
-                      }).catch(done);
-             })
-        })        
-    }) 
-  }) 
-})
