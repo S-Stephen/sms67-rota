@@ -9,9 +9,29 @@
       "display_name":"Test user 2"
     },
     {
+      "id": 3,
       "username":"test0003",
       "email":"sms67+RMTST3@cam.ac.uk",
       "display_name":"Test user 3"
+    },
+    {
+      "id": 101,
+      "username":"fake1",
+      "email":"sms67+fake1@cam.ac.uk",
+      "display_name":"fake1",
+      "manager":1
+    },
+    {
+      "id": 102,
+      "username":"fake2",
+      "email":"sms67+fake2@cam.ac.uk",
+      "display_name":"fake2"
+    },
+    {
+      "id": 103,
+      "username":"fake3",
+      "email":"sms67+fake3@cam.ac.uk",
+      "display_name":"fake3"
     }
     ]
   },
