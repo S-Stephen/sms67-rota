@@ -60,7 +60,7 @@ Use these users when manipulating records
 * Manager can action swap request (by selecting either requested or requester)
 * Manager can decline swap request (by selecting either requested or requester)
 
-### Not convered by integrations
+### Not covered by integrations
 
-* When sesisons have been created / updated the informatiom is pushed through to the summary pages (without refreshing pages)
+* When sessions have been created / updated the informatiom is pushed through to the summary pages (using ws, without refreshing pages)
 
