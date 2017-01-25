@@ -48,7 +48,19 @@ Use these users when manipulating records
 * Manager can create a repeating shifting pattern in a rota non-manager cannot
 * Manager can remove a period of sessions from a rota non-manager cannot
 * Manager can replace a users on all rotas between two dates a non-manager cannot
+* Manager can assign a sesion to another user
+* Manager can swap a session with another
 * Manager can display / get the sessions for all rotas for a particular month
 * Manager can run a report to display all sessions on all rotas between a period (can download)
 * Non-manager can run a report to display all their sesisons on all rotas between a period (can download)
+* User can offer up own session, user cannot offer up someone elses session
+* User can request to swap session with a user
+* User can accept or decline requested swap
+* User can not retract their request to swap
+* Manager can action swap request (by selecting either requested or requester)
+* Manager can decline swap request (by selecting either requested or requester)
+
+### Not convered by integrations
+
+* When sesisons have been created / updated the informatiom is pushed through to the summary pages (without refreshing pages)
 
