@@ -54,7 +54,7 @@ describe('RotaManagementController', function() {
         })        
     }) 
   }) 
-  describe('#nonmanager_create_rota',function(){
+  describe('#nonmanager_create_edit_rota',function(){
     it('create a new rota',function (done){
       var agent =  request.agent(sails.hooks.http.app);
 
@@ -84,4 +84,33 @@ describe('RotaManagementController', function() {
         })        
     }) 
   }) 
+  it('Test that a non-manager user cannot edit rota',function (done){
+      var agent =  request.agent(sails.hooks.http.app);
+
+      var mreq = agent
+        .get('/auth/bearer')
+        .set('authorization','Bearer silverticket')
+        .redirects(1)
+        .expect(200)
+       //.get(myapp)
+        .end(function(err,res){
+            if (err){
+		          sails.log.debug("Authorization failed"); 
+		          return done(err) 
+	          }
+            agent
+            .put('/manager/rota/edit')
+            .send(
+                 {id:1, rot_code: "EVE", rot_description: "some rota"}
+             ).expect(403)
+              .end(function(err,res){
+                  if (err){ 
+			              sails.log.debug(" there was an error editing a rota "+err); 
+			              return done(err);
+		              }
+                done();
+             })
+        })        
+  }) 
+   
 })
