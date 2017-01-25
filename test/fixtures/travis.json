@@ -3,13 +3,6 @@
     "model":"User",
     "items":[
     { 
-      "id": 1,
-      "username":"test0001",
-      "email":"sms67+RMTST1@cam.ac.uk",
-      "display_name":"Test user 1",
-      "manager":1
-    },
-    { 
       "id": 2,
       "username":"test0002",
       "email":"sms67+RMTST2@cam.ac.uk",
