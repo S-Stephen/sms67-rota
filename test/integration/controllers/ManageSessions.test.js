@@ -4,7 +4,7 @@ var session = require('supertest-session');
 
 describe('ManageSessionsController', function() {
   describe('#manager_create_session',function(){
-    it('create a new rota',function (done){
+    it('Test that a manager can create and remove a session',function (done){
     //sails.log.debug("Test sessions controller");
     var agent =  request.agent(sails.hooks.http.app);
     sessiondate = new Date()
@@ -29,14 +29,26 @@ describe('ManageSessionsController', function() {
 			    sails.log.debug(" There was an error adding a new session "+err); 
 			    return done(err);
 		    }
-            done()
+            assert.equal(true,!!JSON.parse(res.text).id,"a test session has been created")
+            newschedid = JSON.parse(res.text).id
+            
+            agent
+            .delete('/manager/schedule/del/'+newschedid)
+            .expect(201)
+            .end(function(err,res){
+                if (err){ 
+			        sails.log.debug(" There was an error removing the new session "+err); 
+			        return done(err);
+		        }
+                done()  
+            })
         })
     })
     })
   })
 
   describe('#nonmanager_create_session',function(){
-    it('test that a non-manager CANNOT create a new rota',function (done){
+    it('test that a non-manager CANNOT create a new session',function (done){
     //sails.log.debug("Test sessions controller");
     var agent =  request.agent(sails.hooks.http.app);
     sessiondate = new Date()
