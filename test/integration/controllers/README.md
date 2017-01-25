@@ -49,8 +49,8 @@ Use these users when manipulating records
 
 ### ManageSession.test.js
 * Manager can add individual sessions to a rota non-manager cannot
-* Manager can remove individual sesisons to a rota non-manager cannot
-* Manager can create a repeating shifting pattern in a rota non-manager cannot
+* Manager can remove individual sessions to a rota non-manager cannot
+* \*Manager can create a repeating shifting pattern in a rota non-manager cannot
 * Manager can remove a period of sessions from a rota non-manager cannot
 * Manager can replace a users on all rotas between two dates a non-manager cannot
 * Manager can assign a sesion to another user
@@ -75,3 +75,4 @@ Use these users when manipulating records
 
 * When sessions have been created / updated the informatiom is pushed through to the summary pages (using ws, without refreshing pages)
 
+\* not suitable for to test via controller at the moment
