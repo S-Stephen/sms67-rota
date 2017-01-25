@@ -35,3 +35,20 @@ __Three__ fake users are created
 * 'fake3'
 
 Use these users when manipulating records
+
+## List of tests:
+
+* Manager can create a user non-manager cannot
+* Manager can edit a user non-manager cannot
+* Manager can create a rota non-manager cannot
+  + rota requires all fields: code, description [todo: start, end ]
+* Manager can edit a rota non-manager cannot
+* Manager can add individual sessions to a rota non-manager cannot
+* Manager can remove individual sesisons to a rota non-manager cannot
+* Manager can create a repeating shifting pattern in a rota non-manager cannot
+* Manager can remove a period of sessions from a rota non-manager cannot
+* Manager can replace a users on all rotas between two dates a non-manager cannot
+* Manager can display / get the sessions for all rotas for a particular month
+* Manager can run a report to display all sessions on all rotas between a period (can download)
+* Non-manager can run a report to display all their sesisons on all rotas between a period (can download)
+
