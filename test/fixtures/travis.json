@@ -62,6 +62,73 @@
       }
     ]
   },{
+    "model":"Rotasessions",
+    "items":[
+      { 
+        "ros_rota_code": "EVE",
+        "ros_day": "01234567",
+        "ros_start_time": "171500",
+        "ros_end_time":"193000",
+        "id":1
+      },
+      { 
+        "ros_rota_code": "MOR",
+        "ros_day": "01234567",
+        "ros_start_time": "063000",
+        "ros_end_time":"080000",
+        "id":2
+      },
+      { 
+        "ros_rota_code": "LEV",
+        "ros_day": "01234567",
+        "ros_start_time": "193000",
+        "ros_end_time":"233000",
+        "id":3
+      },
+      { 
+        "ros_rota_code": "WEA",
+        "ros_day": "6",
+        "ros_start_time": "080000",
+        "ros_end_time":"153000",
+        "id":4
+      },
+      { 
+        "ros_rota_code": "WEA",
+        "ros_day": "0",
+        "ros_start_time": "090000",
+        "ros_end_time":"153000",
+        "id":5
+      },
+      { 
+        "ros_rota_code": "WEP",
+        "ros_day": "6",
+        "ros_start_time": "153000",
+        "ros_end_time":"230000",
+        "id":6
+      },
+      { 
+        "ros_rota_code": "WEP",
+        "ros_day": "0",
+        "ros_start_time": "153000",
+        "ros_end_time":"220000",
+        "id":7
+      },
+      { 
+        "ros_rota_code": "HOP",
+        "ros_day": "01234567",
+        "ros_start_time": "153000",
+        "ros_end_time":"220000",
+        "id":8
+      },
+      { 
+        "ros_rota_code": "HOA",
+        "ros_day": "01234567",
+        "ros_start_time": "090000",
+        "ros_end_time":"153000",
+        "id":9
+      },
+    ]
+  },{
     "model":"Passport",
     "items":[
       {
