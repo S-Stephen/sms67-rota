@@ -41,7 +41,7 @@ Use these users when manipulating records
 * Manager can create a user non-manager cannot
 * Manager can edit a user non-manager cannot
 * Manager can create a rota non-manager cannot
-  + rota requires all fields: code, description [todo: start, end ]
+    + rota requires all fields: code, description [todo: start, end ]
 * Manager can edit a rota non-manager cannot
 * Manager can add individual sessions to a rota non-manager cannot
 * Manager can remove individual sesisons to a rota non-manager cannot
