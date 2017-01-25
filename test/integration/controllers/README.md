@@ -38,11 +38,16 @@ Use these users when manipulating records
 
 ## List of tests:
 
+### ManageUser.test.js
 * Manager can create a user non-manager cannot
 * Manager can edit a user non-manager cannot
+
+### ManageRota.test.js 
 * Manager can create a rota non-manager cannot
     + rota requires all fields: code, description [todo: start, end ]
 * Manager can edit a rota non-manager cannot
+
+### ManageSession.test.js
 * Manager can add individual sessions to a rota non-manager cannot
 * Manager can remove individual sesisons to a rota non-manager cannot
 * Manager can create a repeating shifting pattern in a rota non-manager cannot
@@ -50,15 +55,21 @@ Use these users when manipulating records
 * Manager can replace a users on all rotas between two dates a non-manager cannot
 * Manager can assign a sesion to another user
 * Manager can swap a session with another
+* Manager can action swap request (by selecting either requested or requester)
+* Manager can decline swap request (by selecting either requested or requester)
+
+### ManageReport.test.js
 * Manager can display / get the sessions for all rotas for a particular month
 * Manager can run a report to display all sessions on all rotas between a period (can download)
+
+### UserReport.test.js
 * Non-manager can run a report to display all their sesisons on all rotas between a period (can download)
+
+### UserSession.test.js
 * User can offer up own session, user cannot offer up someone elses session
 * User can request to swap session with a user
 * User can accept or decline requested swap
 * User can not retract their request to swap
-* Manager can action swap request (by selecting either requested or requester)
-* Manager can decline swap request (by selecting either requested or requester)
 
 ### Not covered by integrations
 
