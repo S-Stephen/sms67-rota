@@ -67,6 +67,7 @@ module.exports.policies = {
 		'acceptswap_manager':['passport','sessionAuth','isManager'],
 		'create_manager':['passport','sessionAuth','isManager'],
 		'update_manager':['passport','sessionAuth','isManager'],
+		'update_manager_bulk':['passport','sessionAuth','isManager'],
 		'del_manager':['passport','sessionAuth','isManager'],
 		summarylistdays: true,
 		icaloutput: true,
