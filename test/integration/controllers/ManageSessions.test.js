@@ -205,15 +205,10 @@ describe('ManageRepeatingSessions', function() {
 })
 
 
-describe('ManageTransferSessions', function() {
+describe('ManageBulkTransferSessions', function() {
   describe('#manager_transfer_sessions_to_other',function(){
     it('Test that a manager can transfer all the sessions occuring for a particular user in a period',function (done){
         var agent =  request.agent(sails.hooks.http.app);
-        //sessions rotate the users and apply then to the next chosen day specified in the period
-        //the users supplies a list of ordered users, a period, and the days to populate 
-        //Unfortunately can not test via controller because the logic is help in angular code
-
-        //Test that a manager is able to remove sessions within a period
 
         //load a selecton of sessions for a period of ten days:
         startdate=new Date()
@@ -266,6 +261,64 @@ describe('ManageTransferSessions', function() {
           }
         )
       })
+    })
+  })
+})
+
+
+describe('ManageTransferSession', function() {
+  describe('#manager_transfer_session_to_other',function(){
+    it('Test that a manager can transfer a sessions to another user',function (done){
+        var agent =  request.agent(sails.hooks.http.app);
+
+        startdate=new Date()
+        enddate=new Date(startdate.getTime()+20*24*60*60*1000)
+        mdate = new Date(startdate.getTime()+1*24*60*60*1000)
+        numsessions=0;
+	    numrecs=10;
+        
+        Schedules.create({scd_rota_code:'HOA',scd_user_username:'fake1',scd_date:mdate}).exec(function (err,record){ if (err){ return done(err) }
+          loginmanager(agent, function(){
+             put(agent,
+               '/manager/schedule/update',
+               {id: record.id,scd_user_username:'fake2'},
+               201, function (err){ if (err){ done(err) }                    
+                  done()                                
+               })
+          })
+        })
+      })
+    })
+  
+
+    describe('#nonmanager_transfer_session_to_other',function(){
+      it('Tests that a nonmanager can NOT transfer a session to another user',function (done){
+        var agent =  request.agent(sails.hooks.http.app);
+        loginnonmanager(agent, function(){
+          put(agent,
+            '/manager/schedule/update',
+            {id:1,session_member_from:'fake1'},
+            403, 
+            function (err){ if (err){ return done(err) }
+              done()                             
+            }
+          )
+        })
+      })
+    })
+  })
+
+  
+describe('ManageTransferSession', function() {
+  describe('#manager_transfer_session_to_other',function(){
+    it('Test that a manager can swap a sessions with another user',function (done){
+        var agent =  request.agent(sails.hooks.http.app);
+        //This is currently acheived by individual swaps in the client libraries
+        //Calling /manage/schedule/update for the two sessions
+        //Therefore if ManageTransferSession passes this will pass
+
+        //Currently no need to write new scenario
+        done()
     })
   })
 })
