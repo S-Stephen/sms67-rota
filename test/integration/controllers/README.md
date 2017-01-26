@@ -58,11 +58,9 @@ Use these users when manipulating records
 * Manager can action swap request (by selecting either requested or requester)
 * Manager can decline swap request (by selecting either requested or requester)
 
-### ManageReport.test.js
-* Manager can display / get the sessions for all rotas for a particular month
+### Reports.test.js
+* Manager and non-manager can display / get the sessions for all rotas for a particular month
 * Manager can run a report to display all sessions on all rotas between a period (can download)
-
-### UserReport.test.js
 * Non-manager can run a report to display all their sesisons on all rotas between a period (can download)
 
 ### UserSession.test.js

@@ -52,7 +52,7 @@ module.exports ={
         .send(payload)
         .expect(403)
         .end(function(err,res){ if (err){  return next(err);}
-            next()
+            next(err,res)
         })
     },
 
@@ -61,9 +61,17 @@ module.exports ={
         .put(url)
         .send(payload)
         .expect(expect)
-        .end(function(err,res){ if (err){  sails.log.error("PUT action "+url+" failed"); return next(err);}
-            sails.log.debug("calling PUT ")
-            next()
+        .end(function(err,res){ if (err){  return next(err);}
+            next(err,res)
+        })
+    },
+
+    get: function(agent,url,expect,next){  
+        agent
+        .get(url)
+        .expect(expect)
+        .end(function(err,res){ if (err){  return next(err);}
+            next(err,res)
         })
     }
 
