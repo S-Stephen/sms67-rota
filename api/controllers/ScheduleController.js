@@ -339,20 +339,20 @@ module.exports = {
 		var startdate = new Date(req.param('startdate'));
 		var enddate = new Date(req.param('enddate'));
 		startdate.setHours(0,0,0,0);
-		
-		var myreq=req
-		//Schedules.find().where({ scd_rota_code: req.param('rota'), scd_user_username: req.param('session_member_from') }).exec(function(err,data){
-		var myQuery = Schedules.find(); //.where({scd_date: { '>=': req.param('startdate')}})
-		myQuery.where({ scd_date: {'<=':req.param('enddate'),  '>=': startdate}, scd_rota_code: req.param('rota'), scd_user_username: req.param('session_member_from') }).exec(function(err,data){
-			sails.log("error: "+err);
-			if (data){
-				data.forEach(function(ele){
-				myreq.body.id = ele.id
-				myreq.body.scd_user_username=req.param('session_member_to')
-				SwapActionsService.update(myreq,res,next);
-				});
+
+		Schedules.update(
+			{ scd_date: {'<=':req.param('enddate'),  '>=': startdate}, scd_rota_code: req.param('rota'), scd_user_username: req.param('session_member_from') },
+			{ scd_user_username:req.param('session_member_to')}
+		).exec(function (err,updated){
+			if (err){res.status(500)}
+			else{
+				res.status(201);
+				// can we do this async?
+				for (var i=0; i<updated.length; i++){
+					sails.sockets.blast('schedule',{verb:'update',ele:updated[i]});
+				}
 			}
-			res.status(201); //hopefulyl after all the processing
+			res.send()
 		})
 	},
 	
