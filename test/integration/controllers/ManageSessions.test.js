@@ -1,6 +1,7 @@
 var assert = require("assert");
 var request = require('supertest');
 var session = require('supertest-session');
+var utils = require('./utils.js')
 
 describe('ManageSessionsController', function() {
   describe('#manager_create_session',function(){
@@ -123,72 +124,6 @@ describe('ManageSessionsController', function() {
   })
 })
 
-//function recurses until number of records loaded
-function loadnextsession(error,record,last){
-    if (error){
-	    sails.log.debug("Error counting sessions for fake1"); 
-		return last(error) 
-    }
-    numrecs=numrecs-1;
-    sails.log.debug("records: "+JSON.stringify(record));
-    sails.log.debug("numrecs: "+numrecs);
-    if (!numrecs){;
-        sails.log.debug("numrecs not defined: ");
-        return last("Did you forget to set numrecs, the number of sessions required?")
-    }
-    if (numrecs > 0){
-        sails.log.debug("in date: "+record.scd_date.getTime())
-        mdate = new Date(record.scd_date.getTime()+24*60*60*1000)
-	    sails.log.debug("next date: "+mdate)
-        Schedules.create({scd_rota_code:'HOA',scd_user_username:'fake1',scd_date:mdate}).exec(function (err,rec) {sails.log.debug("entered: "+rec); loadnextsession(err,rec,last) })
-    }else{
-        sails.log.debug("all done: "+JSON.stringify(record));
-        return last()
-    }
-}
-
-function loginmanager(agent,next){
-    var mreq = agent
-    .get('/auth/bearer')
-    .set('authorization','Bearer goldenticket')
-    .redirects(1)
-    .expect(200)
-    .end(function(err,res){ if (err){return next(err) }
-        next() 
-    })
-}
-
-function loginnonmanager(agent,next){
-    var mreq = agent
-    .get('/auth/bearer')
-    .set('authorization','Bearer silverticket')
-    .redirects(1)
-    .expect(200)
-    .end(function(err,res){ if (err){return next(err) }
-        next() 
-    })
-}
-
-function post(agent,url,payload,next){    
-     agent
-     .post(url)
-     .send(payload)
-     .expect(403)
-     .end(function(err,res){ if (err){  return next(err);}
-        next()
-     })
-}
-
-function put(agent,url,payload,expect,next){  
-     agent
-     .put(url)
-     .send(payload)
-     .expect(expect)
-     .end(function(err,res){ if (err){  sails.log.error("PUT action "+url+" failed"); return next(err);}
-        sails.log.debug("calling PUT ")
-        next()
-     })
-}
 
 describe('ManageRepeatingSessions', function() {
   describe('#manager_create_repeating_sessions',function(){
@@ -218,7 +153,7 @@ describe('ManageBulkTransferSessions', function() {
 	    numrecs=10;
         Schedules.destroy({scd_rota_code:'HOA',scd_user_username:'fake1',scd_date:{'>=':startdate,'<=':enddate}}).exec( function (err,record){ if (err){ return done(err) }
           Schedules.create({scd_rota_code:'HOA',scd_user_username:'fake1',scd_date:mdate}).exec(function (err,record){ if (err){ return done(err) }
-	          loadnextsession(err,record,function (){ 
+	          utils.loadnextsession(err,record,function (){ 
 		        //added all sessions for fake1
                   Schedules.count({scd_rota_code:'HOA',scd_user_username:'fake1',scd_date:{'>=':startdate,'<=':enddate}}).exec(function (err,found){ if (err){return done(err) }
                   //count fake1 sessions to update
@@ -227,9 +162,9 @@ describe('ManageBulkTransferSessions', function() {
                       Schedules.count({scd_rota_code:'HOA',scd_user_username:'fake2',scd_date:{'>=':startdate,'<=':enddate}}).exec(function (err,found){ if (err){return done(err) }
                       //count fake2 sessions already available
                         numfake2=found
-                        loginmanager(agent, function(){
+                        utils.loginmanager(agent, function(){
                             sails.log.debug("num fake2: "+numfake2+" num fake1: "+numfake1)
-                            put(agent,
+                            utils.put(agent,
                                 '/manager/schedules/update',
                                 {rota:'HOA',session_member_from:'fake1',session_member_to:'fake2',startdate:startdate,enddate:enddate},
                                 201, function (err){ if (err){ done(err) }
@@ -251,8 +186,8 @@ describe('ManageBulkTransferSessions', function() {
   describe('#nonmanager_transfer_sessions_to_other',function(){
     it('Tests that a nonmanager can NOT transfer all the sessions occuring for a particular user in a period',function (done){
       var agent =  request.agent(sails.hooks.http.app);
-      loginnonmanager(agent, function(){
-        put(agent,
+      utils.loginnonmanager(agent, function(){
+        utils.put(agent,
           '/manager/schedules/update',
           {rota:'HOA',session_member_from:'fake1',session_member_to:'fake2',startdate:startdate,enddate:enddate},
           403, 
@@ -278,8 +213,8 @@ describe('ManageTransferSession', function() {
 	    numrecs=10;
         
         Schedules.create({scd_rota_code:'HOA',scd_user_username:'fake1',scd_date:mdate}).exec(function (err,record){ if (err){ return done(err) }
-          loginmanager(agent, function(){
-             put(agent,
+          utils.loginmanager(agent, function(){
+             utils.put(agent,
                '/manager/schedule/update',
                {id: record.id,scd_user_username:'fake2'},
                201, function (err){ if (err){ done(err) }                    
@@ -294,8 +229,8 @@ describe('ManageTransferSession', function() {
     describe('#nonmanager_transfer_session_to_other',function(){
       it('Tests that a nonmanager can NOT transfer a session to another user',function (done){
         var agent =  request.agent(sails.hooks.http.app);
-        loginnonmanager(agent, function(){
-          put(agent,
+        utils.loginnonmanager(agent, function(){
+          utils.put(agent,
             '/manager/schedule/update',
             {id:1,session_member_from:'fake1'},
             403, 
