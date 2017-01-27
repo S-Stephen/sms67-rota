@@ -38,6 +38,8 @@ Use these users when manipulating records
 
 ## List of tests:
 
+run specific tests by: npm test --  --grep <regex eg:MemberSwap>
+
 ### ManageUser.test.js
 * Manager can create a user non-manager cannot
 * Manager can edit a user non-manager cannot
