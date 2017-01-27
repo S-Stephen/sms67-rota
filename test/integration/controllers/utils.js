@@ -47,6 +47,17 @@ module.exports ={
         })
     },
 
+    loginnonmanager2: function(agent,next){
+        var mreq = agent
+        .get('/auth/bearer')
+        .set('authorization','Bearer bronzeticket') //test0003 see fixtures: passport
+        .redirects(1)
+        .expect(200)
+        .end(function(err,res){ if (err){return next(err) }
+            next() 
+        })
+    },
+
     post: function(agent,url,payload,expect,next){    
         agent
         .post(url)
@@ -80,6 +91,13 @@ module.exports ={
         //returns a new date by incrementing the month
         newdate = new Date(date)
         newdate.setMonth(newdate.getMonth()+num)
+        return newdate
+    },
+
+    adddays: function(date,num){
+        //returns a new date by incrementing the month
+        newdate = new Date(date)
+        newdate.setDate(newdate.getDate()+num)
         return newdate
     }
 
