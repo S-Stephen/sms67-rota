@@ -1,6 +1,7 @@
 module.exports ={
 
     //function recurses until number of records loaded
+    // TODO replace this by passing an array of sessions to the create statement
     loadnextsession: function(error,record,last){
         if (error){
             sails.log.debug("Error counting sessions for fake1"); 
@@ -38,7 +39,7 @@ module.exports ={
     loginnonmanager: function(agent,next){
         var mreq = agent
         .get('/auth/bearer')
-        .set('authorization','Bearer silverticket')
+        .set('authorization','Bearer silverticket') //test0002 see fixtures: passport
         .redirects(1)
         .expect(200)
         .end(function(err,res){ if (err){return next(err) }
@@ -46,11 +47,11 @@ module.exports ={
         })
     },
 
-    post: function(agent,url,payload,next){    
+    post: function(agent,url,payload,expect,next){    
         agent
         .post(url)
         .send(payload)
-        .expect(403)
+        .expect(expect)
         .end(function(err,res){ if (err){  return next(err);}
             next(err,res)
         })
@@ -73,6 +74,13 @@ module.exports ={
         .end(function(err,res){ if (err){  return next(err);}
             next(err,res)
         })
+    },
+
+    addmonths: function(date,num){
+        //returns a new date by incrementing the month
+        newdate = new Date(date)
+        newdate.setMonth(newdate.getMonth()+num)
+        return newdate
     }
 
 }
