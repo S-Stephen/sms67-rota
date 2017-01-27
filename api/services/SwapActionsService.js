@@ -60,61 +60,43 @@ module.exports ={
 	
     grab: function(req,res,next){
 		
-	
-		//protect by auth user && session grabable
 		var params = req.params.all();
-		var okay = 0;
-		if ( ( req.user.username || req.user.manager ) && params.theirs.scd_status=='offerup'){
-			sails.log("we are the manager or we are the user");
-			okay =1;
-		}
-		if (!okay){
-			res.status(403);
-			return;
-		}
-	
-		//TODO test we are allowed to grab -> user logged in as  && of, status of session
-		
-		//the params represent the schedule to change - generally this will be the assignment of another user?
-		//but we need to pass the user's schedule to swap
-		
-		sails.log("grab session: "+params.theirs.id);
-		
-		//who is the current user?????
-		
-		sails.log("TODO check user can grab session (are they on the system?) - user passport object query?");
-		
-		//set the status for our schedule to requested
-		var givenupby=params.theirs.scd_user_username; //so we can remove it from the otherstuff array
-		params.theirs.scd_status='accepted';
-		params.theirs.scd_user_username=req.user.username;
-		
-		params.theirs.scd_date=new Date(params.theirs.scd_date);
-		var message = req.user.username+" has just taken the session: "+params.theirs.scd_rota_code+" on "+params.theirs.scd_date.toDateString();
-		//set the status to their schedule to requested and requested_by to our id
-		//params.theirs.scd_status='requested';
-		//params.theirs.scd_request_by=params.mine.id;
-		
-		Schedules.update(params.theirs.id, params.theirs, function(err, mine){
-			if (err) return next(err);
-				res.status(201);
-				sails.sockets.blast('schedule',{verb:'grabbed',ele:mine[0],givenupby:givenupby});
-				res.json(mine);
+		// only allow a session to be grabbed if it has been offered up!!
+		Schedules.findOne({id:params.theirs.id}).exec(function (err,mysched){
+			if (err){ return next(err) }
+			givenupby=mysched.scd_user_username
+			//anyone can grab a session including the user who offered it up
+			if ( mysched.scd_status != 'offerup' || !req.user.username ){
+				sails.log("not allowed to grab session not available "+mysched.scd_status)
+				res.status(403)
+				res.json({})
+			}else{		
+				var message = req.user.username+" has just taken the session: "+mysched.scd_rota_code+" on "+mysched.scd_date.toDateString();
 				
-				//we also want to broadcast this to others?
+				Schedules.update(mysched.id, { scd_user_username:req.user.username }, function(err, mine){
+					if (err) return next(err);
+					res.status(201);
+					sails.sockets.blast('schedule',{verb:'grabbed',ele:mine[0],givenupby:givenupby});
+					res.json(mine);
+				
+					var nodemailer = require('nodemailer');
+					var transporter = nodemailer.createTransport(); //uses local transport:
+					var myto = (sails.config.emaildebug)? sails.config.emaildebug : sails.config.rotaemail ;
+					var mycc = (sails.config.emaildebug)? [sails.config.emaildebug] : [givenupby+'@eng.cam.ac.uk',mysched.scd_user_username+'@eng.cam.ac.uk'];
+					transporter.sendMail({
+							from: sails.config.emailfrom, //'sms67@eng.cam.ac.uk',
+							to: myto,
+							cc: mycc,
+							subject:  "SR "+mysched.scd_rota_code+" "+mysched.scd_date.toDateString()+" Session taken",
+							text: message
+					});
+					//we also want to broadcast this to others?
 			
-		});		
-		var nodemailer = require('nodemailer');
-		var transporter = nodemailer.createTransport(); //uses local transport:
-		var myto = (sails.config.emaildebug)? sails.config.emaildebug : sails.config.rotaemail ;
-		var mycc = (sails.config.emaildebug)? [sails.config.emaildebug] : [givenupby+'@eng.cam.ac.uk',params.theirs.scd_user_username+'@eng.cam.ac.uk'];
-		transporter.sendMail({
-				from: sails.config.emailfrom, //'sms67@eng.cam.ac.uk',
-				to: myto,
-				cc: mycc,
-				subject:  "SR "+params.theirs.scd_rota_code+" "+params.theirs.scd_date.toDateString()+" Session taken",
-				text: message
-		});
+				});		
+			}
+
+		})
+	
 	},
 	update: function(req,res,next){	
 		var params = req.params.all(); //all gets body and 
@@ -154,14 +136,15 @@ module.exports ={
 		//the params represent the schedule to change - generally this will be the assignment of another user?
 		//but we need to pass the user's schedule to swap
 		var okay = 0;
-		if ( req.user.username == params.mine.scd_user_username || req.user.manager){
+		if ( req.user.username != params.mine.scd_user_username && ! req.user.manager){
 			//console.log("we are the manager or we are the user");
-			okay =1;
-		}
-		if (!okay){
 			res.status(403);
-			return;
-		}
+			res.json({})
+		}else{
+		
+		 	
+			 //return next("Not owner or manager")
+		
 		sails.log("giving up session: "+params.mine.id);
 		
 		//set the status for our schedule to requested
@@ -189,6 +172,7 @@ module.exports ={
 				subject: "SR "+params.mine.scd_rota_code+" "+params.mine.scd_date.toDateString()+" Session given up",
 				text: message
 		});
+		}
 	},	
     requestSwap: function(req,res,next){
 		var params = req.params.all();
