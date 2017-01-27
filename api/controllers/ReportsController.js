@@ -65,7 +65,7 @@ module.exports = {
 //			},
 			allowInterrupt : true
 		}
-		var wb2 = new xl.WorkBook(wbOpts);
+		var wb2 = new xl.WorkBook();
 		var ws = wb2.WorkSheet('Attendance');
 		var ws2 = wb2.WorkSheet('Summary');
 		//ws.Cell(4,3).String('Price/Unit');
