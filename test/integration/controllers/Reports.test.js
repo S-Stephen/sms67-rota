@@ -53,8 +53,6 @@ describe('ManagerReportController', function() {
       })
     })
   })
-
-
   
   describe('#manager_full_report',function(){
     it('A manager can retrieve the sessions for all user on all rotas',function (done){
@@ -85,7 +83,6 @@ describe('ManagerReportController', function() {
       })
     })
   })
-
 
   describe('#nonmanager_full_report',function(){
     it('A manager can retrieve the sessions for all user on all rotas',function (done){
