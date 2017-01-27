@@ -9,7 +9,6 @@ describe('MemberSwapController', function() {
     it('Test that a member can offer up a session, but not someone elses. Then the user (or any other) can gab the session back',function (done){
       
       var agent =  request.agent(sails.hooks.http.app);
-
       var startdate = new Date();
 	  startdate.setMonth(startdate.getMonth())
 	  startdate.setDate(1)
@@ -29,20 +28,12 @@ describe('MemberSwapController', function() {
                         //allow owner to offer up
                         utils.put(agent,'/member/schedule/grab',{theirs:record1},201,function (err,res){  if (err){ return done(err+" allow owner to grab ") }
                         //allow owner to grab own offer
-                        
+
                             done()
                         })
                     })
                 })
             })
-                //login as test0002 and offer up test0002 session
-
-                //attempt to grab my (test0002) own offered up session allowed
-
-                //test0002 offer up again
-
-                //login as test0003 and grab session
-            //})
           })
         })
       })
@@ -51,8 +42,39 @@ describe('MemberSwapController', function() {
 
   
   describe('#memberRequestSwap',function(){
-    it('Test that a memeber can request a swap',function (done){
-        done()
+    it('Test that a member can request a swap, and the another user can decline that swap',function (done){
+      //TODO these tests nee dto include checks when users who are not authorised attempt the actions request / decline / accept -> see SwapActionservice.js 
+      var agent =  request.agent(sails.hooks.http.app);
+      var startdate = new Date();
+	  startdate.setMonth(startdate.getMonth())
+	  startdate.setDate(1)
+	  startdate.setHours(0,0,0,0);
+	  var enddate = utils.addmonths(startdate,4)
+      Schedules.destroy({scd_rota_code:'EVE',scd_date:{'>=':startdate,'<=':enddate}}).exec( function (err,records){ if (err){ return done(err) }
+        Schedules.create({scd_rota_code:'EVE',scd_user_username:'test0002',scd_date:startdate}).exec(function (err,record1){ if (err){ return done(err) }
+          Schedules.create({scd_rota_code:'EVE',scd_user_username:'test0003',scd_date:utils.adddays(startdate,1)}).exec(function (err,record2){ if (err){ return done(err) }
+            utils.loginnonmanager(agent,function(err){
+              utils.post(agent,'/member/schedule/swap',{mine:record1,theirs:record2},201,function (err,res){  if (err){ return done(err+" allow user to request swap") }
+                    // Recipient declines swap
+                utils.loginnonmanager2(agent,function(err){
+                  utils.post(agent,'/member/schedule/decline',{mine:record2,theirs:record1},201,function (err,res){  if (err){ return done(err+" allow user to deline swap") }
+                    utils.loginnonmanager(agent,function(err){
+                      utils.post(agent,'/member/schedule/swap',{mine:record1,theirs:record2},201,function (err,res){  if (err){ return done(err+" allow user to request swap") }
+                          //recipient accepts swap
+                        utils.loginnonmanager2(agent,function(err){
+                          utils.post(agent,'/member/schedule/decline',{mine:record2,theirs:record1},201,function (err,res){  if (err){ return done(err+" allow user to accept swap") }
+                            done()
+                          })
+                        })
+                      })
+                    })
+                  })
+                })
+              })
+            })
+          })
+        })
+      })
     })
   })
 
