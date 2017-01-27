@@ -61,16 +61,18 @@ Use these users when manipulating records
 ### Reports.test.js
 * Manager and non-manager can display / get the sessions for all rotas for a particular month
 * Manager can run a report to display all sessions on all rotas between a period (can download)
-* Non-manager can run a report to display all their sesisons on all rotas between a period (can download)
+* Non-manager can run a report to display all their sessions on all rotas between a period (can download)
 
-### UserSession.test.js
+### SessionSwapping.test.js
 * User can offer up own session, user cannot offer up someone elses session
 * User can request to swap session with a user
 * User can accept or decline requested swap
-* User can not retract their request to swap
+* User can not retract their request to swap __TODO__
 
 ### Not covered by integrations
 
 * When sessions have been created / updated the informatiom is pushed through to the summary pages (using ws, without refreshing pages)
 
 \* not suitable for to test via controller at the moment, handled in the UI
+
+__HOW__ do we test the email nofiications?
