@@ -34,8 +34,29 @@
       "display_name":"fake3"
     }
     ]
-  },
-  {
+  },{
+    "model":"Passport",
+    "items":[
+      {
+        "protocol":"bearer",
+        "accessToken":"silverticket",
+        "provider":"travis",
+        "user":2
+      },
+      {
+        "protocol":"bearer",
+        "accessToken":"bronzeticket",
+        "provider":"travis",
+        "user":3
+      },
+      {
+        "protocol":"bearer",
+        "accessToken":"paperticket",
+        "provider":"travis",
+        "user":100
+      }
+    ]
+  },{
     "model":"Rota",
     "items":[
       {
@@ -146,22 +167,6 @@
         "ros_start_time": "090000",
         "ros_end_time":"153000",
         "id":9
-      }
-    ]
-  },{
-    "model":"Passport",
-    "items":[
-      {
-        "protocol":"bearer",
-        "accessToken":"silverticket",
-        "provider":"travis",
-        "user":2
-      },
-      {
-        "protocol":"bearer",
-        "accessToken":"paperticket",
-        "provider":"travis",
-        "user":100
       }
     ]
   }
