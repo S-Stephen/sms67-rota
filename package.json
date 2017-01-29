@@ -1,44 +1,51 @@
 {
-  "name": "rotamanager",
+  "name": "Rota",
   "private": true,
-  "version": "0.0.1",
+  "version": "0.0.0",
   "description": "a Sails application",
   "keywords": [],
   "dependencies": {
     "angular": "^1.3.15",
-    "bcryptjs": "^2.4.0",
-    "connect-redis": "^1.4.5",
-    "ejs": "^2.5.5",
+    "bcryptjs": "^2.1.0",
+    "connect-redis": "1.4.5",
+    "ejs": "~0.8.4",
     "excel4node": "^0.2.23",
-    "grunt": "^1.0.1",
-    "grunt-contrib-cssmin": "^1.0.2",
-    "grunt-contrib-less": "^1.4.0",
-    "grunt-contrib-uglify": "^2.0.0",
-    "grunt-sails-linker": "^0.9.6",
-    "grunt-sync": "0.0.8",
-    "include-all": "^0.1.6",
-    "nodemailer": "^1.11.0",
-    "passport": "^0.2.2",
+    "grunt": "0.4.2",
+    "grunt-contrib-clean": "~0.5.0",
+    "grunt-contrib-coffee": "~0.10.1",
+    "grunt-contrib-concat": "~0.3.0",
+    "grunt-contrib-copy": "~0.5.0",
+    "grunt-contrib-cssmin": "~0.9.0",
+    "grunt-contrib-jst": "~0.6.0",
+    "grunt-contrib-less": "0.11.1",
+    "grunt-contrib-uglify": "~0.4.0",
+    "grunt-contrib-watch": "~0.5.3",
+    "grunt-sails-linker": "~0.9.5",
+    "grunt-sync": "~0.0.4",
+    "include-all": "~0.1.3",
+    "nodemailer": "^1.3.4",
+    "passport": "^0.2.1",
     "passport-google": "^0.3.0",
     "passport-google-oauth": "^0.2.0",
     "passport-local": "^1.0.0",
-    "passport-raven": "^1.1.2",
-    "rc": "^0.5.5",
-    "sails": "^0.12.11",
+    "passport-raven": "^1.0.0",
+    "rc": "~0.5.0",
+    "sails": "~0.11.0",
+    "sails-disk": "~0.10.0",
     "sails-generate-auth": "^0.3.1",
-    "sails-mysql": "^0.11.0",
-    "socket.io-redis": "^1.0.0",
-    "validator": "^3.43.0"
+    "sails-mysql": "^0.10.11",
+    "socket.io-redis": "^0.1.4",
+    "validator": "^3.39.0"
   },
-  "devDependencies": {
-    "mocha": "^2.3.4",
-    "sails-memory": "^0.10.5",
-    "should": "^7.1.1",
-    "supertest": "^1.1.0",
-    "sails-fixtures": "^1.0.8",
-    "supertest-session": "^2.0.1",
-    "passport-http-bearer": "^1.0.1"
-  },
+  "devDependencies": { 
+     "mocha": "^2.3.4", 
+     "sails-memory": "^0.10.5", 
+     "should": "^7.1.1", 
+     "supertest": "^1.1.0",
+     "sails-fixtures":"^1.0.8",
+     "supertest-session":"^2.0.1",
+     "passport-http-bearer":"^1.0.1"
+  }, 
   "scripts": {
     "start": "node app.js",
     "debug": "node debug app.js",
@@ -47,11 +54,8 @@
   "main": "app.js",
   "repository": {
     "type": "git",
-    "url": "git://bitbucket.org/cuedsoft/rotamanager.git"
+    "url": "git://github.com/sms67/Rota.git"
   },
   "author": "sms67",
-  "license": "ISC",
-  "directories": {
-    "test": "test"
-  }
+  "license": ""
 }
