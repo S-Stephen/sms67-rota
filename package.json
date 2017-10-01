@@ -9,7 +9,7 @@
     "bcryptjs": "^2.4.0",
     "connect-redis": "^1.4.5",
     "ejs": "^2.5.5",
-    "excel4node": "^0.2.23",
+    "excel4node": "^1.0.0",
     "grunt": "^1.0.1",
     "grunt-contrib-cssmin": "^1.0.2",
     "grunt-contrib-less": "^1.4.0",
@@ -27,8 +27,9 @@
     "sails": "^0.12.11",
     "sails-generate-auth": "^0.3.1",
     "sails-mysql": "^0.11.0",
-    "socket.io-redis": "^1.0.0",
-    "validator": "^3.43.0"
+    "socket.io-redis": "^5.1.0",
+    "validator": "^3.43.0",
+    "snyk": "^1.41.1"
   },
   "devDependencies": {
     "mocha": "^2.3.4",
@@ -42,7 +43,9 @@
   "scripts": {
     "start": "node app.js",
     "debug": "node debug app.js",
-    "test": "PORT=9998 NODE_ENV=test mocha -R spec -b --recursive"
+    "test": "PORT=9998 NODE_ENV=test mocha -R spec -b --recursive",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "main": "app.js",
   "repository": {
@@ -53,5 +56,6 @@
   "license": "ISC",
   "directories": {
     "test": "test"
-  }
+  },
+  "snyk": true
 }
