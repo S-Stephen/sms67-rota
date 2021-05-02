@@ -28,7 +28,7 @@
     "sails-generate-auth": "^0.3.1",
     "sails-mysql": "^0.11.0",
     "socket.io-redis": "^1.0.0",
-    "validator": "^3.43.0"
+    "validator": "^13.6.0"
   },
   "devDependencies": {
     "mocha": "^2.3.4",
