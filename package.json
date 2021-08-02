@@ -9,7 +9,7 @@
     "bcryptjs": "^2.4.0",
     "connect-redis": "^1.4.5",
     "ejs": "^2.5.5",
-    "excel4node": "^0.2.23",
+    "excel4node": "^1.1.2",
     "grunt": "^1.0.1",
     "grunt-contrib-cssmin": "^1.0.2",
     "grunt-contrib-less": "^1.4.0",
