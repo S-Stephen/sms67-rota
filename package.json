@@ -24,7 +24,7 @@
     "passport-local": "^1.0.0",
     "passport-raven": "^1.1.2",
     "rc": "^0.5.5",
-    "sails": "^0.12.11",
+    "sails": "^1.5.3",
     "sails-generate-auth": "^0.3.1",
     "sails-mysql": "^0.11.0",
     "socket.io-redis": "^1.0.0",
